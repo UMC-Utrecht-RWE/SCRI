@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(scri)
+library(SCRI)
 
-test_check("scri")
+test_check("SCRI")
