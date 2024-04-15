@@ -9,6 +9,7 @@ Description: More about what it does (maybe more than one line)
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
+Imports: data.table, tidyr
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
