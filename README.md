@@ -18,10 +18,7 @@ devtools::install_github("UMC-Utrecht-RWE/SCRI")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+The package implements a processing pipeline, which takes a study population and *metadata* which specifies analysis options, and outputs an analytic dataset. The pipeline is described in schematic form below, with purple boxes representing functions of the pacakge, blue boxes representing intermediate outputs, red and orange represents user input in terms of specifying analysis options and (raw) input data respectively
 
-``` r
-library(SCRI)
-## basic example code
-```
+![image](https://github.com/UMC-Utrecht-RWE/SCRI/assets/138911044/8cbb1033-3e7b-4a05-9c0f-904e55f9fea3)
 
