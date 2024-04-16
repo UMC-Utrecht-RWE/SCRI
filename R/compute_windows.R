@@ -8,7 +8,6 @@
 #' @return a data.table object with the same columns as studypopulation, plus start_ and end_ window dates for each window type supplied in windowmeta
 #' @export
 #' @import data.table
-#' @import tidyr
 #' @examples studypop <- readRDS(system.file("extdata", "StudyPopulation.rds", package = "SCRI"))
 #'           windowmet <- readRDS(system.file("extdata", "WindowsMetadata.rds", package = "SCRI"))
 #'           SCRI::compute_windows(studypop, windowmet)
@@ -36,23 +35,20 @@ compute_windows <- function(studypopulation, windowmeta,
   studypopulation[, (date_cols) := lapply(.SD, as.Date), .SDcols = date_cols]
 
   # transform into a longer shape dataset (takes care of multiple reference date entries)
-  studypop_long <- studypopulation %>% tidyr::pivot_longer(
-    cols = windowmeta$reference_date,
-    names_to = "reference",
-    values_to = "reference_date"
-  )
-
-  # similar behaviour to above can be obtained using melt in data.table
-    # however, this produces  (id x windows x windows) instead of (id x windows)
-  # studypop_long <- data.table::melt(studypopulation,
-  #                  measure.vars = windowmeta$reference_date,
-  #                  variable.name = "reference",
-  #                  value.name = "reference_date",
-  #                  unique = TRUE)
+  studypop_long <- data.table::melt(studypopulation, id.vars = "person_id",
+                   measure.vars = unique(windowmeta$reference_date),
+                   variable.name = "reference",
+                   value.name = "reference_date",
+                   unique = TRUE)
+  # add back columns
+  studypop_long <- merge(studypop_long, studypopulation, by = id_column)
+  # omit duplicate date information
+  studypop_long <- studypop_long[,(date_cols):= NULL]
 
   # merge with scri metadata to get the window information
-  studypop_long <- base::merge(studypop_long, windowmeta,
-                        by.x = c("reference"), by.y = c("reference_date")) %>% data.table::data.table()
+  studypop_long <- merge(studypop_long, windowmeta,
+                         by.x = c("reference"), by.y = c("reference_date"), allow.cartesian = TRUE)
+
 
   # calculate start and end date of each window
   studypop_long[, start := reference_date + as.numeric(start_window)]

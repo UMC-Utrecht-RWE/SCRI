@@ -2,4 +2,3 @@
 
 export(compute_windows)
 import(data.table)
-import(tidyr)
