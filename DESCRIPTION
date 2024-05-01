@@ -1,11 +1,10 @@
 Package: SCRI
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Self-Controlled Risk Interval Analysis
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Oisín Ryan, Jungyeon Choi, Albert Cid Royo, Barbara Vreede, TBD
+Maintainer: Oisín Ryan <o.ryan@umcutrecht.nl>
+Description: A package which prepares analytic datasets for self-controlled risk interval analysis.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -14,3 +13,5 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 RoxygenNote: 7.3.1
+Depends: 
+    R (>= 2.10)

@@ -7,7 +7,7 @@
 #'
 #' @return a data.table object with the same columns as studypopulation, plus start_ and end_ window dates for each window type supplied in windowmeta
 #' @export
-#' @import data.table
+#' @importFrom data.table :=
 #' @examples studypop <- readRDS(system.file("extdata", "StudyPopulation.rds", package = "SCRI"))
 #'           windowmet <- readRDS(system.file("extdata", "WindowsMetadata.rds", package = "SCRI"))
 #'           SCRI::compute_windows(studypop, windowmet)
