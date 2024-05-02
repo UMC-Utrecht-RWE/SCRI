@@ -1,0 +1,63 @@
+---
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# SCRI
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/UMC-Utrecht-RWE/SCRI/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/UMC-Utrecht-RWE/SCRI/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+The goal of this package is to aid researchers in preparing analytic datasets for Self Controlled Risk Interval Analysis.
+
+## Installation
+
+You can install the development version of SCRI from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("UMC-Utrecht-RWE/SCRI")
+```
+
+## Example
+
+The package implements a processing pipeline, which takes a study population and *metadata* which specifies analysis options, and outputs an analytic dataset. The pipeline is described in schematic form below, with purple boxes representing functions of the pacakge, blue boxes representing intermediate outputs, red and orange represents user input in terms of specifying analysis options and (raw) input data respectively
+
+![image](https://github.com/UMC-Utrecht-RWE/SCRI/assets/138911044/8cbb1033-3e7b-4a05-9c0f-904e55f9fea3)
+
+The package comes with sample input files for the `StudyPopulation` and `WindowsMetadata` files respectively.
+
+### Step 1: Computing Windows
+
+In this step, we use the `compute_windows()` function to calculate the start and end dates of different analysis windows. Let's start by grabbing the relevant windows from our example metadata file
+
+```{r}
+# library(SCRI)
+data("StudyPopulation")
+data("WindowsMetadata")
+windowmet <- WindowsMetadata[grepl("post",WindowsMetadata$window_name),]
+print(windowmet)
+```
+
+
+We are going to use this object in combination with our `StudyPopulation`, which contains one row per unit of analysis, with information on the `reference_date` and other dates which will be relevant in future steps.
+
+```{r}
+head(StudyPopulation)
+```
+
+The `compute_windows()` returns start and end dates for each of the windows under consideration, anchored to the relevant reference date. The output by default is wide format. The output object also inherits all columns from the input `studypopulation`
+
+```{r}
+sp_windows <- compute_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
+                id_column = "person_id")
+
+sp_windows[1,c("person_id","start_control_post","end_control_post", "start_risk_post","end_risk_post")]
+```
+
+#### Step 2: Cleaning Windows
+
