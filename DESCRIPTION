@@ -2,7 +2,11 @@ Package: SCRI
 Type: Package
 Title: Self-Controlled Risk Interval Analysis
 Version: 0.1.0
-Author: Oisín Ryan, Jungyeon Choi, Albert Cid Royo, Barbara Vreede, TBD
+Authors@R: c(
+    person("Oisín", "Ryan", email ="o.ryan@umcutrect.nl", role=c("cre"), comment = c(ORCID = "0000-0003-3698-6396")),
+    person("Jungyeon","Choi",email ="j.choi@umcutrecht.nl",role=c("aut")),
+    person("Albert","Royo",email ="a.cidroyo@umcutrecht.nl",role=c("aut")),
+    person("Barbara", "Vreede",email ="b.m.i.vreede@umcutrecht.nl",role="ctb"))
 Maintainer: Oisín Ryan <o.ryan@umcutrecht.nl>
 Description: Prepare analytic datasets for self-controlled risk interval analysis.
 License: GPL (>= 3)
