@@ -19,6 +19,9 @@ compute_windows <- function(studypopulation, windowmeta,
   # re-write studypopulation to data.table
   studypopulation <- data.table::as.data.table(studypopulation)
 
+  # column names to lower cases
+  colnames(windowmeta) <- tolower(colnames(windowmeta))
+
   # first, check if necessary columns are supplied
   meta_check <- c("window_name","reference_date","start_window","length_window") %in% colnames(windowmeta)
   if(!all(meta_check) == TRUE){
