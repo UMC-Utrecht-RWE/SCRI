@@ -2,18 +2,21 @@
 % Please edit documentation in R/clean_windows.R
 \name{clean_windows}
 \alias{clean_windows}
-\title{Title}
+\title{Clean the start and end dates of windows created by compute_windows() based on censoring dates}
 \usage{
-clean_windows(sp_windows, censoring_dates = c("death_date", "general_end_fup"))
+clean_windows(
+  sp_windows_object,
+  censoring_dates = c("death_date", "general_end_fup")
+)
 }
 \arguments{
-\item{sp_windows}{data.table object containing named start and end date columns, typically output of compute_windows()}
+\item{sp_windows_object}{data.table object containing named start and end date columns, typically output of compute_windows()}
 
 \item{censoring_dates}{column name(s) of censoring dates}
 }
 \value{
-object of the same dimensions and type as the input, with
+object of the same dimensions and type as the input, with end dates possibly censored
 }
 \description{
-Title
+Clean the start and end dates of windows created by compute_windows() based on censoring dates
 }

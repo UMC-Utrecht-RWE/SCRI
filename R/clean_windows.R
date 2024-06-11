@@ -1,19 +1,25 @@
-#' Title
+#' Clean the start and end dates of windows created by compute_windows() based on censoring dates
 #'
-#' @param sp_windows data.table object containing named start and end date columns, typically output of compute_windows()
+#' @param sp_windows_object data.table object containing named start and end date columns, typically output of compute_windows()
 #' @param censoring_dates column name(s) of censoring dates
 #'
-#' @return object of the same dimensions and type as the input, with
+#' @return object of the same dimensions and type as the input, with end dates possibly censored
 #' @export
 #' @importFrom data.table :=
 #'
-clean_windows <- function(sp_windows,
+clean_windows <- function(sp_windows_object,
                           censoring_dates = c("death_date", "general_end_fup")
                           ){
 
   # obtain window names (assumes input is data.table, has this naming convention for columns)
-  start_names <- names(sp_windows)[grep("^start_", names(sp_windows))]
-  end_names <- names(sp_windows)[grep("^end_", names(sp_windows))]
+  start_names <- names(sp_windows_object)[grep("^start_", names(sp_windows_object))]
+  end_names <- names(sp_windows_object)[grep("^end_", names(sp_windows_object))]
+
+  # enforce data.table object type
+  if(!data.table::is.data.table(sp_windows_object)){
+    message("recoding input object to data.table, please check function documentation")
+    sp_windows_object <- data.table::as.data.table(sp_windows_object)
+  }
 
   # extract window names
   window_names <- sub("start_","",start_names)
@@ -28,7 +34,7 @@ clean_windows <- function(sp_windows,
 
   # create a matrix which is an ordered set of window start-end pairs form earliest to latest
     # first, check that all columns are the same rank
-  col_ranks <- apply(sp_windows[,..start_names],1, rank)
+  col_ranks <- apply(sp_windows_object[,..start_names],1, rank)
   if(!all(col_ranks == col_ranks[,1])){
     stop("current functionality assumes the same ordering of windows within each individual")
   }
@@ -40,7 +46,7 @@ clean_windows <- function(sp_windows,
   # creaate internal censoring date columns
   # we will use this for censoring window-by-window
   if(length(censoring_dates) == 1){
-    sp_windows[, int_censdate := censoring_dates]
+    sp_windows_object[, int_censdate := censoring_dates]
   }else{
 
   # first extract any censoring dates
@@ -55,7 +61,7 @@ clean_windows <- function(sp_windows,
   }
 
   # create internal censoring date
-  sp_windows[, int_censdate := as.Date(apply(.SD, 1, min_date_ignore_na)), .SDcols = censoring_dates]
+  sp_windows_object[, int_censdate := as.Date(apply(.SD, 1, min_date_ignore_na)), .SDcols = censoring_dates]
 }
 
   # --- censor windows as follows:
@@ -67,16 +73,16 @@ clean_windows <- function(sp_windows,
     end_col <- window_pairs[i,"end"]
 
     # Update 'end' column value if event between start and end to date of censoring event
-    sp_windows[int_censdate >= get(start_col) & int_censdate < get(end_col),
+    sp_windows_object[int_censdate >= get(start_col) & int_censdate < get(end_col),
        (end_col) := int_censdate]
     # set start and end to NA if the censoring event happens before the start window (by necessity then also before the end)
-    sp_windows[int_censdate < get(start_col),
+    sp_windows_object[int_censdate < get(start_col),
                c(start_col, end_col) := NA]
   }
 
   # remove internal censoring date column
-  sp_windows[,int_censdate := NULL]
-  sp_windows
+  sp_windows_object[,int_censdate := NULL]
+  sp_windows_object
 
 }
 

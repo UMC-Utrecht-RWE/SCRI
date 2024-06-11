@@ -53,11 +53,31 @@ head(StudyPopulation)
 The `compute_windows()` returns start and end dates for each of the windows under consideration, anchored to the relevant reference date. The output by default is wide format. The output object also inherits all columns from the input `studypopulation`
 
 ```{r}
-sp_windows <- compute_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
+sp_windows <- SCRI::compute_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
                 id_column = "person_id")
 
-sp_windows[1,c("person_id","start_control_post","end_control_post", "start_risk_post","end_risk_post")]
+sp_windows[1,c("person_id", "start_risk_post","end_risk_post","start_control_post","end_control_post")]
 ```
 
 #### Step 2: Cleaning Windows
+
+Now that we have the start and end dates of each window, we can proceed to the second step: Applying different rules which **alter** or **clean** those start and end dates based on other available information. Currently we have implemented **censoring date** functionality according to two rules: 
+
+(1) If a censoring event occurs *during* a window, then the end date of that window is moved to the censoring date. All windows that start after that censoring date have start_ and end_ dates set to NA.
+
+(2) If a censoring event occurs *between* windows, all future start and end dates are set to NA.
+
+The function `clean_windows()` takes as input a wide-format dataset following the same format as that created by `compute_windows(..., output_format = "wide")`. In addition, the function takes the names of different date columns in the input dataset which are used for censoring. 
+
+```{r}
+# example rows with a single censoring date
+sp_windows[c(1,17),c("start_risk_post","end_risk_post","start_control_post","end_control_post", "general_end_fup")]
+
+# run the core function
+sp_clean <- SCRI::clean_windows(sp_windows, censoring_dates = c("death_date", "general_end_fup"))
+
+# output object has altered both example rows according to rules (1) and (2) above
+sp_clean[c(1,17),c("start_risk_post","end_risk_post","start_control_post","end_control_post", "general_end_fup")]
+```
+
 
