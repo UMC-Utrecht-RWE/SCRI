@@ -69,15 +69,37 @@ Now that we have the start and end dates of each window, we can proceed to the s
 
 The function `clean_windows()` takes as input a wide-format dataset following the same format as that created by `compute_windows(..., output_format = "wide")`. In addition, the function takes the names of different date columns in the input dataset which are used for censoring. 
 
-```{r}
+To illustrate, consider this part of the example data with a single censoring date, general end of follow-up.
+
+```{r echo=FALSE, R.options = list(width = 200)}
 # example rows with a single censoring date
-sp_windows[c(1,17),c("start_risk_post","end_risk_post","start_control_post","end_control_post", "general_end_fup")]
+sp_windows[c(1, 17), c(
+  "start_risk_post",
+  "end_risk_post",
+  "start_control_post",
+  "end_control_post",
+  "general_end_fup"
+)]
+```
 
+To censor the risk and control windows shown above, we run the `clean_windows()` function. Inspecting the output we can see that censoring rules (1) and (2) have been applied to rows 1 and 2 respectively
+
+```{r}
 # run the core function
-sp_clean <- SCRI::clean_windows(sp_windows, censoring_dates = c("death_date", "general_end_fup"))
+sp_clean <- SCRI::clean_windows(sp_windows,
+                                censoring_dates = c("death_date", "general_end_fup"))
+```
 
+
+```{r echo=FALSE, R.options = list(width = 200)}
 # output object has altered both example rows according to rules (1) and (2) above
-sp_clean[c(1,17),c("start_risk_post","end_risk_post","start_control_post","end_control_post", "general_end_fup")]
+sp_clean[c(1, 17), c(
+  "start_risk_post",
+  "end_risk_post",
+  "start_control_post",
+  "end_control_post",
+  "general_end_fup"
+)]
 ```
 
 

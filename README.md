@@ -46,7 +46,7 @@ start and end dates of different analysis windows. Let’s start by
 grabbing the relevant windows from our example metadata file
 
 ``` r
-library(SCRI)
+# library(SCRI)
 data("StudyPopulation")
 data("WindowsMetadata")
 windowmet <- WindowsMetadata[grepl("post",WindowsMetadata$window_name),]
@@ -69,20 +69,13 @@ relevant in future steps.
 head(StudyPopulation)
 ```
 
-    ##    person_id op_start_date FIRST_TARGET SECOND_TARGET death_date
-    ## 1:         1    2013-04-26   2021-02-11          <NA>       <NA>
-    ## 2:         2    2012-10-31   2021-08-17          <NA>       <NA>
-    ## 3:         3    2018-07-08   2021-01-28    2021-03-20       <NA>
-    ## 4:         4    2012-03-07   2021-04-13    2021-05-29       <NA>
-    ## 5:         5    2017-10-05   2021-04-12          <NA>       <NA>
-    ## 6:         6    2013-04-01   2021-02-25          <NA> 2021-09-03
-    ##    general_end_fup
-    ## 1:      2021-05-07
-    ## 2:      2021-11-10
-    ## 3:      2021-06-13
-    ## 4:      2021-08-22
-    ## 5:      2021-07-06
-    ## 6:      2021-05-21
+    ##   person_id op_start_date FIRST_TARGET SECOND_TARGET death_date general_end_fup
+    ## 1         1    2013-04-26   2021-02-11          <NA>       <NA>      2021-05-07
+    ## 2         2    2012-10-31   2021-08-17          <NA>       <NA>      2021-11-10
+    ## 3         3    2018-07-08   2021-01-28    2021-03-20       <NA>      2021-06-13
+    ## 4         4    2012-03-07   2021-04-13    2021-05-29       <NA>      2021-08-22
+    ## 5         5    2017-10-05   2021-04-12          <NA>       <NA>      2021-07-06
+    ## 6         6    2013-04-01   2021-02-25          <NA> 2021-09-03      2021-05-21
 
 The `compute_windows()` returns start and end dates for each of the
 windows under consideration, anchored to the relevant reference date.
@@ -90,13 +83,58 @@ The output by default is wide format. The output object also inherits
 all columns from the input `studypopulation`
 
 ``` r
-sp_windows <- compute_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
+sp_windows <- SCRI::compute_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
                 id_column = "person_id")
 
-sp_windows[1,c("person_id","start_control_post","end_control_post", "start_risk_post","end_risk_post")]
+sp_windows[1,c("person_id", "start_risk_post","end_risk_post","start_control_post","end_control_post")]
 ```
 
-    ##    person_id start_control_post end_control_post start_risk_post end_risk_post
-    ## 1:         1         2021-04-25       2021-06-23      2021-02-12    2021-03-25
+    ## Key: <person_id>
+    ##    person_id start_risk_post end_risk_post start_control_post end_control_post
+    ##        <int>          <Date>        <Date>             <Date>           <Date>
+    ## 1:         1      2021-02-12    2021-03-25         2021-04-25       2021-06-23
 
 #### Step 2: Cleaning Windows
+
+Now that we have the start and end dates of each window, we can proceed
+to the second step: Applying different rules which **alter** or
+**clean** those start and end dates based on other available
+information. Currently we have implemented **censoring date**
+functionality according to two rules:
+
+1)  If a censoring event occurs *during* a window, then the end date of
+    that window is moved to the censoring date. All windows that start
+    after that censoring date have start\_ and end\_ dates set to NA.
+
+2)  If a censoring event occurs *between* windows, all future start and
+    end dates are set to NA.
+
+The function `clean_windows()` takes as input a wide-format dataset
+following the same format as that created by
+`compute_windows(..., output_format = "wide")`. In addition, the
+function takes the names of different date columns in the input dataset
+which are used for censoring.
+
+To illustrate, consider this part of the example data with a single
+censoring date, general end of follow-up.
+
+    ##    start_risk_post end_risk_post start_control_post end_control_post general_end_fup
+    ##             <Date>        <Date>             <Date>           <Date>          <Date>
+    ## 1:      2021-02-12    2021-03-25         2021-04-25       2021-06-23      2021-05-07
+    ## 2:      2021-03-12    2021-04-22         2021-05-23       2021-07-21      2021-04-14
+
+To censor the risk and control windows shown above, we run the
+`clean_windows()` function. Inspecting the output we can see that
+censoring rules (1) and (2) have been applied to rows 1 and 2
+respectively
+
+``` r
+# run the core function
+sp_clean <- SCRI::clean_windows(sp_windows,
+                                censoring_dates = c("death_date", "general_end_fup"))
+```
+
+    ##    start_risk_post end_risk_post start_control_post end_control_post general_end_fup
+    ##             <Date>        <Date>             <Date>           <Date>          <Date>
+    ## 1:      2021-02-12    2021-03-25         2021-04-25       2021-05-07      2021-05-07
+    ## 2:      2021-03-12    2021-04-14               <NA>             <NA>      2021-04-14
