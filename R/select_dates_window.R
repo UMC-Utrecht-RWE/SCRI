@@ -1,6 +1,6 @@
 #' Select Dates Window
 #'
-#' This function uses identifies all (by default) the records within the records_table that fall within a window specified in the scri_trimmed table
+#' This function identifies all (by default) records within the records_table that fall within a window specified in the scri_trimmed table in the start and end coluimns
 #'
 #' @param variable_name The name of the variable.
 #' @param window_name The name of the window.
