@@ -14,19 +14,11 @@
 #' @export
 select_dates_window <- function(variable_name,
                                 window_name,
-                                records_table,
+                                records_table, # record table of interest, minimum expected columns are: person_id, date, value
                                 scri_trimmed,
-                                scri_trimmed_start_prefix = "start",
-                                scri_trimmed_end_prefix = "end",
-                                only_first_date = FALSE,
-                                windows_of_interest = NULL,
-                                ) {
-
-  scri_trimmed <- wide_to_long_trimmed_windows(scri_trimmed, start_prefix = scri_trimmed_start_prefix, end_prefix = scri_trimmed_start_prefix)
-  if (!is.null(windows_of_interest)) {
-    scri_trimmed <- scri_trimmed[WindowName %in% windows_of_interest]
-  }
-
+                                start_window_date_col_name, # column name
+                                end_window_date_col_name, # column name
+                                only_first_date = FALSE) {
   if (only_first_date == TRUE) {
     only_first_date_part1 <- c(paste0(",ROW_NUMBER () OVER (
                                             PARTITION BY person_id
@@ -49,12 +41,12 @@ select_dates_window <- function(variable_name,
     "SELECT *",
     only_first_date_part1,
     " FROM (",
-    "SELECT DISTINCT t1.person_id, t2.date, (t1.END_DATE - t1.START_DATE)
-                    AS  WindowLength, t1.START_DATE, t1.END_DATE",
+    "SELECT DISTINCT t1.person_id, t2.date, (t1.", end_window_date_col_name, " - t1.", start_window_date_col_name, ")
+                    AS  WindowLength, t1.", start_window_date_col_name, " AS START_DATE, t1.", end_window_date_col_name, " AS END_DATE",
     " FROM scri_trimmed t1",
     " INNER JOIN records_table t2",
-    " ON (t1.person_id = t1.person_id
-          AND (t2.date BETWEEN t1.START_DATE AND t1.END_DATE",
+    " ON (t1.person_id = t2.person_id
+          AND (t2.date BETWEEN t1.", start_window_date_col_name, " AND t1.", end_window_date_col_name, "))",
     ")",
     ")",
     only_first_date_part2
@@ -64,20 +56,4 @@ select_dates_window <- function(variable_name,
   result_query_dt <- as.data.table(sqldf(query))
 
   return(result_query_dt)
-}
-
-wide_to_long_trimmed_windows <- function(wide_file_windows_trimmed, start_prefix, end_prefix) {
-  # This function takes windows_trimmed in a wide format and transforms it in a long format
-
-  # Identification of the date columns defining the start and end of a windown
-  windows_start <- names(wide_file_windows_trimmed)[str_detect(names(wide_file_windows_trimmed), paste0("^", start_prefix))]
-  windows_end <- names(wide_file_windows_trimmed)[str_detect(names(wide_file_windows_trimmed), paste0("^", end_prefix))]
-
-  id_vars <- names(wide_file_windows_trimmed)[!names(wide_file_windows_trimmed) %in% c(windows_start, windows_end)]
-  intermediate_long_file_windows_trimmed <- melt(wide_file_windows_trimmed, id.vars = id_vars, measures.vars = c(windows_start, windows_end)) # From wide to long
-  intermediate_long_file_windows_trimmed[type %in% start_prefix, type := 'START_DATE']#renaming values of type to START_DATE and END_DATE
-  intermediate_long_file_windows_trimmed[type %in% end_prefix, type := 'END_DATE']
-  intermediate_long_file_windows_trimmed[, c("type", "WindowName") := tstrsplit(sub("_", " ", variable), " ")][, variable := NULL] # We need to split to identify whether the row has a start or end value of a window
-  long_file_windows_trimmed <- dcast(intermediate_long_file_windows_trimmed, ... ~ type, value.var = "value") # casting to long but only the date values
-  return(long_file_windows_trimmed)
 }
