@@ -18,13 +18,14 @@ test_that("select dates from window returns the corrects outptut", {
 
   variable_name <- 'EXAMPLE1'
   window_name <- 'risk'
-  result_test_risk <- select_dates_window(variable_name,
+  result_test_risk <- get_records(variable_name,
                                           window_name,
                                           records_table, # record table of interest, minimum expected columns are: person_id, date, value
                                           scri_trimmed,
                                           start_window_date_col_name = 'start_date', # column name
                                           end_window_date_col_name = 'end_date', # column name
-                                          only_first_date = FALSE)
+                                          only_first_date = FALSE,
+                                          wide_format_input = FALSE)
   expected_risk <- data.table::data.table(
     person_id = c(1, 2,2, 4, 4, 4),
     variable = "EXAMPLE1",
@@ -39,13 +40,14 @@ test_that("select dates from window returns the corrects outptut", {
 
   variable_name <- 'EXAMPLE2'
   window_name <- 'control'
-  result_test_control <- select_dates_window(variable_name,
+  result_test_control <- get_records(variable_name,
                                              window_name,
                                              records_table, # record table of interest, minimum expected columns are: person_id, date, value
                                              scri_trimmed,
                                              start_window_date_col_name = 'start_date', # column name
                                              end_window_date_col_name = 'end_date', # column name
-                                             only_first_date = TRUE)
+                                             only_first_date = TRUE,
+                                             wide_format_input = FALSE)
   expected_control <- data.table::data.table(
     person_id = c(1, 2, 3),
     variable = "EXAMPLE2",

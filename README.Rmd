@@ -102,44 +102,11 @@ sp_clean[c(1, 17), c(
 )]
 ```
 
-#### Step 3: Add records
+#### Step 3: Get records
 
-In this step, we will identify the events that occurred within each window after they have been **altered** or **cleaned**. This process involves two main steps:
+In this step, we will identify the events that occurred within each window after they have been **altered** or **cleaned**.
 
-1. **Transform Wide to Long Format**: First, we need to transform the wide-formatted data.table resulting from the `clean_windows()` function to a long-formatted data.table. This is done using the `wide_to_long_trimmed_windows()` function.
-2. **Select Dates Within Windows**: Next, we use the `select_dates_window()` function to identify all (or, if specified, only the first) records that fall within a specified window.
-
-### Step 3.1: Transform Wide to Long Format `wide_to_long_trimmed_windows()`
-
-This function takes `windows_trimmed` in a wide format and transforms it into a long format, making it compatible with the `select_dates_window` function.
-
-**Parameters:**
-- `wide_file_windows_trimmed`: A data table in wide format.
-- `start_prefix`: A string that defines the prefix for the start of a window. Default is "start".
-- `end_prefix`: A string that defines the prefix for the end of a window. Default is "end".
-
-**Example Usage:**
-
-```r
-# Example data
-wide_file_windows_trimmed <- data.table::data.table(
-  person_id = c(1, 2),
-  start_window1 = as.Date(c('2021-01-01', '2021-01-01')),
-  end_window1 = as.Date(c('2021-01-02', '2021-01-03')),
-  start_window2 = as.Date(c('2021-02-01', '2021-02-01')),
-  end_window2 = as.Date(c('2021-02-02', '2021-02-03'))
-)
-
-# Function call
-long_format <- wide_to_long_trimmed_windows(
-  wide_file_windows_trimmed = wide_file_windows_trimmed,
-  start_prefix = "start",
-  end_prefix = "end"
-)
-
-```
-
-### Step 3.2: Select Dates Window `select_dates_window()`
+**Select Dates Within Windows**: We use the `get_records()` function to identify all (or, if specified, only the first) records that fall within a specified window.
 
 This function identifies all records within the `records_table` that fall within a window specified in the `scri_trimmed` table in the start and end columns. It allows for the option to select only the first record within each window.
 
@@ -151,32 +118,29 @@ This function identifies all records within the `records_table` that fall within
 - `start_window_date_col_name`: The start date column name in the scri_trimmed. Default is "start".
 - `end_window_date_col_name`: The end date column name in the scri_trimmed. Default is "end".
 - `only_first_date`: A boolean indicating whether to only use the first date. Default is FALSE.
+- `wide_format_input`: A boolean indicating whether the records table is in wide format or not. TRUE applies a melting procedure.
+- `start_prefix`: A string that defines the prefix for the start of a window. Default is "start".
+- `end_prefix`: string that defines the prefix for the end of a window. Default is "end".
 
 **Example Usage:**
 
-```r
-# Example data
-records_table <- data.table::data.table(
-  person_id = c(1, 1, 2, 2),
-  date = as.Date(c('2021-01-01', '2021-01-02', '2021-01-01', '2021-01-03')),
-  value = c(10, 20, 30, 40)
-)
-
-scri_trimmed <- data.table::data.table(
-  person_id = c(1, 2),
-  start = as.Date(c('2021-01-01', '2021-01-01')),
-  end = as.Date(c('2021-01-02', '2021-01-03'))
-)
-
+```{r}
+data(RecordsTable)
 # Function call
-result <- select_dates_window(
+result <- SCRI::get_records(
   variable_name = "example_variable",
-  window_name = "example_window",
-  records_table = records_table,
-  scri_trimmed = scri_trimmed,
+  window_name = "risk_post",
+  records_table = RecordsTable,
+  scri_trimmed = sp_clean,
   start_window_date_col_name = "start",
   end_window_date_col_name = "end",
-  only_first_date = TRUE
+  only_first_date = TRUE,
+  wide_format_input = TRUE,
+  start_prefix = 'start',
+  end_prefix = 'end'
 )
 
+```
+```{r echo=FALSE, R.options = list(width = 200)}
+head(result)
 ```

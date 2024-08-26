@@ -138,3 +138,54 @@ sp_clean <- SCRI::clean_windows(sp_windows,
     ##             <Date>        <Date>             <Date>           <Date>          <Date>
     ## 1:      2021-02-12    2021-03-25         2021-04-25       2021-05-07      2021-05-07
     ## 2:      2021-03-12    2021-04-14               <NA>             <NA>      2021-04-14
+
+#### Step 3: Get records
+
+In this step, we will identify the events that occurred within each
+window after they have been **altered** or **cleaned**.
+
+**Select Dates Within Windows**: We use the `get_records()` function to
+identify all (or, if specified, only the first) records that fall within
+a specified window.
+
+This function identifies all records within the `records_table` that
+fall within a window specified in the `scri_trimmed` table in the start
+and end columns. It allows for the option to select only the first
+record within each window.
+
+**Parameters:** - `variable_name`: The name of the variable. -
+`window_name`: The name of the window. - `records_table`: The record
+table of interest, with minimum expected columns: person_id, date,
+value. - `scri_trimmed`: The trimmed scri. -
+`start_window_date_col_name`: The start date column name in the
+scri_trimmed. Default is “start”. - `end_window_date_col_name`: The end
+date column name in the scri_trimmed. Default is “end”. -
+`only_first_date`: A boolean indicating whether to only use the first
+date. Default is FALSE. - `wide_format_input`: A boolean indicating
+whether the records table is in wide format or not. TRUE applies a
+melting procedure. - `start_prefix`: A string that defines the prefix
+for the start of a window. Default is “start”. - `end_prefix`: string
+that defines the prefix for the end of a window. Default is “end”.
+
+**Example Usage:**
+
+``` r
+data(RecordsTable)
+# Function call
+result <- SCRI::get_records(
+  variable_name = "example_variable",
+  window_name = "risk_post",
+  records_table = RecordsTable,
+  scri_trimmed = sp_clean,
+  start_window_date_col_name = "start",
+  end_window_date_col_name = "end",
+  only_first_date = TRUE,
+  wide_format_input = TRUE,
+  start_prefix = 'start',
+  end_prefix = 'end'
+)
+```
+
+    ##    person_id         variable WindowName WindowLength       Date START_DATE   END_DATE
+    ##        <int>           <char>     <char>        <num>     <Date>     <Date>     <Date>
+    ## 1:         3 example_variable  risk_post           41 2021-03-01 2021-01-29 2021-03-11

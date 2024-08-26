@@ -2,7 +2,6 @@
 
 export(clean_windows)
 export(compute_windows)
-export(select_dates_window)
-export(wide_to_long_trimmed_windows)
+export(get_records)
 importFrom(data.table,":=")
 importFrom(data.table,.SD)
