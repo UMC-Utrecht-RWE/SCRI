@@ -1,17 +1,17 @@
 #' Select Dates Window
 #'
-#' This function identifies all (by default) records within the records_table that fall within a window specified in the scri_trimmed table in the start and end coluimns
+#' This function identifies all records within the records_table that fall within a window specified in the scri_trimmed table in the start and end columns.
 #'
 #' @param variable_name The name of the variable.
 #' @param window_name The name of the window.
 #' @param records_table The record table of interest, minimum expected columns are: person_id, date, value.
 #' @param scri_trimmed The trimmed scri.
+#' @param start_window_date_col_name The start date column name in the scri_trimmed. Default is "start".
+#' @param end_window_date_col_name The end date column name in the scri_trimmed. Default is "end".
 #' @param only_first_date A boolean indicating whether to only use the first date. Default is FALSE.
-#' @param windows_of_interest The windows of interest. Default is NULL.
-#' @param scri_trimmed_start_prefix The start prefix for the scri_trimmed. Default is "start".
-#' @param scri_trimmed_end_prefix The end prefix for the scri_trimmed. Default is "end".
 #' @return A data table with the result of the query.
 #' @export
+#'
 select_dates_window <- function(variable_name,
                                 window_name,
                                 records_table, # record table of interest, minimum expected columns are: person_id, date, value
@@ -46,14 +46,18 @@ select_dates_window <- function(variable_name,
     " FROM scri_trimmed t1",
     " INNER JOIN records_table t2",
     " ON (t1.person_id = t2.person_id
-          AND (t2.date BETWEEN t1.", start_window_date_col_name, " AND t1.", end_window_date_col_name, "))",
+          AND (t2.date BETWEEN t1.", start_window_date_col_name, " AND t1.", end_window_date_col_name, ") AND window_name == '",window_name,"')",
     ")",
     ")",
     only_first_date_part2
   )
 
 
-  result_query_dt <- as.data.table(sqldf(query))
+  result_query_dt <- data.table::as.data.table(sqldf::sqldf(query))
+
+  result_query_dt[, Date := as.Date(Date, origin = "1970-01-01")]
+  result_query_dt[, START_DATE := as.Date(START_DATE, origin = "1970-01-01")]
+  result_query_dt[, END_DATE := as.Date(END_DATE, origin = "1970-01-01")]
 
   return(result_query_dt)
 }
