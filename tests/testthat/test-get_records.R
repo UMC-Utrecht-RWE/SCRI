@@ -11,7 +11,7 @@ test_that("select dates from window returns the corrects outptut", {
 
   scri_trimmed <- data.table::data.table(
     person_id = c(1, 1, 2, 2, 3, 4),
-    window_name = c('control', 'risk', 'control', 'risk', 'control', 'risk'),
+    WindowName = c('control', 'risk', 'control', 'risk', 'control', 'risk'),
     start_date = as.Date(c('2023-01-01', '2023-01-11', '2023-02-01', '2023-02-21', '2023-03-01', '2023-03-25')),
     end_date = as.Date(c('2023-01-10', '2023-01-21', '2023-02-20', '2023-03-01', '2023-03-10', '2023-04-05'))
   )
