@@ -137,7 +137,7 @@ This function identifies all records within the `records_table` that fall within
 ```{r}
 data(RecordsTable)
 # Function call
-result <- SCRI::get_records(
+window_records <- SCRI::get_records(
   variable_name = "example_variable",
   window_name = "risk_post",
   records_table = RecordsTable,
@@ -152,5 +152,5 @@ result <- SCRI::get_records(
 
 ```
 ```{r echo=FALSE, R.options = list(width = 200)}
-head(result)
+head(window_records)
 ```

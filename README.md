@@ -187,7 +187,7 @@ record within each window.
 ``` r
 data(RecordsTable)
 # Function call
-result <- SCRI::get_records(
+window_records <- SCRI::get_records(
   variable_name = "example_variable",
   window_name = "risk_post",
   records_table = RecordsTable,
