@@ -102,4 +102,49 @@ sp_clean[c(1, 17), c(
 )]
 ```
 
+#### Step 3: Get records
 
+In this step, we will identify the events that occurred within each window after they have been **altered** or **cleaned**.
+
+**Select Dates Within Windows**: We use the `get_records()` function to identify all (or, if specified, only the first) records that fall within a specified window.
+
+This function identifies all records within the `records_table` that fall within a window specified in the `scri_trimmed` table in the start and end columns. It allows for the option to select only the first record within each window.
+
+**Parameters:**
+
+- `scri_trimmed`: The input data object recording start/end dates of each window per person, after trimming and cleaning. May be a wide or long format, output of clean_windows
+
+- `variable_name`: The name of the variable.
+
+- `window_name`: The name of the window.
+
+- `records_table`: The record table of interest, with minimum expected columns: person_id, date, value.
+
+- `only_first_date`: A boolean indicating whether to only use the first date. Default is FALSE.
+
+- `wide_format_input`: A boolean indicating whether the records table is in wide format or not. TRUE applies a melting procedure.
+
+- `start_prefix`: A string that defines the prefix for the start of a window. Default is "start".
+
+- `end_prefix`: string that defines the prefix for the end of a window. Default is "end".
+
+**Example Usage:**
+
+```{r}
+data(RecordsTable)
+# Function call
+window_records <- SCRI::get_records(
+  scri_trimmed = sp_clean,
+  variable_name = "example_variable",
+  window_name = "risk_post",
+  records_table = RecordsTable,
+  only_first_date = TRUE,
+  wide_format_input = TRUE,
+  start_prefix = 'start',
+  end_prefix = 'end'
+)
+
+```
+```{r echo=FALSE, R.options = list(width = 200)}
+head(window_records)
+```
