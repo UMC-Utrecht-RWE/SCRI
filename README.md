@@ -155,14 +155,16 @@ record within each window.
 
 **Parameters:**
 
+- `scri_trimmed`: The input data object recording start/end dates of
+  each window per person, after trimming and cleaning. May be a wide or
+  long format, output of clean_windows
+
 - `variable_name`: The name of the variable.
 
 - `window_name`: The name of the window.
 
 - `records_table`: The record table of interest, with minimum expected
   columns: person_id, date, value.
-
-- `scri_trimmed`: The trimmed scri.
 
 - `only_first_date`: A boolean indicating whether to only use the first
   date. Default is FALSE.
