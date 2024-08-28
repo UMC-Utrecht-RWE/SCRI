@@ -18,12 +18,12 @@ test_that("select dates from window returns the corrects outptut", {
 
   variable_name <- 'EXAMPLE1'
   window_name <- 'risk'
-  result_test_risk <- get_records(variable_name,
-                                          window_name,
-                                          records_table, # record table of interest, minimum expected columns are: person_id, date, value
-                                          scri_trimmed,
-                                          start_window_date_col_name = 'start_date', # column name
-                                          end_window_date_col_name = 'end_date', # column name
+  result_test_risk <- get_records(scri_trimmed = scri_trimmed,
+                                    variable_name = variable_name,
+                                          window_name = window_name,
+                                          records_table = records_table, # record table of interest, minimum expected columns are: person_id, date, value
+                                          start_prefix = 'start_date', # column name
+                                          end_prefix = 'end_date', # column name
                                           only_first_date = FALSE,
                                           wide_format_input = FALSE)
   expected_risk <- data.table::data.table(
@@ -40,12 +40,12 @@ test_that("select dates from window returns the corrects outptut", {
 
   variable_name <- 'EXAMPLE2'
   window_name <- 'control'
-  result_test_control <- get_records(variable_name,
-                                             window_name,
-                                             records_table, # record table of interest, minimum expected columns are: person_id, date, value
-                                             scri_trimmed,
-                                             start_window_date_col_name = 'start_date', # column name
-                                             end_window_date_col_name = 'end_date', # column name
+  result_test_control <- get_records(variable_name = variable_name,
+                                            window_name = window_name,
+                                              records_table = records_table, # record table of interest, minimum expected columns are: person_id, date, value
+                                             scri_trimmed = scri_trimmed,
+                                             start_prefix = 'start_date', # column name
+                                             end_prefix = 'end_date', # column name
                                              only_first_date = TRUE,
                                              wide_format_input = FALSE)
   expected_control <- data.table::data.table(
