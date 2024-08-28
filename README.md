@@ -164,12 +164,6 @@ record within each window.
 
 - `scri_trimmed`: The trimmed scri.
 
-- `start_window_date_col_name`: The start date column name in the
-  scri_trimmed. Default is “start”.
-
-- `end_window_date_col_name`: The end date column name in the
-  scri_trimmed. Default is “end”.
-
 - `only_first_date`: A boolean indicating whether to only use the first
   date. Default is FALSE.
 
@@ -188,12 +182,10 @@ record within each window.
 data(RecordsTable)
 # Function call
 window_records <- SCRI::get_records(
+  scri_trimmed = sp_clean,
   variable_name = "example_variable",
   window_name = "risk_post",
   records_table = RecordsTable,
-  scri_trimmed = sp_clean,
-  start_window_date_col_name = "start",
-  end_window_date_col_name = "end",
   only_first_date = TRUE,
   wide_format_input = TRUE,
   start_prefix = 'start',
