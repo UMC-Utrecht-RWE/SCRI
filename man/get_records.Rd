@@ -5,12 +5,10 @@
 \title{Select Dates Window}
 \usage{
 get_records(
+  scri_trimmed,
   variable_name,
   window_name,
   records_table,
-  scri_trimmed,
-  start_window_date_col_name,
-  end_window_date_col_name,
   only_first_date = FALSE,
   wide_format_input = TRUE,
   start_prefix = "start",
@@ -18,17 +16,13 @@ get_records(
 )
 }
 \arguments{
+\item{scri_trimmed}{The input data object recording start/end dates of each window per person, after trimming and cleaning. May be a wide or long format, output of clean_windows}
+
 \item{variable_name}{The name of the variable.}
 
 \item{window_name}{The name of the window.}
 
-\item{records_table}{The record table of interest, minimum expected columns are: person_id, date, value.}
-
-\item{scri_trimmed}{The trimmed scri.}
-
-\item{start_window_date_col_name}{The start date column name in the scri_trimmed. Default is "start".}
-
-\item{end_window_date_col_name}{The end date column name in the scri_trimmed. Default is "end".}
+\item{records_table}{The record table data object of interest; long format dataset with events per row, minimum expected columns are: person_id, date, value.}
 
 \item{only_first_date}{A boolean indicating whether to only use the first date. Default is FALSE.}
 
