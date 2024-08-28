@@ -2,10 +2,10 @@
 #'
 #' This function identifies all records within the records_table that fall within a window specified in the scri_trimmed table in the start and end columns.
 #'
+#' @param scri_trimmed The input data object recording start/end dates of each window per person, after trimming and cleaning. May be a wide or long format, output of clean_windows
 #' @param variable_name The name of the variable.
 #' @param window_name The name of the window.
-#' @param records_table The record table of interest, minimum expected columns are: person_id, date, value.
-#' @param scri_trimmed The trimmed scri.
+#' @param records_table The record table data object of interest; long format dataset with events per row, minimum expected columns are: person_id, date, value.
 #' @param start_window_date_col_name The start date column name in the scri_trimmed. Default is "start".
 #' @param end_window_date_col_name The end date column name in the scri_trimmed. Default is "end".
 #' @param only_first_date A boolean indicating whether to only use the first date. Default is FALSE.
@@ -16,16 +16,16 @@
 #'
 #' @export
 #'
-get_records <- function(variable_name,
-                                window_name,
-                                records_table, # record table of interest, minimum expected columns are: person_id, date, value
-                                scri_trimmed,
-                                start_window_date_col_name, # column name
-                                end_window_date_col_name, # column name
-                                only_first_date = FALSE,
-                                wide_format_input = TRUE,
-                                start_prefix = "start",
-                                end_prefix = "end") {
+get_records <- function(scri_trimmed,
+                        variable_name,
+                        window_name,
+                        records_table, # record table of interest, minimum expected columns are: person_id, date, value
+                        start_window_date_col_name, # column name
+                        end_window_date_col_name, # column name
+                        only_first_date = FALSE,
+                        wide_format_input = TRUE,
+                        start_prefix = "start",
+                        end_prefix = "end") {
 
   if (wide_format_input) {
       scri_trimmed_c <- wide_to_long_trimmed_windows(

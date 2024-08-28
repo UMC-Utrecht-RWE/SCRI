@@ -2,7 +2,7 @@
 #'
 #'  A synthetic record table; one or multiple row per individual
 #'
-#' @format ## `StudyPopulation`
+#' @format ## `RecordsTable`
 #' A data frame with 20 rows and 3 variables:
 #' \describe{
 #'  \describe{

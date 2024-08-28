@@ -138,10 +138,10 @@ This function identifies all records within the `records_table` that fall within
 data(RecordsTable)
 # Function call
 window_records <- SCRI::get_records(
+  scri_trimmed = sp_clean,
   variable_name = "example_variable",
   window_name = "risk_post",
   records_table = RecordsTable,
-  scri_trimmed = sp_clean,
   start_window_date_col_name = "start",
   end_window_date_col_name = "end",
   only_first_date = TRUE,
