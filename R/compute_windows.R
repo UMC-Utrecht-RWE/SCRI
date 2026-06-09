@@ -13,10 +13,10 @@ compute_windows <- function(study_population, windows_metadata, reference_date_n
                             #output_format = "wide"){ #for now let's ignore the output_format
 
   studypop_long <- data.table::melt(study_population, id.vars = id_column,
-                   measure.vars = unique(reference_date_name),
-                   variable.name = c("reference_date_name"),
-                   value.name = "reference_date",
-                   unique = TRUE)
+                                     measure.vars = unique(reference_date_name),
+                                     variable.name = c("reference_date_name"),
+                                     value.name = "reference_date",
+                                     unique = TRUE)
   # add back columns
   studypop_long <- data.table::merge.data.table(studypop_long, study_population, by = id_column)
   
@@ -43,7 +43,9 @@ compute_windows <- function(study_population, windows_metadata, reference_date_n
   studypop_long[, start := reference_date + as.numeric(start_window)]
   studypop_long[, end := start + as.numeric(length_window) - 1]
 
-  studypop_wide <- data.table::dcast(studypop_long, formula = as.formula(paste(id_column, "+ outcome ~ window_name + reference_date_name")), value.var = c("start", "end"))
+  studypop_wide <- data.table::dcast(studypop_long
+                                     , formula = as.formula(paste(id_column, "+ outcome ~ window_name + reference_date_name"))
+                                     , value.var = c("start", "end"))
 
   # then merge with the input object
   studypop_wide_output <- data.table::merge.data.table(study_population, studypop_wide, by = id_column, all.x = TRUE)
