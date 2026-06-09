@@ -35,7 +35,7 @@ You can install the development version of the package from GitHub:
 ```{r eval=FALSE}
 # install.packages("devtools")
 library(devtools)
-devtools::install_github("UMC-Utrecht-RWE/Self-Control-Risk-Interval")
+devtools::install_github("UMC-Utrecht-RWE/SCRI")
 ```
 
 <br>
