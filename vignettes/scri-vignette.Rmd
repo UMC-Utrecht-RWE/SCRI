@@ -26,7 +26,7 @@ library(SCRI)
 <div class = 'box3'>
 # Introduction
 
-The **Self-Control-Risk-Interval (SCRI)** R package provides a pipeline for preparing and analyzing datasets applyingSelf-Controlled Risk Interval (SCRI). The package is especially useful for pharmacoepidemiology and vaccine safety studies, and can be adapted for other applications.
+The **Self-Control-Risk-Interval (SCRI)** R package provides a pipeline apply the Self-Controlled Risk Interval (SCRI) analysis in a modular and reproducible format. 
 
 # Installation
 
