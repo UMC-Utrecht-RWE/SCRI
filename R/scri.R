@@ -86,7 +86,7 @@ scri <- function(study_population,
   reference_date_name <- result_rename$new_names
 
   # Compute windows for each person
-  scri_computed_windows <- SCRI:::compute_windows(
+  scri_computed_windows <- SCRI:::construct_windows(
     study_population = study_population,
     windows_metadata = windows_metadata,
     reference_date_name = reference_date_name
@@ -95,7 +95,7 @@ scri <- function(study_population,
     data.table::fwrite(scri_computed_windows, file = file.path(save_intermediate, "scri_computed_windows.csv"))
   }
   # Validate computation of windows
-  SCRI:::validate_compute_windows(scri_computed_windows, windows_metadata)
+  SCRI:::validate_construct_windows(scri_computed_windows, windows_metadata)
   # Trim windows with censoring criteria and overlapping windows
   scri_computed_windows_cleaned <- SCRI:::wrangle_window(scri_computed_windows, end_followup_criteria)
   if (!is.null(save_intermediate)) {

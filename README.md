@@ -41,7 +41,7 @@ The package comes with sample input files for the `StudyPopulation` and
 
 ### Step 1: Computing Windows
 
-In this step, we use the `compute_windows()` function to calculate the
+In this step, we use the `construct_windows()` function to calculate the
 start and end dates of different analysis windows. Let’s start by
 grabbing the relevant windows from our example metadata file
 
@@ -77,13 +77,13 @@ head(StudyPopulation)
     ## 5         5    2017-10-05   2021-04-12          <NA>       <NA>      2021-07-06
     ## 6         6    2013-04-01   2021-02-25          <NA> 2021-09-03      2021-05-21
 
-The `compute_windows()` returns start and end dates for each of the
+The `construct_windows()` returns start and end dates for each of the
 windows under consideration, anchored to the relevant reference date.
 The output by default is wide format. The output object also inherits
 all columns from the input `studypopulation`
 
 ``` r
-sp_windows <- SCRI::compute_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
+sp_windows <- SCRI::construct_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
                 id_column = "person_id")
 
 sp_windows[1,c("person_id", "start_risk_post","end_risk_post","start_control_post","end_control_post")]
@@ -111,7 +111,7 @@ functionality according to two rules:
 
 The function `wrangle_window()` takes as input a wide-format dataset
 following the same format as that created by
-`compute_windows(..., output_format = "wide")`. In addition, the
+`construct_windows(..., output_format = "wide")`. In addition, the
 function takes the names of different date columns in the input dataset
 which are used for censoring.
 

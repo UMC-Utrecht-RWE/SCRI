@@ -8,7 +8,7 @@
 #' @return a data.table object with the same columns as study_population, plus start_ and end_ window dates for each window type supplied in windows_metadata
 #' @importFrom data.table :=
 
-compute_windows <- function(study_population, windows_metadata, reference_date_name,
+construct_windows <- function(study_population, windows_metadata, reference_date_name,
                             id_column = "id"){
 
   studypop_long <- data.table::melt(study_population, id.vars = id_column,

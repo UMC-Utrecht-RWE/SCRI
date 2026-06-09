@@ -70,7 +70,7 @@ DT::datatable(RecordsTable,options = list(scrollX = TRUE))
 Calculate the start and end dates for each analysis window:
 
 ```{r}
-contructed_windows <- Construct_windows(
+contructed_windows <- construct_windows(
   study_population = StudyPopulation,
   windows_metadata = WindowsMetadata,
   reference_date_name = "FIRST_TARGET",

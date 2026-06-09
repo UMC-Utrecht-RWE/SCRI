@@ -126,11 +126,11 @@ validate_windows_metadata <- function(data, error_on_overlap = FALSE) {
 #' Validate Windows Metadata information
 #'
 #' This function checks if the sp_windows_object has been computed accordingly
-#' @param sp_windows_object Result from the compute_windows step
+#' @param sp_windows_object Result from the construct_windows step
 #' @param windows_metadata A WindowsMetadata
 #' @keywords internal
 #'
-validate_compute_windows <- function(sp_windows_object, windows_metadata) {
+validate_construct_windows <- function(sp_windows_object, windows_metadata) {
   window_names <- unique(windows_metadata$window_name)
 
   start_end_names <- identify_start_end_cols(sp_windows_object)

@@ -3,7 +3,7 @@
 export(add_records)
 export(apply_analysis)
 export(compute_scri_stats)
-export(compute_windows)
+export(construct_windows)
 export(get_valid_models)
 export(melt_window_data)
 export(prepare_analytical_dataset)

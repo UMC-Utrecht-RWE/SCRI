@@ -1,4 +1,4 @@
-test_that("compute_windows returns expected object type and shape",{
+test_that("construct_windows returns expected object type and shape",{
   library(data.table)
   studypop <- data.table(id = as.character(c(1,2)),
                          FIRST_VAC = as.Date(c("2021-01-05","2023-04-05")),
@@ -10,8 +10,8 @@ test_that("compute_windows returns expected object type and shape",{
                      start_window = c(0,15,0,15),
                      length_window = c(10,20,10,20))
   # apply function with different combinations of output options and input metadata
-  testout_wide <- compute_windows(studypop, meta, id_column = "id", reference_date_name = "FIRST_VAC")
-  testout_wide2 <- compute_windows(studypop, meta, id_column = "id", reference_date_name = c("FIRST_VAC", "SECOND_VAC"))
+  testout_wide <- construct_windows(studypop, meta, id_column = "id", reference_date_name = "FIRST_VAC")
+  testout_wide2 <- construct_windows(studypop, meta, id_column = "id", reference_date_name = c("FIRST_VAC", "SECOND_VAC"))
  
 
   # retain all input rows

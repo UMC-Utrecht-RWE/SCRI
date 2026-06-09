@@ -1,6 +1,6 @@
-#' Clean the start and end dates of windows created by compute_windows() based on censoring dates
+#' Clean the start and end dates of windows created by construct_windows() based on censoring dates
 #'
-#' @param sp_windows_object data.table object containing named start and end date columns, typically output of compute_windows()
+#' @param sp_windows_object data.table object containing named start and end date columns, typically output of construct_windows()
 #' @param censoring_dates column name(s) of censoring dates
 #'
 #' @return object of the same dimensions and type as the input, with end dates possibly censored
@@ -13,7 +13,7 @@ wrangle_window <- function(sp_windows_object,
 ) {
   
   # TODO:
-  # The example code in the readme for SCRI::compute_windows does not work, needs update.
+  # The example code in the readme for SCRI::construct_windows does not work, needs update.
   # Understand why you used '_post' in the column names, but it is confusing. Consider changing.
   
   # obtain window names (assumes input is data.table, has this naming convention for columns)
