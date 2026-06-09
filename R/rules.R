@@ -36,22 +36,9 @@ check_start_before_end <- function(windows) {
   TRUE
 }
 
-# Rule registry for SCRI
-rule_registry <- list(
-  scri = list()
-)
-
 #' Add a rule to SCRI
-#'
-#' @param design The study design. Must be "scri".
 #' @param rule The rule function.
 #' @keywords internal
 add_rule <- function(design, rule) {
-  if (design != "scri") {
-    stop("Only 'scri' design is supported.")
-  }
-  if (!design %in% names(rule_registry)) {
-    rule_registry[[design]] <- list()
-  }
   rule_registry[[design]] <- append(rule_registry[[design]], list(rule))
 }

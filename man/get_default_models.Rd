@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_models.R
 \name{get_default_models}
 \alias{get_default_models}
-	itle{Get Default SCRI Model}
+\title{Get Default SCRI Model}
 \usage{
 get_default_models()
 }

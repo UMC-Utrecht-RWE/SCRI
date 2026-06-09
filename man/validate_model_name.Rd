@@ -6,9 +6,6 @@
 \usage{
 validate_model_name(model_name)
 }
-\arguments{
-\item{model_name}{Model name to validate. If NULL, the default SCRI model is used.}
-}
 \description{
 This function validates model_name against the valid models for SCRI.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_models.R
 \name{get_valid_models}
 \alias{get_valid_models}
-\title{List Available Self-Controlled Study Designs}
+\title{List Available SCRI Models}
 \usage{
 get_valid_models()
 }
@@ -10,5 +10,5 @@ get_valid_models()
 A data frame of available models
 }
 \description{
-This function returns a data frame of valid models along with their descriptions.
+This function returns a data frame of valid SCRI models along with their descriptions.
 }

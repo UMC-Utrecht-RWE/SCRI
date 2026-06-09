@@ -10,26 +10,26 @@ compute_scri_stats(SCRI_analytical_dataset, reference_window, i_outcome)
 \item{SCRI_analytical_dataset}{A `data.table` containing the analytical dataset,
 including the `event`, `length`, `window_name`, and `person_id` columns.}
 
-\item{reference_window}{Reference window name used as baseline for IRR comparisons.}
-
 \item{i_outcome}{A character string naming the AESI or i_outcome of interest.}
+
+\item{...}{Additional arguments passed to `survival::clogit()`.}
 }
 \value{
-A named vector containing event counts, person-time, and IRR estimates 
+A named vector containing event counts, person-time, and IRR estimates
 (with confidence intervals) for each comparison window.
 }
 \description{
 Computes count-based metrics and unadjusted incidence rate ratios (IRRs) for each
-exposure window in a Self Controlled Risk Interval Analysis (SCRI) framework. Uses conditional 
+exposure window in a Self Controlled Risk Interval Analysis (SCRI) framework. Uses conditional
 logistic regression to estimate IRRs, comparing event rates across windows.
 }
 \details{
 This function assumes a reference window named `"control"`. If there are
-no events in either the reference or comparison window, or if model fitting fails, 
+no events in either the reference or comparison window, or if model fitting fails,
 a placeholder value of -88 is returned.
 }
 \examples{
-\dontrun{ 
-stats <- compute_scri_stats(my_data, reference_window = "control", i_outcome = "my_outcome")
+\dontrun{
+stats <- compute_scri_stats(my_data, i_outcome = "my_outcome")
 }
 }

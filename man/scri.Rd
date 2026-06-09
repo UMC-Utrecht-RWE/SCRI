@@ -27,8 +27,6 @@ scri(
 
 \item{reference_date_name}{A character vector indicating which column(s) in the study population to use as index date(s).}
 
-\item{reference_window}{A name of the window used as the reference category for comparisons.}
-
 \item{start_followup_criteria}{A character vector of column names defining when follow-up starts.}
 
 \item{end_followup_criteria}{A character vector of column names defining when follow-up ends. These will be used for censoring and trimming windows.}
@@ -41,15 +39,20 @@ scri(
 An object representing the cleaned set of windows for each individual (typically a `data.table`). The structure depends on downstream internal processing steps.
 }
 \description{
-This function runs a full SCRI pipeline, including input validation, window computation, and window trimming based on censoring criteria.
+The `scri()` function is an all-in-one workflow that automatically executes
+all core SCRI steps, including validation, window computation, data
+preparation, and model fitting.
 }
 \details{
 The function performs several internal steps:
 \itemize{
-  \item Validates structure and data types in `study_population` and `windows_metadata`
+  \item Validates that the structure and content of `study_population` and `windows_metadata` are correctly defined
   \item Computes exposure and control windows based on the provided metadata
   \item Trims windows using censoring criteria from `end_followup_criteria`
 }
+
+If needed, users can also run the validation helpers independently:
+`validate_study_population()` and `validate_windows_metadata()`.
 
 Note: The column name `int_censdate` is reserved for internal use. The function will stop if it is included in `end_followup_criteria`.
 }
@@ -60,7 +63,6 @@ result <- scri(
   windows_metadata = WindowsMetadata,
   records_table = RecordsTable,
   reference_date_name = "FIRST_TARGET",
-  reference_window = "control",
   start_followup_criteria = "op_start_date",
   end_followup_criteria = c("death_date", "general_end_fup")
 )

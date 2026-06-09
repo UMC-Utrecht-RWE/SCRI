@@ -11,7 +11,7 @@ apply_analysis(
 )
 }
 \arguments{
-\item{SCRI_analytical_dataset}{A `data.table` containing the analytical dataset, 
+\item{SCRI_analytical_dataset}{A `data.table` containing the analytical dataset,
 including variables: `length`, `outcome`, and others required for SCRI.}
 
 \item{reference_window}{A name of the window to which we want to compare this h
@@ -21,12 +21,12 @@ as to be a combination between window_name and reerence name e.g: clean_lookback
 A data frame with the combined SCRI results for all outcomes.
 }
 \description{
-This function applies the Self Controlled Risk Interval Analysis (SCRI) statistics computation 
-across each unique outcome in the input analytical dataset. It prepares the data, 
+This function applies Self Controlled Risk Interval Analysis (SCRI) statistics computation
+across each unique outcome in the input analytical dataset. It prepares the data,
 loops over outcomes, and aggregates the computed statistics.
 }
 \examples{
 \dontrun{
- results <- apply_analysis(SCRI_data)
+results <- apply_analysis(SCRI_data)
 }
 }

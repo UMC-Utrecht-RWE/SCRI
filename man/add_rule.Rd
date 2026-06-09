@@ -2,16 +2,14 @@
 % Please edit documentation in R/rules.R
 \name{add_rule}
 \alias{add_rule}
-\title{Add a rule to a design}
+\title{Add a rule to SCRI}
 \usage{
 add_rule(design, rule)
 }
 \arguments{
-\item{design}{The study design (e.g., "design1").}
-
 \item{rule}{The rule function.}
 }
 \description{
-Add a rule to a design
+Add a rule to SCRI
 }
 \keyword{internal}
