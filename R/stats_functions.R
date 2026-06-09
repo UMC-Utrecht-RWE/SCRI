@@ -107,16 +107,6 @@ compute_scri_stats <- function(SCRI_analytical_dataset, reference_window,
 }
 
 
-#' @param model_formula The formula to use in the model
-#' @param model_type Type of model being fitted
-#' @param outcome Outcome variable
-#' @param data Dataset to use for modeling
-#'
-#' @importFrom survival clogit strata
-#' @import survival
-#'
-#' @return A conditional logistic regression model
-#' @keywords internal
 log_reg <- function(model_formula, model_type, outcome, data) {
   tryCatch(
     {
