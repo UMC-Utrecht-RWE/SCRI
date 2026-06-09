@@ -9,8 +9,7 @@
 #' @importFrom data.table :=
 
 compute_windows <- function(study_population, windows_metadata, reference_date_name,
-                            id_column = "id"){#,
-                            #output_format = "wide"){ #for now let's ignore the output_format
+                            id_column = "id"){
 
   studypop_long <- data.table::melt(study_population, id.vars = id_column,
                                      measure.vars = unique(reference_date_name),
