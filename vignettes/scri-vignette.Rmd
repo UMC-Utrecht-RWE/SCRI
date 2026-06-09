@@ -26,7 +26,7 @@ library(SCRI)
 <div class = 'box3'>
 # Introduction
 
-The **Self-Control-Risk-Interval (SCRI)** R package provides a pipeline for preparing and analyzing datasets using self-controlled study designs such as the Self-Controlled Risk Interval (SCRI), Self-Controlled Case Series (SCCS), and related methods. The package is especially useful for pharmacoepidemiology and vaccine safety studies, and can be adapted for other applications.
+The **Self-Control-Risk-Interval (SCRI)** R package provides a pipeline for preparing and analyzing datasets applyingSelf-Controlled Risk Interval (SCRI). The package is especially useful for pharmacoepidemiology and vaccine safety studies, and can be adapted for other applications.
 
 # Installation
 
@@ -60,9 +60,9 @@ The package provides example datasets:
 data("StudyPopulation")
 data("WindowsMetadata")
 data("RecordsTable")
-DT::datatable(StudyPopulation,options = list(scrollX = TRUE))
-DT::datatable(WindowsMetadata,options = list(scrollX = TRUE))
-DT::datatable(RecordsTable,options = list(scrollX = TRUE))
+DT::datatable(StudyPopulation, options = list(scrollX = TRUE))
+DT::datatable(WindowsMetadata, options = list(scrollX = TRUE))
+DT::datatable(RecordsTable, options = list(scrollX = TRUE))
 ```
 
 # Step 1: Construct Windows
@@ -71,12 +71,12 @@ Calculate the start and end dates for each analysis window:
 
 ```{r}
 contructed_windows <- construct_windows(
-  study_population = StudyPopulation,
-  windows_metadata = WindowsMetadata,
-  reference_date_name = "FIRST_TARGET",
-  id_column = "id"
+    study_population = StudyPopulation,
+    windows_metadata = WindowsMetadata,
+    reference_date_name = "FIRST_TARGET",
+    id_column = "id"
 )
-DT::datatable(contructed_windows,options = list(scrollX = TRUE))
+DT::datatable(contructed_windows, options = list(scrollX = TRUE))
 ```
 
 # Step 2: Clean/Trim Windows
@@ -85,10 +85,10 @@ Apply censoring rules (e.g., end of follow-up or death):
 
 ```{r}
 cleaned_windows <- wrangle_window(
-  contructed_windows,
-  censoring_dates = c("death_date", "general_end_fup")
+    contructed_windows,
+    censoring_dates = c("death_date", "general_end_fup")
 )
-DT::datatable(cleaned_windows,options = list(scrollX = TRUE))
+DT::datatable(cleaned_windows, options = list(scrollX = TRUE))
 ```
 
 # Step 3: Match Records to Windows
@@ -97,11 +97,11 @@ Identify which outcomes/events occurred within each window:
 
 ```{r}
 identified_records <- add_records(
-  window_data = cleaned_windows,
-  records = RecordsTable,
-  only_first_record = TRUE # or FALSE to keep all
+    window_data = cleaned_windows,
+    records = RecordsTable,
+    only_first_record = TRUE # or FALSE to keep all
 )
-DT::datatable(identified_records,options = list(scrollX = TRUE))
+DT::datatable(identified_records, options = list(scrollX = TRUE))
 ```
 
 # Step 4: Prepare Analytical Dataset
@@ -110,11 +110,11 @@ Summarize events per person, window, etc.:
 
 ```{r}
 analytical_dataset <- prepare_analytical_dataset(
-  SCRI_identified_records = identified_records,
-  strata_column_name = NULL, # or specify a column for stratification
-  only_first_date = TRUE
+    SCRI_identified_records = identified_records,
+    strata_column_name = NULL, # or specify a column for stratification
+    only_first_date = TRUE
 )
-DT::datatable(analytical_dataset,options = list(scrollX = TRUE))
+DT::datatable(analytical_dataset, options = list(scrollX = TRUE))
 ```
 
 # Step 5: Run the Analysis
@@ -123,11 +123,11 @@ Apply the statistical model (e.g., conditional logistic regression):
 
 ```{r}
 results <- apply_analysis(
-  SCRI_analytical_dataset = analytical_dataset,
-  reference_window = 'clean_lookback_pre_FIRST_TARGET',
-  strata_column_name = NULL # or specify for stratified analysis
+    SCRI_analytical_dataset = analytical_dataset,
+    reference_window = "clean_lookback_pre_FIRST_TARGET",
+    strata_column_name = NULL # or specify for stratified analysis
 )
-DT::datatable(results,options = list(scrollX = TRUE))
+DT::datatable(results, options = list(scrollX = TRUE))
 ```
 
 # All-in-One Pipeline Function
@@ -136,15 +136,15 @@ You can use the main `SCRI()` function to run the pipeline end-to-end:
 
 ```{r eval=FALSE}
 final_results <- SCRI(
-  study_population = StudyPopulation,
-  windows_metadata = WindowsMetadata,
-  records_table = RecordsTable,
-  SCRI_analysis_name = "scri",
-  reference_date_name = "FIRST_TARGET",
-  reference_window = 'clean_lookback_pre_FIRST_TARGET',
-  start_followup_criteria = "op_start_date",
-  end_followup_criteria = c("death_date", "general_end_fup"),
-  only_first_date = TRUE
+    study_population = StudyPopulation,
+    windows_metadata = WindowsMetadata,
+    records_table = RecordsTable,
+    SCRI_analysis_name = "scri",
+    reference_date_name = "FIRST_TARGET",
+    reference_window = "clean_lookback_pre_FIRST_TARGET",
+    start_followup_criteria = "op_start_date",
+    end_followup_criteria = c("death_date", "general_end_fup"),
+    only_first_date = TRUE
 )
 ```
 
@@ -153,7 +153,6 @@ final_results <- SCRI(
 You can query available self-controlled designs and valid models:
 
 ```{r}
-get_valid_SCRI()
 get_valid_models()
 ```
 
