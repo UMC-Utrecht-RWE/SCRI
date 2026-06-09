@@ -1,5 +1,5 @@
 
-# test_that("execute sca", {
+# test_that("execute scri", {
 #   
 #   
 #   records_table <- data.table::data.table(
@@ -25,12 +25,11 @@
 #                                              death_date = as.Date(c(NA,"2025-05-23",NA,NA,"2022-09-25")),
 #                                              general_end_fup = as.Date(c("2021-05-07","2021-04-14","2023-01-01","2023-01-01","2022-09-25")))
 #   
-#   result <- SCA::sca(
+#   result <- SCRI::scri(
 #     study_population = study_population,
 #     windows_metadata = windows_metadata,
 #     records_table = records_table ,
-#     sca_analysis_name = "scri",
-#     reference_date_name = c("FIRST_TARGET","SECOND_TARGET"),
+#     #     reference_date_name = c("FIRST_TARGET","SECOND_TARGET"),
 #     start_followup_criteria = "op_start_date",
 #     end_followup_criteria = c("death_date", "general_end_fup")
 #   )

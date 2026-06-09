@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_windows.R
 \name{compute_windows}
 \alias{compute_windows}
-\title{Compute start and end window dates for each individual in a study population based on metadata info. First step of the SCA pipeline}
+\title{Compute start and end window dates for each individual in a study population based on metadata info. First step of the SCRI pipeline}
 \usage{
 compute_windows(
   study_population,
@@ -22,5 +22,5 @@ compute_windows(
 a data.table object with the same columns as study_population, plus start_ and end_ window dates for each window type supplied in windows_metadata
 }
 \description{
-Compute start and end window dates for each individual in a study population based on metadata info. First step of the SCA pipeline
+Compute start and end window dates for each individual in a study population based on metadata info. First step of the SCRI pipeline
 }

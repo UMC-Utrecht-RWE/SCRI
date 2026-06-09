@@ -1,6 +1,6 @@
 #' Prepare Analytical Dataset from SCRI Identified Records
 #'
-#' This function processes a dataset of SCRI (Self-Controlled Analysis) identified records
+#' This function processes a dataset of SCRI (Self Controlled Risk Interval Analysis) identified records
 #' and prepares it for further analytical use. It can aggregate events by patient ID and
 #' optionally merge with a stratification variable.
 #'

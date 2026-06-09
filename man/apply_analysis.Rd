@@ -2,31 +2,31 @@
 % Please edit documentation in R/apply_analysis.R
 \name{apply_analysis}
 \alias{apply_analysis}
-\title{Apply SCA Analysis Across Outcomes}
+\title{Apply SCRI Analysis Across Outcomes}
 \usage{
 apply_analysis(
-  sca_analytical_dataset,
+  SCRI_analytical_dataset,
   reference_window,
   strata_column_name = NULL
 )
 }
 \arguments{
-\item{sca_analytical_dataset}{A `data.table` containing the analytical dataset, 
-including variables: `length`, `outcome`, and others required for SCA.}
+\item{SCRI_analytical_dataset}{A `data.table` containing the analytical dataset, 
+including variables: `length`, `outcome`, and others required for SCRI.}
 
 \item{reference_window}{A name of the window to which we want to compare this h
 as to be a combination between window_name and reerence name e.g: clean_lookback_pre_FIRST_TARGET}
 }
 \value{
-A data frame with the combined SCA results for all outcomes.
+A data frame with the combined SCRI results for all outcomes.
 }
 \description{
-This function applies the Self-Controlled Analysis (SCA) statistics computation 
+This function applies the Self Controlled Risk Interval Analysis (SCRI) statistics computation 
 across each unique outcome in the input analytical dataset. It prepares the data, 
 loops over outcomes, and aggregates the computed statistics.
 }
 \examples{
 \dontrun{
- results <- apply_analysis(sca_data)
+ results <- apply_analysis(SCRI_data)
 }
 }

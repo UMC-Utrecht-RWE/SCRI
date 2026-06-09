@@ -1,7 +1,7 @@
 #' Compute Summary Statistics for SCRI Model
 #'
 #' Computes count-based metrics and unadjusted incidence rate ratios (IRRs) for each
-#' exposure window in a Self-Controlled Analysis (SCRI) framework. Uses conditional
+#' exposure window in a Self Controlled Risk Interval Analysis (SCRI) framework. Uses conditional
 #' logistic regression to estimate IRRs, comparing event rates across windows.
 #'
 #' @param SCRI_analytical_dataset A `data.table` containing the analytical dataset,
@@ -18,11 +18,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' stats <- compute_SCRI_stats(my_data, i_outcome = "my_outcome")
+#' stats <- compute_scri_stats(my_data, i_outcome = "my_outcome")
 #' }
 #' @export
 #'
-compute_SCRI_stats <- function(SCRI_analytical_dataset, reference_window,
+compute_scri_stats <- function(SCRI_analytical_dataset, reference_window,
                                i_outcome) {
   # Get unique window names from the dataset
   unique_windows <- unique(SCRI_analytical_dataset$window_name)
@@ -67,7 +67,7 @@ compute_SCRI_stats <- function(SCRI_analytical_dataset, reference_window,
     n_event_comp <- count_res[paste0("n_event_", comp_window)][[1]]
     n_event_ref <- count_res[paste0("n_event_", reference_window)][[1]]
 
-    if (n_event_comp == 0 | n_event_ref == 0) {
+    if (n_event_comp == 0 || n_event_ref == 0) {
       print(paste0("[SCRI] No events in ", comp_window, " or ", reference_window, " windows for ", i_outcome))
       window_res <- list()
       window_res[[paste0("irr_", comp_window, "_vs_", reference_window)]] <- -88

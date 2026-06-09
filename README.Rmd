@@ -6,28 +6,28 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# SCA
+# SCRI
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/UMC-Utrecht-RWE/SCA/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/UMC-Utrecht-RWE/SCA/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/UMC-Utrecht-RWE/SCRI/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/UMC-Utrecht-RWE/SCRI/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of this package is to aid researchers in preparing analytic datasets for Self Controlled Risk Interval Analysis.
 
 ## Installation
 
-You can install the development version of SCA from [GitHub](https://github.com/) with:
+You can install the development version of SCRI from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("UMC-Utrecht-RWE/SCA")
+devtools::install_github("UMC-Utrecht-RWE/SCRI")
 ```
 
 ## Example
 
 The package implements a processing pipeline, which takes a study population and *metadata* which specifies analysis options, and outputs an analytic dataset. The pipeline is described in schematic form below, with purple boxes representing functions of the pacakge, blue boxes representing intermediate outputs, red and orange represents user input in terms of specifying analysis options and (raw) input data respectively
 
-![image](https://github.com/UMC-Utrecht-RWE/SCA/assets/138911044/8cbb1033-3e7b-4a05-9c0f-904e55f9fea3)
+![image](https://github.com/UMC-Utrecht-RWE/SCRI/assets/138911044/8cbb1033-3e7b-4a05-9c0f-904e55f9fea3)
 
 The package comes with sample input files for the `StudyPopulation` and `WindowsMetadata` files respectively.
 
@@ -36,7 +36,7 @@ The package comes with sample input files for the `StudyPopulation` and `Windows
 In this step, we use the `compute_windows()` function to calculate the start and end dates of different analysis windows. Let's start by grabbing the relevant windows from our example metadata file
 
 ```{r}
-# library(SCA)
+# library(SCRI)
 data("StudyPopulation")
 data("WindowsMetadata")
 windowmet <- WindowsMetadata[grepl("post",WindowsMetadata$window_name),]
@@ -53,7 +53,7 @@ head(StudyPopulation)
 The `compute_windows()` returns start and end dates for each of the windows under consideration, anchored to the relevant reference date. The output by default is wide format. The output object also inherits all columns from the input `studypopulation`
 
 ```{r}
-sp_windows <- SCA::compute_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
+sp_windows <- SCRI::compute_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
                 id_column = "id")
 
 sp_windows[1,c("person_id", "start_risk_post","end_risk_post","start_control_post","end_control_post")]
@@ -86,7 +86,7 @@ To censor the risk and control windows shown above, we run the `wrangle_window()
 
 ```{r}
 # run the core function
-sp_clean <- SCA:::wrangle_window(sp_windows,
+sp_clean <- SCRI:::wrangle_window(sp_windows,
                                 censoring_dates = c("death_date", "general_end_fup"))
 ```
 
@@ -133,7 +133,7 @@ This function identifies all records within the `records_table` that fall within
 ```{r}
 data(RecordsTable)
 # Function call
-window_records <- SCA::get_records(
+window_records <- SCRI::get_records(
   scri_trimmed = sp_clean,
   variable_name = "example_variable",
   window_name = "risk_post",

@@ -6,7 +6,7 @@ test_that("prepare_analytical_dataset correctly identifies events", {
   # Test data
   test_data <- data.table(
     id = c(1, 1, 2, 3),
-    outcome = c("SCA", "SCA", "SCA", "SCA"),
+    outcome = c("SCRI", "SCRI", "SCRI", "SCRI"),
     window_name = c("W1", "W2", "W1", "W1"),
     window_length = c(30, 30, 30, 30),
     gender = c("M", "F", "M", "M"),
@@ -27,7 +27,7 @@ test_that("prepare_analytical_dataset correctly handles only_first_date paramete
   # Test data with multiple events for same id-window
   test_data <- data.table(
     id = c(1, 1, 1, 2),
-    outcome = c("SCA", "SCA", "SCA", "SCA"),
+    outcome = c("SCRI", "SCRI", "SCRI", "SCRI"),
     window_name = c("W1", "W1", "W1", "W1"),
     window_length = c(30, 30, 30, 30),
     gender = c("M", "F", "M", "M"),
@@ -48,7 +48,7 @@ test_that("prepare_analytical_dataset correctly applies stratification", {
   # Test data
   test_data <- data.table(
     id = 1:3,
-    outcome = rep("SCA", 3),
+    outcome = rep("SCRI", 3),
     window_name = rep("W1", 3),
     window_length = rep(30, 3),
     gender = c("M", "F", "M"),

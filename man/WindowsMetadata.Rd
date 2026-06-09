@@ -19,6 +19,6 @@ A data frame with 10 rows and 5 variables:
 WindowsMetadata
 }
 \description{
-A metadata file, describing different window types (control, exposed, lookback, induction, washout) for SCA analysis and how they are anchored
+A metadata file, describing different window types (control, exposed, lookback, induction, washout) for SCRI analysis and how they are anchored
 }
 \keyword{datasets}

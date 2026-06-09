@@ -1,20 +1,3 @@
-#' Validate a study design against its rules
-#'
-#' @param study_design A StudyDesign object.
-#' @param windows A list of Window objects.
-#' @return TRUE if validation passes, otherwise errors are thrown.
-#' @keywords internal
-
-validate_design <- function(study_design, windows) {
-  log_event(sprintf("Validating design: %s", study_design$design_type))
-  rules <- rule_registry[[study_design$design_type]]
-  for (rule in rules) {
-    rule(windows)
-  }
-  log_event("Validation successful.")
-  TRUE
-}
-
 #' Validate a study population structure
 #'
 #' @param data A StudyPopulation dataset
@@ -68,18 +51,6 @@ validate_study_population <- function(data, reference_date_name, strata_column_n
       )
     }))
   }
-}
-
-
-#' Validate Self-Controlled Analysis Study Designs
-#'
-#' This function checks if the scsa_analaysis_name complies with the valid_SCRI_study_designs
-#' @param name A SCRI name
-#' @keywords internal
-validate_SCRI_study_designs <- function(name) {
-  list_valid_SCRI_designs <- get_valid_SCRI()
-  assertthat::assert_that(is.character(name), msg = "Input 'SCRI_analysis_name' must be character")
-  assertthat::assert_that(any(name %in% list_valid_SCRI_designs$design_name), msg = "Invalid 'SCRI_analysis_name' inputted. Use get_valid_SCRI() for more details")
 }
 
 
@@ -172,13 +143,12 @@ validate_compute_windows <- function(sp_windows_object, windows_metadata) {
 
 #' Validate Model to be used
 #'
-#' This function checks if the scsa_analaysis_name complies with the valid_SCRI_study_designs
-#' @param name A SCRI name
+#' This function validates model_name against the valid models for SCRI.
 #' @keywords internal
-validate_model_name <- function(model_name, SCRI_analysis_name) {
+validate_model_name <- function(model_name) {
   valid_models <- get_valid_models()
   if (is.null(model_name)) {
-    model_name <- SCRI:::get_default_models(SCRI_analysis_name)
+    model_name <- SCRI:::get_default_models()
     message(paste0("Model name empty. Selected as default model: ", model_name))
   }
   assertthat::assert_that(is.character(model_name),

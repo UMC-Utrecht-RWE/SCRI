@@ -10,8 +10,8 @@ check_no_overlap <- function(windows) {
   for (i in seq_along(windows)) {
     for (j in seq_along(windows)) {
       if (i != j &&
-          windows[[i]]$start_date <= windows[[j]]$end_date &&
-          windows[[i]]$end_date >= windows[[j]]$start_date) {
+        windows[[i]]$start_date <= windows[[j]]$end_date &&
+        windows[[i]]$end_date >= windows[[j]]$start_date) {
         print("Overlap detected.")
         stop("Windows cannot overlap.")
       }
@@ -36,20 +36,20 @@ check_start_before_end <- function(windows) {
   TRUE
 }
 
-# Rule registry
+# Rule registry for SCRI
 rule_registry <- list(
-  cco = list(check_start_before_end, check_no_overlap),
-  cto = list(check_start_before_end),
-  scss = list(check_no_overlap),
   scri = list()
 )
 
-#' Add a rule to a design
+#' Add a rule to SCRI
 #'
-#' @param design The study design (e.g., "design1").
+#' @param design The study design. Must be "scri".
 #' @param rule The rule function.
 #' @keywords internal
 add_rule <- function(design, rule) {
+  if (design != "scri") {
+    stop("Only 'scri' design is supported.")
+  }
   if (!design %in% names(rule_registry)) {
     rule_registry[[design]] <- list()
   }

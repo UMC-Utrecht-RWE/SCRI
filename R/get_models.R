@@ -1,6 +1,6 @@
-#' List Available Self-Controlled Study Designs
+#' List Available SCRI Models
 #'
-#' This function returns a data frame of valid models along with their descriptions.
+#' This function returns a data frame of valid SCRI models along with their descriptions.
 #'
 #' @return A data frame of available models
 #' @export
@@ -11,19 +11,19 @@ get_valid_models <- function() {
   return(valid_models)
 }
 
-#' List Default models
+#' Get Default SCRI Model
 #'
-#' This function returns a data frame of the default model for a specific SCRI_tudy_design
+#' This function returns the default model name used in SCRI analysis.
 #'
-#' @return A data frame of available study designs.
+#' @return A character string with the default model name.
 #' @keywords internal
 #'
-get_default_models <- function(SCRI_analysis_name) {
+get_default_models <- function() {
   # Get the loaded data from the environment
   default_models <- get("default_models", envir = environment())
-  default_model <- default_models[default_models$design_name == SCRI_analysis_name, "model_name"]
+  default_model <- default_models[default_models$design_name == "scri", "model_name"]
   if (length(default_model) == 0) {
-    stop("SCRI_analysis_name has incorrect name")
+    stop("No default model is configured for SCRI")
   }
   return(default_model)
 }

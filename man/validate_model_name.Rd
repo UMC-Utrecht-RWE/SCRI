@@ -4,12 +4,12 @@
 \alias{validate_model_name}
 \title{Validate Model to be used}
 \usage{
-validate_model_name(model_name, sca_analysis_name)
+validate_model_name(model_name)
 }
 \arguments{
-\item{name}{A sca name}
+\item{model_name}{Model name to validate. If NULL, the default SCRI model is used.}
 }
 \description{
-This function checks if the scsa_analaysis_name complies with the valid_sca_study_designs
+This function validates model_name against the valid models for SCRI.
 }
 \keyword{internal}

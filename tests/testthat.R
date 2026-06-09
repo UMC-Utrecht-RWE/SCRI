@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(SCA)
+library(SCRI)
 
-test_check("SCA")
+test_check("SCRI")

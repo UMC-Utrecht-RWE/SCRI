@@ -2,14 +2,14 @@
 % Please edit documentation in R/get_models.R
 \name{get_default_models}
 \alias{get_default_models}
-\title{List Default models}
+	itle{Get Default SCRI Model}
 \usage{
-get_default_models(sca_analysis_name)
+get_default_models()
 }
 \value{
-A data frame of available study designs.
+A character string with the default model name.
 }
 \description{
-This function returns a data frame of the default model for a specific sca_tudy_design
+This function returns the default model name used in SCRI analysis.
 }
 \keyword{internal}

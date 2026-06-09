@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare_analytical_dataset.R
 \name{prepare_analytical_dataset}
 \alias{prepare_analytical_dataset}
-\title{Prepare Analytical Dataset from SCA Identified Records}
+\title{Prepare Analytical Dataset from SCRI Identified Records}
 \usage{
 prepare_analytical_dataset(
   sca_identified_records,
@@ -11,7 +11,7 @@ prepare_analytical_dataset(
 )
 }
 \arguments{
-\item{sca_identified_records}{A data.table containing SCA identified records with columns:
+\item{sca_identified_records}{A data.table containing SCRI identified records with columns:
 id, outcome, window_name, window_length, date}
 
 \item{strata_column_name}{Character string specifying the column name in study_population
@@ -24,13 +24,13 @@ If FALSE, all events are summed. Default is FALSE.}
 A data.table with processed data ready for analysis
 }
 \description{
-This function processes a dataset of SCA (Self-Controlled Analysis) identified records 
+This function processes a dataset of SCRI (Self Controlled Risk Interval Analysis) identified records 
 and prepares it for further analytical use. It can aggregate events by patient ID and
 optionally merge with a stratification variable.
 }
 \examples{
 \dontrun{
-data <- data.table(id = 1:3, outcome = "SCA", window_name = "W1", 
+data <- data.table(id = 1:3, outcome = "SCRI", window_name = "W1", 
                    window_length = 30, date = as.Date(c("2023-01-01", NA, "2023-02-15")))
 pop <- data.table(id = 1:3, gender = c("M", "F", "M"))
 prepare_analytical_dataset(data, "gender", FALSE, pop)

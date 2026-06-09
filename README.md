@@ -1,9 +1,9 @@
 
-# SCA
+# SCRI
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/UMC-Utrecht-RWE/SCA/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/UMC-Utrecht-RWE/SCA/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/UMC-Utrecht-RWE/SCRI/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/UMC-Utrecht-RWE/SCRI/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of this package is to aid researchers in preparing analytic
@@ -11,12 +11,12 @@ datasets for Self Controlled Risk Interval Analysis.
 
 ## Installation
 
-You can install the development version of SCA from
+You can install the development version of SCRI from
 [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("UMC-Utrecht-RWE/SCA")
+devtools::install_github("UMC-Utrecht-RWE/SCRI")
 ```
 
 ## Example
@@ -31,7 +31,7 @@ respectively
 
 <figure>
 <img
-src="https://github.com/UMC-Utrecht-RWE/SCA/assets/138911044/8cbb1033-3e7b-4a05-9c0f-904e55f9fea3"
+src="https://github.com/UMC-Utrecht-RWE/SCRI/assets/138911044/8cbb1033-3e7b-4a05-9c0f-904e55f9fea3"
 alt="image" />
 <figcaption aria-hidden="true">image</figcaption>
 </figure>
@@ -46,7 +46,7 @@ start and end dates of different analysis windows. Let’s start by
 grabbing the relevant windows from our example metadata file
 
 ``` r
-# library(SCA)
+# library(SCRI)
 data("StudyPopulation")
 data("WindowsMetadata")
 windowmet <- WindowsMetadata[grepl("post",WindowsMetadata$window_name),]
@@ -83,7 +83,7 @@ The output by default is wide format. The output object also inherits
 all columns from the input `studypopulation`
 
 ``` r
-sp_windows <- SCA::compute_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
+sp_windows <- SCRI::compute_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
                 id_column = "person_id")
 
 sp_windows[1,c("person_id", "start_risk_post","end_risk_post","start_control_post","end_control_post")]
@@ -130,7 +130,7 @@ respectively
 
 ``` r
 # run the core function
-sp_clean <- SCA:::wrangle_window(sp_windows,
+sp_clean <- SCRI:::wrangle_window(sp_windows,
                                 censoring_dates = c("death_date", "general_end_fup"))
 ```
 
@@ -183,7 +183,7 @@ record within each window.
 ``` r
 data(RecordsTable)
 # Function call
-window_records <- SCA::get_records(
+window_records <- SCRI::get_records(
   scri_trimmed = sp_clean,
   variable_name = "example_variable",
   window_name = "risk_post",
