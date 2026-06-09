@@ -8,6 +8,7 @@
 #' including variables: `length`, `outcome`, and others required for SCRI.
 #' @param reference_window A name of the window to which we want to compare this h
 #' as to be a combination between window_name and reerence name e.g: clean_lookback_pre_FIRST_TARGET
+#' @param strata_column_name A name of a strata column used to stratify the analysis
 #' @return A data frame with the combined SCRI results for all outcomes.
 #'
 #' @export
@@ -59,7 +60,7 @@ apply_analysis <- function(SCRI_analytical_dataset,
     for (i_strata in strata_column_name) {
       SCRI_analytical_dataset[, strata := get(i_strata)]
       for (i_outcome in outcome_list) {
-        this_est <- SCRI:::compute_scri_stats(
+        this_est <- compute_scri_stats(
           SCRI_analytical_dataset = SCRI_analytical_dataset[outcome %in% i_outcome],
           reference_window = reference_window,
           i_outcome = i_outcome
@@ -70,7 +71,7 @@ apply_analysis <- function(SCRI_analytical_dataset,
   } else {
     for (i_outcome in outcome_list) {
       SCRI_analytical_dataset[, strata := "1"]
-      this_est <- SCRI:::compute_scri_stats(
+      this_est <- compute_scri_stats(
         SCRI_analytical_dataset = SCRI_analytical_dataset[outcome %in% i_outcome],
         reference_window = reference_window,
         i_outcome = i_outcome

@@ -1,24 +1,3 @@
-#' Data Creation Script for SCRI Package Models
-#'
-#' This script creates two internal package datasets:
-#'
-#' 1. \code{valid_models}: A registry of all supported statistical models for SCRI analysis
-#' 2. \code{default_models}: Configuration specifying which model is the default for each study design
-#'
-#' These datasets are loaded into the package namespace and accessed by:
-#'   - \code{\link{get_valid_models}}: Returns the registry of available models
-#'   - \code{\link{get_default_models}}: Returns the default model for the SCRI design
-#'
-#' When adding new models to SCRI:
-#'   1. Add a row to \code{valid_models} with model_name and description
-#'   2. Add a row to \code{default_models} specifying its design_name (e.g., \"scri\") and model_name
-#'   3. Implement the corresponding analysis logic in apply_analysis.R or related files
-#'   4. Run \code{usethis::use_data(valid_models, overwrite = TRUE)} and
-#'      \code{usethis::use_data(default_models, overwrite = TRUE)}
-#'
-#' @keywords internal
-NULL
-
 #' Valid Models Registry for SCRI Analysis
 #'
 #' A dataset containing all statistical models available for use in self-controlled risk interval (SCRI) analysis
@@ -46,15 +25,6 @@ NULL
 #'
 #' @keywords datasets
 "valid_models"
-valid_models <- data.frame(
-  model_name = c("log_reg", "lin_reg"),
-  description = c(
-    "Logistic regression: used for modeling binary outcome variables.",
-    "Linear regression: used for modeling continuous outcome variables."
-  ),
-  stringsAsFactors = FALSE
-)
-
 
 #' Default Model Configuration for Study Designs
 #'
@@ -78,7 +48,10 @@ valid_models <- data.frame(
 #'   \item \strong{ccs}: Case-Cohort Study -> log_reg
 #' }
 #'
-#' To change the default model for a design, update the corresponding row and regenerate the data files.
+#' To change the default model for a design, update the corresponding row in data/create_models.R
+#' and regenerate the data files with:
+#' \code{usethis::use_data(valid_models, overwrite = TRUE)}
+#' \code{usethis::use_data(default_models, overwrite = TRUE)}
 #'
 #' @examples
 #' data("default_models")
@@ -86,14 +59,3 @@ valid_models <- data.frame(
 #'
 #' @keywords datasets
 "default_models"
-default_models <- data.frame(
-  design_name = c("scri", "sccs", "scad", "ccs"),
-  model_name = c("log_reg", "log_reg", "log_reg", "log_reg"),
-  stringsAsFactors = FALSE
-)
-
-#' Save datasets to package
-#'
-#' Uncomment below to regenerate the .rda files after editing:
-#' usethis::use_data(valid_models, overwrite = TRUE)
-#' usethis::use_data(default_models, overwrite = TRUE)

@@ -72,21 +72,21 @@ scri <- function(study_population,
   }
 
   # Check StudyPopulations dataset
-  SCRI:::validate_study_population(
+  validate_study_population(
     data = study_population,
     reference_date_name = reference_date_name,
     strata_column_name = strata_column_name,
     extra_date_columns = c(start_followup_criteria, end_followup_criteria)
   )
   # Check WindowsMetadataDataset
-  SCRI:::validate_windows_metadata(windows_metadata)
+  validate_windows_metadata(windows_metadata)
   # Rename anchor names
-  result_rename <- SCRI:::rename_anchor(study_population, reference_date_name)
+  result_rename <- rename_anchor(study_population, reference_date_name)
   study_population <- result_rename$data
   reference_date_name <- result_rename$new_names
 
   # Compute windows for each person
-  scri_computed_windows <- SCRI:::construct_windows(
+  scri_computed_windows <- construct_windows(
     study_population = study_population,
     windows_metadata = windows_metadata,
     reference_date_name = reference_date_name
@@ -95,15 +95,15 @@ scri <- function(study_population,
     data.table::fwrite(scri_computed_windows, file = file.path(save_intermediate, "scri_computed_windows.csv"))
   }
   # Validate computation of windows
-  SCRI:::validate_construct_windows(scri_computed_windows, windows_metadata)
+  validate_construct_windows(scri_computed_windows, windows_metadata)
   # Trim windows with censoring criteria and overlapping windows
-  scri_computed_windows_cleaned <- SCRI:::wrangle_window(scri_computed_windows, end_followup_criteria)
+  scri_computed_windows_cleaned <- wrangle_window(scri_computed_windows, end_followup_criteria)
   if (!is.null(save_intermediate)) {
     data.table::fwrite(scri_computed_windows_cleaned, file = file.path(save_intermediate, "scri_computed_windows_cleaned.csv"))
   }
 
   # Identify the outcomes that occurred within each window after they have been altered or cleaned.
-  scri_indentified_records <- SCRI:::add_records(scri_computed_windows_cleaned, records_table, only_first_date)
+  scri_indentified_records <- add_records(scri_computed_windows_cleaned, records_table, only_first_date)
   if (!is.null(save_intermediate)) {
     data.table::fwrite(scri_indentified_records, file = file.path(save_intermediate, "scri_indentified_records.csv"))
   }
@@ -111,14 +111,14 @@ scri <- function(study_population,
 
   # QUESTIONS: WHEN SHALL THIS BE APPLIED? Before or after identitifying the records that fall within the windows?
   if (!is.null(time_varying_table)) {
-    scri_indentified_records <- SCRI:::apply_timevarying(scri_indentified_records, time_varying_table)
+    scri_indentified_records <- apply_timevarying(scri_indentified_records, time_varying_table)
     if (!is.null(save_intermediate)) {
       data.table::fwrite(scri_indentified_records, file = file.path(save_intermediate, "scri_indentified_records_timevar.csv"))
     }
   }
 
   # Add strata_columns to the results
-  scri_analytical_dataset <- SCRI:::prepare_analytical_dataset(
+  scri_analytical_dataset <- prepare_analytical_dataset(
     scri_identified_records = scri_indentified_records,
     strata_column_name = strata_column_name,
     only_first_date = only_first_date
@@ -128,7 +128,7 @@ scri <- function(study_population,
   }
 
   # Apply analysis
-  results_analysis <- SCRI:::apply_analysis(
+  results_analysis <- apply_analysis(
     scri_analytical_dataset = scri_analytical_dataset,
     reference_window = reference_window,
     strata_column_name = strata_column_name

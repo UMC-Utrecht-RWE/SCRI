@@ -58,7 +58,6 @@ validate_study_population <- function(data, reference_date_name, strata_column_n
 #'
 #' This function checks if the WindowsMetadata inputed in the function is correctly
 #' @param data A WindowsMetadata
-#' @param reference_date_name List of reference date names
 #' @param error_on_overlap TRUE when we want to stop executing if there is an overlap between windows
 #' @keywords internal
 
@@ -148,7 +147,7 @@ validate_construct_windows <- function(sp_windows_object, windows_metadata) {
 validate_model_name <- function(model_name) {
   valid_models <- get_valid_models()
   if (is.null(model_name)) {
-    model_name <- SCRI:::get_default_models()
+    model_name <- get_default_models()
     message(paste0("Model name empty. Selected as default model: ", model_name))
   }
   assertthat::assert_that(is.character(model_name),

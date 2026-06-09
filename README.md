@@ -130,7 +130,7 @@ respectively
 
 ``` r
 # run the core function
-sp_clean <- SCRI:::wrangle_window(sp_windows,
+sp_clean <- wrangle_window(sp_windows,
                                 censoring_dates = c("death_date", "general_end_fup"))
 ```
 

@@ -6,8 +6,8 @@
 #'
 #' @param SCRI_analytical_dataset A `data.table` containing the analytical dataset,
 #' including the `event`, `length`, `window_name`, and `person_id` columns.
+#' @param reference_window A character string naming the reference window name
 #' @param i_outcome A character string naming the AESI or i_outcome of interest.
-#' @param ... Additional arguments passed to `survival::clogit()`.
 #'
 #' @return A named vector containing event counts, person-time, and IRR estimates
 #' (with confidence intervals) for each comparison window.
@@ -22,7 +22,8 @@
 #' }
 #' @export
 #'
-compute_scri_stats <- function(SCRI_analytical_dataset, reference_window,
+compute_scri_stats <- function(SCRI_analytical_dataset, 
+                               reference_window,
                                i_outcome) {
   # Get unique window names from the dataset
   unique_windows <- unique(SCRI_analytical_dataset$window_name)

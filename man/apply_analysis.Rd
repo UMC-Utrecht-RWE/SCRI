@@ -16,6 +16,8 @@ including variables: `length`, `outcome`, and others required for SCRI.}
 
 \item{reference_window}{A name of the window to which we want to compare this h
 as to be a combination between window_name and reerence name e.g: clean_lookback_pre_FIRST_TARGET}
+
+\item{strata_column_name}{A name of a strata column used to stratify the analysis}
 }
 \value{
 A data frame with the combined SCRI results for all outcomes.

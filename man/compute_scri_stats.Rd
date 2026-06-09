@@ -10,6 +10,8 @@ compute_scri_stats(SCRI_analytical_dataset, reference_window, i_outcome)
 \item{SCRI_analytical_dataset}{A `data.table` containing the analytical dataset,
 including the `event`, `length`, `window_name`, and `person_id` columns.}
 
+\item{reference_window}{A character string naming the reference window name}
+
 \item{i_outcome}{A character string naming the AESI or i_outcome of interest.}
 
 \item{...}{Additional arguments passed to `survival::clogit()`.}

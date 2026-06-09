@@ -21,7 +21,7 @@ add_records <- function(window_data,
                         end_column_prefix = "end") {
   # Convert to long format if needed
   window_data <- if (is_wide_format) {
-    SCRI:::melt_window_data(
+    melt_window_data(
       window_data = window_data,
       start_column_prefix = start_column_prefix,
       end_column_prefix = end_column_prefix

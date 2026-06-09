@@ -1,3 +1,0 @@
-outcome,n_event_control_anch_1,time_control_anch_1,n_event_control_anch_2,time_control_anch_2,n_event_risk_anch_1,time_risk_anch_1,n_event_risk_anch_2,time_risk_anch_2,irr_control_anch_2_vs_control_anch_1,irr_control_anch_2_vs_control_anch_1_lowci,irr_control_anch_2_vs_control_anch_1_upci,irr_risk_anch_1_vs_control_anch_1,irr_risk_anch_1_vs_control_anch_1_lowci,irr_risk_anch_1_vs_control_anch_1_upci,irr_risk_anch_2_vs_control_anch_1,irr_risk_anch_2_vs_control_anch_1_lowci,irr_risk_anch_2_vs_control_anch_1_upci
-event1,2,0,0,0,1,0,0,0,-88,-88,-88,-88,-88,-88,-88,-88,-88
-event2,0,0,0,0,0,0,0,0,-88,-88,-88,-88,-88,-88,-88,-88,-88

@@ -17,7 +17,7 @@ wrangle_window <- function(sp_windows_object,
   # Understand why you used '_post' in the column names, but it is confusing. Consider changing.
   
   # obtain window names (assumes input is data.table, has this naming convention for columns)
-  start_end_names <- SCRI:::identify_start_end_cols(sp_windows_object)
+  start_end_names <- identify_start_end_cols(sp_windows_object)
   start_names <- start_end_names$start_names
   end_names <- start_end_names$end_names
   
