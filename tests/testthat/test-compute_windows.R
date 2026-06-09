@@ -9,26 +9,21 @@ test_that("compute_windows returns expected object type and shape",{
                      window_name = c("control", "risk","control", "risk"),
                      start_window = c(0,15,0,15),
                      length_window = c(10,20,10,20))
-  # meta data with two distinct reference dates
-  meta2 <- data.table(outcome = c('outcome1','outcome1'),
-                     window_name = c("control", "risk","control","risk"),
-                     start_window = c(0,15),
-                     length_window = c(10,20))
   # apply function with different combinations of output options and input metadata
   testout_wide <- compute_windows(studypop, meta, id_column = "id", reference_date_name = "FIRST_VAC")
-  testout_wide2 <- compute_windows(studypop, meta2, id_column = "id", reference_date_name = c("FIRST_VAC", "SECOND_VAC"))
+  testout_wide2 <- compute_windows(studypop, meta, id_column = "id", reference_date_name = c("FIRST_VAC", "SECOND_VAC"))
  
 
   # retain all input rows
     # wide version have same number of rows
   expect_equal(nrow(studypop)* length(unique(meta$outcome)), nrow(testout_wide))
-  expect_equal(nrow(studypop)* length(unique(meta2$outcome)), nrow(testout_wide2))
+  expect_equal(nrow(studypop)* length(unique(meta$outcome)), nrow(testout_wide2))
 
   # expect a start and end column for each window type
   expect_true(all(paste0("start_",unique(meta$window_name),"_FIRST_VAC") %in% colnames(testout_wide)))
   expect_true(all(paste0("end_",unique(meta$window_name),"_FIRST_VAC") %in% colnames(testout_wide)))
-  expect_true(all(paste0("start_",unique(meta2$window_name),c("_FIRST_VAC", "_SECOND_VAC")) %in% colnames(testout_wide2)))
-  expect_true(all(paste0("end_",unique(meta2$window_name),c("_FIRST_VAC", "_SECOND_VAC")) %in% colnames(testout_wide2)))
+  expect_true(all(paste0("start_",unique(meta$window_name),c("_FIRST_VAC", "_SECOND_VAC")) %in% colnames(testout_wide2)))
+  expect_true(all(paste0("end_",unique(meta$window_name),c("_FIRST_VAC", "_SECOND_VAC")) %in% colnames(testout_wide2)))
 
   # expect that the windows are given as class Date
   expect_s3_class(testout_wide$start_control, "Date")
