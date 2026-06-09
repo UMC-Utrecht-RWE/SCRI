@@ -1,7 +1,7 @@
 Package: SCRI
 Type: Package
 Title: Self Controlled Risk Interval Analysis
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person("Albert","Cid Royo",email ="a.cidroyo@umcutrecht.nl",role=c("aut")),
     person("Oisín", "Ryan", email ="o.ryan@umcutrect.nl", role=c("cre"), comment = c(ORCID = "0000-0003-3698-6396")),
@@ -19,7 +19,8 @@ Imports: data.table,
         survival
 Suggests: 
     testthat (>= 3.0.0),
-    rmarkdown
+    rmarkdown,
+    DT
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
