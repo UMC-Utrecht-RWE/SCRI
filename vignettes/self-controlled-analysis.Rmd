@@ -1,0 +1,171 @@
+---
+title: "Getting Started with the Self-Control-Risk-Interval (SCRI) Analysis Package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with the SCRI Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{css,  echo = F}
+/*-- Specify div's for 'boxes', change color of TOC and center align titles: --*/
+div.box1 {background-color: #f5f5f0; border-radius: 5px; padding: 30px; margin-right: 0px}
+div.box2 {background-color: #d4e5d2; border-radius: 5px; padding: 30px; margin-right: 0px}
+div.box3 {border-style: solid; border-color: #f5f5f0; border-width: medium; border-radius: 30px; padding: 5px; margin-right: 0px}
+ 
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {background-color: #76b82a; border-color: #76b82a}
+h1 {text-align: center; color: #3c7b8a}
+h2 {text-align: center; color: #76b82a}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(SCRI)
+```
+
+<div class = 'box3'>
+# Introduction
+
+The **Self-Control-Risk-Interval (SCRI)** R package provides a pipeline for preparing and analyzing datasets using self-controlled study designs such as the Self-Controlled Risk Interval (SCRI), Self-Controlled Case Series (SCCS), and related methods. The package is especially useful for pharmacoepidemiology and vaccine safety studies, and can be adapted for other applications.
+
+# Installation
+
+You can install the development version of the package from GitHub:
+
+```{r eval=FALSE}
+# install.packages("devtools")
+library(devtools)
+devtools::install_github("UMC-Utrecht-RWE/Self-Control-Risk-Interval")
+```
+
+<br>
+
+# Workflow Overview
+
+The SCRI package workflow is as follows:
+
+1.  **Prepare input data:** Study population, window metadata, and records tables.
+2.  **Construct analysis windows:** Define risk, control, and other windows for each subject.
+3.  **Apply censoring/cleaning rules:** Trim windows based on follow-up or censoring criteria.
+4.  **Match events to windows:** Identify outcomes/events in each window.
+5.  **Prepare the analysis dataset:** Summarize events and person-time.
+6.  **Run analysis:** Fit conditional logistic regression or other models.
+7.  **Summarize and interpret results.**
+
+# Example Data
+
+The package provides example datasets:
+
+```{r}
+data("StudyPopulation")
+data("WindowsMetadata")
+data("RecordsTable")
+DT::datatable(StudyPopulation,options = list(scrollX = TRUE))
+DT::datatable(WindowsMetadata,options = list(scrollX = TRUE))
+DT::datatable(RecordsTable,options = list(scrollX = TRUE))
+```
+
+# Step 1: Construct Windows
+
+Calculate the start and end dates for each analysis window:
+
+```{r}
+contructed_windows <- Construct_windows(
+  study_population = StudyPopulation,
+  windows_metadata = WindowsMetadata,
+  reference_date_name = "FIRST_TARGET",
+  id_column = "id"
+)
+DT::datatable(contructed_windows,options = list(scrollX = TRUE))
+```
+
+# Step 2: Clean/Trim Windows
+
+Apply censoring rules (e.g., end of follow-up or death):
+
+```{r}
+cleaned_windows <- wrangle_window(
+  contructed_windows,
+  censoring_dates = c("death_date", "general_end_fup")
+)
+DT::datatable(cleaned_windows,options = list(scrollX = TRUE))
+```
+
+# Step 3: Match Records to Windows
+
+Identify which outcomes/events occurred within each window:
+
+```{r}
+identified_records <- add_records(
+  window_data = cleaned_windows,
+  records = RecordsTable,
+  only_first_record = TRUE # or FALSE to keep all
+)
+DT::datatable(identified_records,options = list(scrollX = TRUE))
+```
+
+# Step 4: Prepare Analytical Dataset
+
+Summarize events per person, window, etc.:
+
+```{r}
+analytical_dataset <- prepare_analytical_dataset(
+  SCRI_identified_records = identified_records,
+  strata_column_name = NULL, # or specify a column for stratification
+  only_first_date = TRUE
+)
+DT::datatable(analytical_dataset,options = list(scrollX = TRUE))
+```
+
+# Step 5: Run the Analysis
+
+Apply the statistical model (e.g., conditional logistic regression):
+
+```{r}
+results <- apply_analysis(
+  SCRI_analytical_dataset = analytical_dataset,
+  reference_window = 'clean_lookback_pre_FIRST_TARGET',
+  strata_column_name = NULL # or specify for stratified analysis
+)
+DT::datatable(results,options = list(scrollX = TRUE))
+```
+
+# All-in-One Pipeline Function
+
+You can use the main `SCRI()` function to run the pipeline end-to-end:
+
+```{r eval=FALSE}
+final_results <- SCRI(
+  study_population = StudyPopulation,
+  windows_metadata = WindowsMetadata,
+  records_table = RecordsTable,
+  SCRI_analysis_name = "scri",
+  reference_date_name = "FIRST_TARGET",
+  reference_window = 'clean_lookback_pre_FIRST_TARGET',
+  start_followup_criteria = "op_start_date",
+  end_followup_criteria = c("death_date", "general_end_fup"),
+  only_first_date = TRUE
+)
+```
+
+# Supported Study Designs and Models
+
+You can query available self-controlled designs and valid models:
+
+```{r}
+get_valid_SCRI()
+get_valid_models()
+```
+
+# Customization
+
+-   **Window definitions:** Edit `WindowsMetadata` to change risk/control periods.
+-   **Stratification:** Add columns to `StudyPopulation` and specify in `SCRI()`/`apply_analysis()`.
+-   **Time-varying covariates:** Advanced use via `apply_timevarying()` (experimental).
+
+# Conclusion
+
+The SCRI package offers a modular, reproducible workflow for self-controlled epidemiological studies. For more information, see the package documentation and GitHub repository.
+
+\`\`\`
+</div>
