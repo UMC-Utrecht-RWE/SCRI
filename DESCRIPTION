@@ -3,20 +3,20 @@ Type: Package
 Title: Self Controlled Risk Interval Analysis
 Version: 0.1.1
 Authors@R: c(
-    person("Albert","Cid Royo",email ="a.cidroyo@umcutrecht.nl",role=c("aut")),
-    person("Oisín", "Ryan", email ="o.ryan@umcutrect.nl", role=c("cre"), comment = c(ORCID = "0000-0003-3698-6396")),
-    person("Jungyeon","Choi",email ="j.choi@umcutrecht.nl",role=c("aut")))
-Maintainer: Albert Cid Royo <a.cidroyo@umcutrecht.nl>
+    person("Albert", "Cid Royo", email = "a.cidroyo@umcutrecht.nl", role = c("aut", "cre")),
+    person("Oisín", "Ryan", email = "o.ryan@umcutrecht.nl", role = c("aut"), comment = c(ORCID = "0000-0003-3698-6396")),
+    person("Jungyeon", "Choi", email = "j.choi@umcutrecht.nl", role = c("aut")))
 Description: Prepare analytic datasets for self controlled risk interval analysis.
-License: GPL (>= 3)
+License: GPL (>= 3) + file LICENSE
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr
-Imports: data.table,
-        sqldf,
-        stringr,
-        assertthat,
-        survival
+Imports: 
+    data.table,
+    sqldf,
+    stringr,
+    assertthat,
+    survival
 Suggests: 
     testthat (>= 3.0.0),
     rmarkdown,
