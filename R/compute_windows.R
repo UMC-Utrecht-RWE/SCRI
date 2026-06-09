@@ -2,6 +2,7 @@
 #'
 #' @param study_population data frame containing one row per unit of observation, reference date column specified in windows_metadata, any other information
 #' @param windows_metadata metadatat file specifying window names/types, reference date columns, start and length of windows (see details)
+#' @param reference_date_name A character vector indicating which column(s) in the study population to use as index date(s).
 #' @param id_column column name identifying the unique unit of observation in the study population
 #'
 #' @export

@@ -9,7 +9,8 @@ rename_anchor(study_population, reference_date_name, prefix_name = "anch_")
 \arguments{
 \item{study_population}{A data.table containing the study population data}
 
-\item{reference_date_name}{Character vector of column names to be renamed}
+\item{reference_date_name}{A character vector indicating which column(s) 
+in the study population to use as index date(s).}
 
 \item{prefix_name}{Character string to be used as prefix for renamed columns. 
 Default is 'anch_'}
@@ -24,14 +25,16 @@ by adding a prefix and sequential numbering.
 \examples{
 \dontrun{
 # Single column rename
-study_data <- data.table(id = 1:3, index_date = as.Date(c("2023-01-01", "2023-02-15", "2023-03-10")))
+study_data <- data.table(id = 1:3, 
+           index_date = as.Date(c("2023-01-01", "2023-02-15", "2023-03-10")))
 renamed_data <- rename_anchor(study_data, "index_date")
 
 # Multiple column rename
 study_data <- data.table(id = 1:3, 
-                        index_date = as.Date(c("2023-01-01", "2023-02-15", "2023-03-10")),
-                        cohort_entry = as.Date(c("2022-12-01", "2023-01-01", "2023-02-01")))
-renamed_data <- rename_anchor(study_data, c("index_date", "cohort_entry"), prefix_name = "ref_")
+         index_date = as.Date(c("2023-01-01", "2023-02-15", "2023-03-10")),
+         cohort_entry = as.Date(c("2022-12-01", "2023-01-01", "2023-02-01")))
+renamed_data <- rename_anchor(study_data, 
+                      c("index_date", "cohort_entry"), prefix_name = "ref_")
 }
 
 }

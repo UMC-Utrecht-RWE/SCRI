@@ -12,6 +12,10 @@
 #' @param end_followup_criteria A character vector of column names defining when follow-up ends. These will be used for censoring and trimming windows.
 #' @param only_first_date A boolean indicating whether to only use the first date. Default is FALSE.
 #' @param save_intermediate A path to a folder where the different intermediat file are saved
+#' @param reference_window A name of the window to which we want to compare this h
+#' as to be a combination between window_name and reerence name e.g: clean_lookback_pre_FIRST_TARGET
+#' @param strata_column_name A name of a strata column used to stratify the analysis
+#' @param time_varying_table TO_BE_DEFINED
 #' @export
 #'
 #' @details
@@ -118,18 +122,18 @@ scri <- function(study_population,
   }
 
   # Add strata_columns to the results
-  scri_analytical_dataset <- prepare_analytical_dataset(
-    scri_identified_records = scri_indentified_records,
-    strata_column_name = strata_column_name,
-    only_first_date = only_first_date
+  SCRI_analytical_dataset <- prepare_analytical_dataset(
+    scri_identified_records,
+    strata_column_name,
+    only_first_date
   )
   if (!is.null(save_intermediate)) {
-    data.table::fwrite(scri_analytical_dataset, file = file.path(save_intermediate, "scri_analytical_dataset.csv"))
+    data.table::fwrite(SCRI_analytical_dataset, file = file.path(save_intermediate, "SCRI_analytical_dataset.csv"))
   }
 
   # Apply analysis
   results_analysis <- apply_analysis(
-    scri_analytical_dataset = scri_analytical_dataset,
+    SCRI_analytical_dataset = SCRI_analytical_dataset,
     reference_window = reference_window,
     strata_column_name = strata_column_name
   )

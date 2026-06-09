@@ -16,10 +16,6 @@
 #' no events in either the reference or comparison window, or if model fitting fails,
 #' a placeholder value of -88 is returned.
 #'
-#' @examples
-#' \dontrun{
-#' stats <- compute_scri_stats(my_data, i_outcome = "my_outcome")
-#' }
 #' @export
 #'
 compute_scri_stats <- function(SCRI_analytical_dataset, 

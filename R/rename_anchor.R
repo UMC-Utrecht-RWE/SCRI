@@ -4,7 +4,8 @@
 #' by adding a prefix and sequential numbering.
 #'
 #' @param study_population A data.table containing the study population data
-#' @param reference_date_name A character vector indicating which column(s) in the study population to use as index date(s).
+#' @param reference_date_name A character vector indicating which column(s) 
+#' in the study population to use as index date(s).
 #' @param prefix_name Character string to be used as prefix for renamed columns. 
 #'        Default is 'anch_'
 #'

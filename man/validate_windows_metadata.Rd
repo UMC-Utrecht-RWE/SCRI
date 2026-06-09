@@ -10,8 +10,6 @@ validate_windows_metadata(data, error_on_overlap = FALSE)
 \item{data}{A WindowsMetadata}
 
 \item{error_on_overlap}{TRUE when we want to stop executing if there is an overlap between windows}
-
-\item{reference_date_name}{List of reference date names}
 }
 \description{
 This function checks if the WindowsMetadata inputed in the function is correctly

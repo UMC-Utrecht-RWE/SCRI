@@ -13,8 +13,6 @@ including the `event`, `length`, `window_name`, and `person_id` columns.}
 \item{reference_window}{A character string naming the reference window name}
 
 \item{i_outcome}{A character string naming the AESI or i_outcome of interest.}
-
-\item{...}{Additional arguments passed to `survival::clogit()`.}
 }
 \value{
 A named vector containing event counts, person-time, and IRR estimates
@@ -29,9 +27,4 @@ logistic regression to estimate IRRs, comparing event rates across windows.
 This function assumes a reference window named `"control"`. If there are
 no events in either the reference or comparison window, or if model fitting fails,
 a placeholder value of -88 is returned.
-}
-\examples{
-\dontrun{
-stats <- compute_scri_stats(my_data, i_outcome = "my_outcome")
-}
 }

@@ -25,11 +25,18 @@ scri(
 
 \item{records_table}{A `data.table` with the records related to the outcomes. This is composed by id, date and value of the record.}
 
+\item{time_varying_table}{TO_BE_DEFINED}
+
 \item{reference_date_name}{A character vector indicating which column(s) in the study population to use as index date(s).}
+
+\item{reference_window}{A name of the window to which we want to compare this h
+as to be a combination between window_name and reerence name e.g: clean_lookback_pre_FIRST_TARGET}
 
 \item{start_followup_criteria}{A character vector of column names defining when follow-up starts.}
 
 \item{end_followup_criteria}{A character vector of column names defining when follow-up ends. These will be used for censoring and trimming windows.}
+
+\item{strata_column_name}{A name of a strata column used to stratify the analysis}
 
 \item{only_first_date}{A boolean indicating whether to only use the first date. Default is FALSE.}
 
