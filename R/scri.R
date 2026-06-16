@@ -6,6 +6,7 @@
 #'
 #' @param study_population A `data.table` with one row per individual and relevant date columns. Must include the reference date(s) and follow-up criteria.
 #' @param windows_metadata A `data.table` describing exposure and control windows, their types, and how they are anchored to the study population.
+#' @param windows_priority Optional long or MxM priority table. If NULL, the generic package configuration is used.
 #' @param records_table A `data.table` with the records related to the outcomes. This is composed by id, date and value of the record.
 #' @param reference_date_name A character vector indicating which column(s) in the study population to use as index date(s).
 #' @param start_followup_criteria A character vector of column names defining when follow-up starts.
@@ -47,6 +48,7 @@
 #'
 scri <- function(study_population,
                  windows_metadata,
+                 window_priority,
                  records_table,
                  time_varying_table = NULL,
                  reference_date_name,
@@ -101,7 +103,9 @@ scri <- function(study_population,
   # Validate computation of windows
   validate_construct_windows(scri_computed_windows, windows_metadata)
   # Trim windows with censoring criteria and overlapping windows
-  scri_computed_windows_cleaned <- wrangle_window(scri_computed_windows, end_followup_criteria)
+  scri_computed_windows_cleaned <- wrangle_window(sp_windows_object = scri_computed_windows, 
+                                                  windows_priority = window_priority,
+                                                  censoring_dates = end_followup_criteria)
   if (!is.null(save_intermediate)) {
     data.table::fwrite(scri_computed_windows_cleaned, file = file.path(save_intermediate, "scri_computed_windows_cleaned.csv"))
   }
@@ -123,7 +127,7 @@ scri <- function(study_population,
 
   # Add strata_columns to the results
   SCRI_analytical_dataset <- prepare_analytical_dataset(
-    scri_identified_records,
+    scri_indentified_records,
     strata_column_name,
     only_first_date
   )
@@ -134,6 +138,7 @@ scri <- function(study_population,
   # Apply analysis
   results_analysis <- apply_analysis(
     SCRI_analytical_dataset = SCRI_analytical_dataset,
+    reference_date_name = reference_date_name,
     reference_window = reference_window,
     strata_column_name = strata_column_name
   )

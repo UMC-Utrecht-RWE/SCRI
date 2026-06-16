@@ -61,7 +61,7 @@ apply_analysis <- function(SCRI_analytical_dataset,
   df_res <- data.table::data.table(NULL)
   # create a log length variable to apply compute_SCRI_stats
   SCRI_analytical_dataset[, log_length := log(as.numeric(window_length))]
-
+  SCRI_analytical_dataset[, reference_window := paste0(reference_date_name,"_", reference_window)]
   outcome_list <- unique(SCRI_analytical_dataset$outcome)
 
   if (!is.null(strata_column_name) && length(strata_column_name) >= 1) {
