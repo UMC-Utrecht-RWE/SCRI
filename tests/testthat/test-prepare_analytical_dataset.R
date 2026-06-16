@@ -7,6 +7,7 @@ test_that("prepare_analytical_dataset correctly identifies events", {
   test_data <- data.table(
     id = c(1, 1, 2, 3),
     outcome = c("SCRI", "SCRI", "SCRI", "SCRI"),
+    reference_date_name = rep("TARGET1",4),
     window_name = c("W1", "W2", "W1", "W1"),
     window_length = c(30, 30, 30, 30),
     gender = c("M", "F", "M", "M"),
@@ -27,6 +28,7 @@ test_that("prepare_analytical_dataset correctly handles only_first_date paramete
   # Test data with multiple events for same id-window
   test_data <- data.table(
     id = c(1, 1, 1, 2),
+    reference_date_name = rep("TARGET1",4),
     outcome = c("SCRI", "SCRI", "SCRI", "SCRI"),
     window_name = c("W1", "W1", "W1", "W1"),
     window_length = c(30, 30, 30, 30),
@@ -48,6 +50,7 @@ test_that("prepare_analytical_dataset correctly applies stratification", {
   # Test data
   test_data <- data.table(
     id = 1:3,
+    reference_date_name = rep("TARGET1",3),
     outcome = rep("SCRI", 3),
     window_name = rep("W1", 3),
     window_length = rep(30, 3),
@@ -59,7 +62,7 @@ test_that("prepare_analytical_dataset correctly applies stratification", {
   # Test with gender stratification
   result_gender <- prepare_analytical_dataset(test_data, "gender", FALSE)
   
-  expect_equal(ncol(result_gender), 6)  # Should include gender column
+  expect_equal(ncol(result_gender), 7)  # Should include gender column
   expect_true("gender" %in% names(result_gender))
   expect_equal(result_gender[id == 1, gender], "M")
   expect_equal(result_gender[id == 2, gender], "F")
