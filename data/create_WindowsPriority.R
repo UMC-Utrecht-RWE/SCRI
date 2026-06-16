@@ -35,11 +35,7 @@
 # 
 # # Execute the function and assign the result to WindowsPriority
 # WindowsPriority <- create_windows_priority(window_names = unique(WindowsMetadata$window_name))
-# WindowsPriorityMxM <- create_windows_priority_mxm(WindowsPriority)
-# 
-# # Print the result to verify
-# print(WindowsPriority)
-# print(WindowsPriorityMxM)
+# WindowsPriority <- create_windows_priority_mxm(WindowsPriority)
 # 
 # # Save as RDS and CSV
-# saveRDS(WindowsPriorityMxM, file = "../data/WindowsPriority.rds")
+# usethis::use_data(WindowsPriority, overwrite = TRUE)
