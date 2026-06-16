@@ -6,6 +6,7 @@
 \usage{
 apply_analysis(
   SCRI_analytical_dataset,
+  reference_dose,
   reference_window,
   strata_column_name = NULL
 )

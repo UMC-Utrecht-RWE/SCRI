@@ -58,7 +58,9 @@ construct_windows <- function(study_population,
   )
 
   # then merge with the input object
-  studypop_wide_output <- data.table::merge.data.table(study_population, studypop_wide, by = id_column, all.x = TRUE)
+  reference_cols_to_drop <- intersect(reference_date_name, names(study_population))
+  study_population_no_ref <- study_population[, setdiff(names(study_population), reference_cols_to_drop), with = FALSE]
+  studypop_wide_output <- data.table::merge.data.table(study_population_no_ref, studypop_wide, by = id_column, all.x = TRUE)
 
   # return output
   return(studypop_wide_output)

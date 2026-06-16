@@ -35,6 +35,7 @@ test_that("construct_windows returns expected object type and dose-row shape", {
   expect_s3_class(testout_wide$start_control, "Date")
   expect_true("t0_date" %in% colnames(testout_wide))
 
-  # retain input columns
-  expect_true(all(colnames(studypop) %in% colnames(testout_wide)))
+  # retain input columns except reference_date_name columns
+  expected_input_cols <- setdiff(colnames(studypop), c("FIRST_VAC", "SECOND_VAC"))
+  expect_true(all(expected_input_cols %in% colnames(testout_wide)))
 })
