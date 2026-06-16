@@ -67,26 +67,36 @@ DT::datatable(RecordsTable, options = list(scrollX = TRUE))
 
 # Step 1: Construct Windows
 
-Calculate the start and end dates for each analysis window:
+Calculate the start and end dates for each analysis window. The output is one row per dose/reference date, with a `t0_date` column that is used later to order consecutive doses:
 
 ```{r}
-contructed_windows <- construct_windows(
+constructed_windows <- construct_windows(
     study_population = StudyPopulation,
     windows_metadata = WindowsMetadata,
-    reference_date_name = "FIRST_TARGET",
+    reference_date_name = c("FIRST_TARGET", "SECOND_TARGET"),
     id_column = "id"
 )
-DT::datatable(contructed_windows, options = list(scrollX = TRUE))
+DT::datatable(head(constructed_windows), options = list(scrollX = TRUE))
 ```
 
 # Step 2: Clean/Trim Windows
 
-Apply censoring rules (e.g., end of follow-up or death):
+Apply censoring rules (e.g., end of follow-up or death) and overlap-priority rules between consecutive doses ordered by `t0_date`:
 
 ```{r}
+window_levels <- unique(WindowsMetadata$window_name)
+priority_table <- data.table::CJ(
+    outcome = unique(WindowsMetadata$outcome)[1],
+    dose_n_window = window_levels,
+    dose_n_plus_1_window = window_levels,
+    sorted = FALSE
+)
+priority_table[, priority := "B"]
+
 cleaned_windows <- wrangle_window(
-    contructed_windows,
-    censoring_dates = c("death_date", "general_end_fup")
+    constructed_windows,
+    censoring_dates = c("death_date", "general_end_fup"),
+    windows_priority = priority_table
 )
 DT::datatable(cleaned_windows, options = list(scrollX = TRUE))
 ```

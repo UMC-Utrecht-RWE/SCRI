@@ -6,13 +6,16 @@
 \usage{
 wrangle_window(
   sp_windows_object,
-  censoring_dates = c("death_date", "general_end_fup")
+  censoring_dates = NULL,
+  windows_priority = NULL
 )
 }
 \arguments{
 \item{sp_windows_object}{data.table object containing named start and end date columns, typically output of construct_windows()}
 
 \item{censoring_dates}{column name(s) of censoring dates}
+
+\item{windows_priority}{Optional long or MxM priority table. If NULL, the generic package configuration is used.}
 }
 \value{
 object of the same dimensions and type as the input, with end dates possibly censored

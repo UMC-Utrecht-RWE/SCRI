@@ -5,23 +5,17 @@
 # create_windows_metadata <- function() {
 #   # Define the data
 #   windows_data <- data.table(
-#     outcome = rep("event1", 10),
+#     outcome = rep("event1", 4),
 #     window_name = c(
-#       "washout_pre",
-#       "control_pre",
-#       "clean_lookback_pre",
-#       "risk_pre",
-#       "clean_lookback_post",
-#       "risk_post",
-#       "washout_post",
-#       "control_post",
-#       "induction_pre",
-#       "induction_post"
+#       "control",
+#       "induction",
+#       "risk",
+#       "washout"
 #     ),
-#     start_window = c(-30, -90, -455, 1, -365, 1, 43, 73, 0, 0),
-#     length_window = c(30, 60, 365, 42, 365, 42, 30, 60, 1, 1)
+#     start_window = c(-365, 1, 43, 74),
+#     length_window = c(365, 42, 30, 60)
 #   )
-#   
+# 
 #   # Return the data.table
 #   return(windows_data)
 # }
