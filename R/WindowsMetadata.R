@@ -2,7 +2,7 @@
 #'
 #' A metadata file, describing different window types (control, exposed, lookback, induction, washout) for SCRI analysis and how they are anchored
 #'
-#' @format ## `StudyPopulation`
+#' @format ## `WindowsMetadata`
 #' A data frame with 10 rows and 5 variables:
 #' \describe{
 #'  \item{reference_date_name}{On which date column in the StudyPopulation should the start of this window be anchored? (chr)}
