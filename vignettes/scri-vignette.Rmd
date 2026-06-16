@@ -81,18 +81,17 @@ DT::datatable(head(constructed_windows), options = list(scrollX = TRUE))
 
 # Step 2: Clean/Trim Windows
 
-Apply censoring rules (e.g., end of follow-up or death) and overlap-priority rules between consecutive doses ordered by `t0_date`:
+Apply censoring rules (e.g., end of follow-up or death) and overlap-priority rules between consecutive doses ordered by `t0_date`.
+
+The priority rules accross windows of subsequent doses are defined in a matrix with the following format (see table below)
+In the priority matrix we have all possible combinations between tables. Within each cell we need to define the priority between the windows, A represent priority of dose_n over dose_n_plus_1 and B represents the opposite.
 
 ```{r}
-window_levels <- unique(WindowsMetadata$window_name)
-priority_table <- data.table::CJ(
-    outcome = unique(WindowsMetadata$outcome)[1],
-    dose_n_window = window_levels,
-    dose_n_plus_1_window = window_levels,
-    sorted = FALSE
-)
-priority_table[, priority := "B"]
+priority_table <- readRDS("../data/WindowsPriority.rds")
+DT::datatable(priority_table, options = list(scrollX = TRUE))
+```
 
+```{r}
 cleaned_windows <- wrangle_window(
     constructed_windows,
     censoring_dates = c("death_date", "general_end_fup"),
