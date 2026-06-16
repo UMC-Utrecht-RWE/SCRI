@@ -54,109 +54,219 @@ The SCRI package workflow is as follows:
 
 # Example Data
 
-The package provides example datasets:
+The package provides four example datasets needed to run an SCRI analysis:
+
+**1. StudyPopulation:** Subject-level data with reference dates (e.g., prescription dates) and follow-up boundaries
 
 ```{r}
 data("StudyPopulation")
-data("WindowsMetadata")
-data("RecordsTable")
 DT::datatable(StudyPopulation, options = list(scrollX = TRUE))
+```
+
+**2. WindowsMetadata:** Definitions of analysis windows (risk, control, washout, etc.) with their durations and timing relative to reference dates
+
+```{r}
+data("WindowsMetadata")
 DT::datatable(WindowsMetadata, options = list(scrollX = TRUE))
+```
+
+**3. RecordsTable:** Outcome events (e.g., adverse events, hospitalizations) with dates for each subject
+
+```{r}
+data("RecordsTable")
 DT::datatable(RecordsTable, options = list(scrollX = TRUE))
+```
+
+**4. WindowsPriority:** Priority rules defining which window takes precedence when windows from consecutive doses overlap
+
+```{r}
+data("WindowsPriority")
+DT::datatable(WindowsPriority, options = list(scrollX = TRUE))
 ```
 
 # Step 1: Construct Windows
 
-Calculate the start and end dates for each analysis window. The output is one row per dose/reference date, with a `t0_date` column that is used later to order consecutive doses:
+Calculate the start and end dates for each analysis window. The output is one row per dose/reference date, with a `t0_date` column that is used later to order consecutive doses.
+
+**What happens:**
+- For each person (id) and each reference date (FIRST_TARGET, SECOND_TARGET), windows are computed relative to that date
+- `t0_date` is set equal to the reference date and used downstream to order doses chronologically
+- Window definitions from `WindowsMetadata` (e.g., risk, control, washout) are applied
+- Each row contains start_ and end_ columns for every window type
 
 ```{r}
+# Construct windows for all subjects relative to their FIRST_TARGET and SECOND_TARGET dates
 constructed_windows <- construct_windows(
-    study_population = StudyPopulation,
-    windows_metadata = WindowsMetadata,
-    reference_date_name = c("FIRST_TARGET", "SECOND_TARGET"),
-    id_column = "id"
+    study_population = StudyPopulation, # Input: subject characteristics and reference dates
+    windows_metadata = WindowsMetadata, # Input: window definitions (duration, lag, etc.)
+    reference_date_name = c("FIRST_TARGET", "SECOND_TARGET"), # Dates to anchor windows around
+    id_column = "id" # Column identifying each subject
 )
+
+# Display first few rows with all computed window dates
 DT::datatable(head(constructed_windows), options = list(scrollX = TRUE))
 ```
+
+**Output structure:** Each row represents one subject-dose combination. If a subject has 2 reference dates (FIRST_TARGET and SECOND_TARGET), there will be 2 rows per subject. Columns include `id`, `t0_date`, and start_/end_ pairs for each window (e.g., start_risk, end_risk, start_control, end_control).
 
 # Step 2: Clean/Trim Windows
 
 Apply censoring rules (e.g., end of follow-up or death) and overlap-priority rules between consecutive doses ordered by `t0_date`.
 
-The priority rules accross windows of subsequent doses are defined in a matrix with the following format (see table below)
-In the priority matrix we have all possible combinations between tables. Within each cell we need to define the priority between the windows, A represent priority of dose_n over dose_n_plus_1 and B represents the opposite.
+**What happens:**
+1. **Censoring:** If a person dies or reaches end-of-follow-up, any window end dates after that censoring date are trimmed to the censoring date
+2. **Overlap resolution:** When a person has multiple doses (e.g., two prescriptions), windows from dose N and dose N+1 may overlap. Priority rules define which dose's window takes precedence:
+   - Priority "A": Dose N window prevails → dose N+1 window start is shifted forward
+   - Priority "B": Dose N+1 window prevails → dose N window end is trimmed backward
+
+The priority rules define all possible combinations between window types. Within each cell, "A" represents priority of dose_n over dose_n_plus_1 and "B" represents the opposite.
 
 ```{r}
-priority_table <- readRDS("../data/WindowsPriority.rds")
-DT::datatable(priority_table, options = list(scrollX = TRUE))
+# Load the priority configuration (pre-computed for this analysis)
+WindowPriority <- readRDS("../data/WindowsPriority.rds")
+
+# Display priority rules: which window takes precedence in overlaps
+DT::datatable(WindowPriority, options = list(scrollX = TRUE))
 ```
 
 ```{r}
+# Apply censoring and overlap-priority rules to clean the windows
 cleaned_windows <- wrangle_window(
-    constructed_windows,
-    censoring_dates = c("death_date", "general_end_fup"),
-    windows_priority = priority_table
+    constructed_windows, # Input: windows from Step 1
+    censoring_dates = c("death_date", "general_end_fup"), # Trim windows at these dates
+    windows_priority = WindowPriority # Apply priority rules for N vs N+1 overlaps
 )
+
+# Display cleaned windows (dates may be trimmed or shifted compared to constructed_windows)
 DT::datatable(cleaned_windows, options = list(scrollX = TRUE))
 ```
 
+**Output changes:** 
+- Window end dates are clamped to censoring dates if applicable
+- For subjects with multiple doses, overlapping windows are resolved per priority rules
+- Window dates may now have NAs if they fall entirely after a censoring event
+
 # Step 3: Match Records to Windows
 
-Identify which outcomes/events occurred within each window:
+Identify which outcomes/events occurred within each window.
+
+**What happens:**
+- Each record (outcome event) in `RecordsTable` is matched to the windows in `cleaned_windows`
+- If a record's date falls within a window's start and end dates, it is flagged as occurring in that window
+- The `add_records()` function creates indicators for each window showing whether the outcome occurred there
+- Option: Keep only the first event per person, or retain all events
 
 ```{r}
+# Match each outcome event to the appropriate window(s)
 identified_records <- add_records(
-    window_data = cleaned_windows,
-    records = RecordsTable,
-    only_first_record = TRUE # or FALSE to keep all
+    window_data = cleaned_windows, # Input: cleaned windows with adjusted dates
+    records = RecordsTable, # Input: outcome events with dates
+    only_first_record = TRUE # TRUE: keep only first event per subject; FALSE: keep all
 )
+
+# Display records with window assignments (new columns indicate which window each event occurred in)
 DT::datatable(identified_records, options = list(scrollX = TRUE))
 ```
 
+**Output structure:**
+- Original window columns are retained
+- New indicator columns show presence/absence of events in each window
+- If stratification is needed, those columns are also present
+- Rows without any matching records may be retained (useful for "unexposed" person-windows)
+
 # Step 4: Prepare Analytical Dataset
 
-Summarize events per person, window, etc.:
+Summarize events and person-time per window for analysis.
+
+**What happens:**
+- Event counts and person-time are aggregated by window, outcome type, and (optionally) stratification variables
+- Outcome indicators are rolled up: if any event occurred in a window, that person-window is marked as an outcome
+- Person-time is calculated as the number of days in each window (end_date - start_date)
+- The dataset is restructured to match the format required by conditional logistic regression
 
 ```{r}
+# Aggregate to create analytical dataset with events and person-time
 analytical_dataset <- prepare_analytical_dataset(
-    SCRI_identified_records = identified_records,
-    strata_column_name = NULL, # or specify a column for stratification
-    only_first_date = TRUE
+    SCRI_identified_records = identified_records, # Input: records matched to windows
+    strata_column_name = NULL, # Optional: column for stratification (or NULL for no stratification)
+    only_first_date = TRUE # TRUE: use only first occurrence per person; FALSE: use all
 )
+
+# Display analytical dataset (one row per person-window combination)
 DT::datatable(analytical_dataset, options = list(scrollX = TRUE))
 ```
 
+**Output structure:**
+- Rows represent person-window-outcome combinations
+- Columns include window identifiers, outcome status (1/0), person-time, and any stratification variables
+- This format is ready for conditional logistic regression
+- Each subject appears once per window type (e.g., once for risk window, once for control window)
+
 # Step 5: Run the Analysis
 
-Apply the statistical model (e.g., conditional logistic regression):
+Apply the statistical model to estimate exposure effects.
+
+**What happens:**
+- A conditional logistic regression is fit with event status (outcome/no outcome) as the dependent variable
+- The model conditions on each subject to account for person-level confounding (self-controlled design)
+- The reference window (e.g., "control") defines unexposed person-time
+- Risk and other windows define exposure periods
+- The model compares odds of outcome during risk window vs. control window, within each person
 
 ```{r}
+# Fit conditional logistic regression comparing windows within persons
 results <- apply_analysis(
-    SCRI_analytical_dataset = analytical_dataset,
-    reference_date_name = "FIRST_TARGET",
-    reference_window = "risk",
-    strata_column_name = NULL # or specify for stratified analysis
+    SCRI_analytical_dataset = analytical_dataset, # Input: aggregated analytical dataset
+    reference_date_name = "FIRST_TARGET", # Which reference date to use
+    reference_window = "risk", # Which window serves as the baseline (usually "control")
+    strata_column_name = NULL # Optional: column for stratified analysis
 )
+
+# Display results (odds ratios, confidence intervals, p-values)
 DT::datatable(results, options = list(scrollX = TRUE))
 ```
 
+**Output structure:**
+- Columns include parameter estimates, odds ratios (ORs), confidence intervals (CIs), and p-values
+- One row per window comparison (e.g., "risk" vs. reference window)
+- ORs > 1 indicate increased risk during that window; ORs < 1 indicate decreased risk
+- Statistical significance determined by whether CI excludes 1.0
+
 # All-in-One Pipeline Function
 
-You can use the main `SCRI()` function to run the pipeline end-to-end:
+You can use the main `scri()` function to run the entire pipeline end-to-end in a single call.
 
-```{r eval=FALSE}
-final_results <- SCRI(
-    study_population = StudyPopulation,
-    windows_metadata = WindowsMetadata,
-    records_table = RecordsTable,
-    SCRI_analysis_name = "scri",
-    reference_date_name = "FIRST_TARGET",
-    reference_window = "clean_lookback_pre_FIRST_TARGET",
-    start_followup_criteria = "op_start_date",
-    end_followup_criteria = c("death_date", "general_end_fup"),
-    only_first_date = TRUE
+**What this does:**
+- Internally performs all 5 steps above (construct → clean → match → prepare → analyze)
+- Useful for quick analyses or when you don't need intermediate outputs
+- Less flexible than stepwise approach, but more concise
+
+```{r}
+# Run complete SCRI analysis in one function call
+final_results <- SCRI::scri(
+    study_population = StudyPopulation, # Subject data with reference dates
+    windows_metadata = WindowsMetadata, # Window definitions
+    window_priority = WindowPriority, # Priority rules for dose overlaps
+    records_table = RecordsTable, # Outcome events
+    reference_date_name = "FIRST_TARGET", # Which reference date to use
+    reference_window = "control", # Baseline window for comparison
+    start_followup_criteria = "op_start_date", # Window construction start point
+    end_followup_criteria = c("death_date", "general_end_fup"), # Censoring dates
+    only_first_date = TRUE # Keep only first event per person
 )
+
+# Display final analysis results
+DT::datatable(final_results, options = list(scrollX = TRUE))
 ```
+
+**Advantages:**
+- Single function call replaces 5 separate steps
+- Automatically handles data flow between functions
+- All internal steps use the same validation and error checking
+
+**Disadvantages:**
+- Cannot inspect intermediate outputs (windows before/after cleaning, records matching)
+- Less flexibility for custom processing between steps
 
 # Supported Study Designs and Models
 
@@ -168,13 +278,45 @@ get_valid_models()
 
 # Customization
 
--   **Window definitions:** Edit `WindowsMetadata` to change risk/control periods.
--   **Stratification:** Add columns to `StudyPopulation` and specify in `SCRI()`/`apply_analysis()`.
--   **Time-varying covariates:** Advanced use via `apply_timevarying()` (experimental).
+The SCRI pipeline is highly customizable at multiple levels:
+
+-   **Window definitions:** 
+    - Edit `WindowsMetadata` to change risk/control period durations, lags, and structure
+    - Example: Extend washout period from 7 to 14 days by modifying the `duration` or `lag` columns
+    
+-   **Priority rules:** 
+    - Modify `WindowsPriority` to define how overlaps between consecutive doses are resolved
+    - Example: Switch priority "A" ↔ "B" to give dose N+1 precedence instead of dose N
+    
+-   **Stratification:** 
+    - Add stratification columns to `StudyPopulation` (e.g., age group, sex)
+    - Specify the column name in `SCRI()` or `apply_analysis()` to run separate models per stratum
+    
+-   **Censoring criteria:** 
+    - Use any date column in `StudyPopulation` (e.g., "death_date", "end_of_followup", "emigration_date")
+    - Specify multiple censoring columns; windows are trimmed at the earliest censoring event
+    
+-   **Time-varying covariates:** 
+    - Advanced: Use `apply_timevarying()` to include covariates that change over follow-up
+    - Note: Experimental feature, consult documentation for details
+
+-   **Event handling:**
+    - Set `only_first_date = TRUE` to analyze only first outcome occurrence
+    - Set `only_first_date = FALSE` to analyze all occurrences
 
 # Conclusion
 
-The SCRI package offers a modular, reproducible workflow for self-controlled epidemiological studies. For more information, see the package documentation and GitHub repository.
+The SCRI package provides a comprehensive, modular, and reproducible workflow for conducting self-controlled risk interval analysis:
+
+- **Flexible design:** Choose between stepwise control (5 individual steps) or all-in-one pipeline, depending on your needs
+- **Customizable:** Adapt windows, priorities, censoring, and stratification to your study design
+- **Transparent:** Each step produces interpretable outputs suitable for sensitivity analyses and validation
+- **Self-controlled framework:** Automatically accounts for time-invariant confounding through matched analysis design
+
+For more information, advanced usage, and troubleshooting, please see:
+- Package documentation: `?SCRI` and individual function help pages
+- GitHub repository: UMC-Utrecht-RWE/SCRI
+- Published methods paper: [Reference as applicable]
 
 \`\`\`
 </div>
