@@ -68,7 +68,7 @@ wrangle_window <- function(sp_windows_object,
   }
 
   # Normalize priority metadata into long format:
-  # outcome, dose_n_window, dose_n_plus_1_window, priority
+  # dose_n_window, dose_n_plus_1_window, priority
   normalize_windows_priority <- function(x) {
     if (is.null(x)) {
       return(NULL)
@@ -76,15 +76,16 @@ wrangle_window <- function(sp_windows_object,
 
     if (!data.table::is.data.table(x)) x <- data.table::as.data.table(x)
 
-    required_long <- c("outcome", "dose_n_window", "dose_n_plus_1_window", "priority")
+    required_long <- c("dose_n_window", "dose_n_plus_1_window", "priority")
     if (all(required_long %in% names(x))) {
       x <- x[, required_long, with = FALSE]
+      x[, dose_n_window := as.character(dose_n_window)]
+      x[, dose_n_plus_1_window := as.character(dose_n_plus_1_window)]
       x[, priority := toupper(trimws(priority))]
       return(x[x[["priority"]] %in% c("A", "B")])
     }
 
     # MxM input case: one row-axis column + many dose_n_plus_1 window columns.
-    if (!"outcome" %in% names(x)) x[, outcome := "event1"]
     id_col <- names(x)[grep("dose_n_window", names(x), fixed = TRUE)][1]
     if (is.na(id_col)) {
       stop("Could not identify Dose N window axis in windows_priority metadata.")
@@ -92,14 +93,16 @@ wrangle_window <- function(sp_windows_object,
 
     long_x <- data.table::melt(
       x,
-      id.vars = c("outcome", id_col),
+      id.vars = id_col,
       variable.name = "dose_n_plus_1_window",
       value.name = "priority"
     )
     data.table::setnames(long_x, id_col, "dose_n_window")
+    long_x[, dose_n_window := as.character(dose_n_window)]
+    long_x[, dose_n_plus_1_window := as.character(dose_n_plus_1_window)]
     long_x[, priority := toupper(trimws(priority))]
     long_x <- long_x[long_x[["priority"]] %in% c("A", "B")]
-    return(long_x[, c("outcome", "dose_n_window", "dose_n_plus_1_window", "priority"), with = FALSE])
+    return(long_x[, c("dose_n_window", "dose_n_plus_1_window", "priority"), with = FALSE])
   }
 
   read_windows_priority <- function(priority_obj) {
@@ -180,7 +183,7 @@ wrangle_window <- function(sp_windows_object,
       return(invisible(NULL))
     }
 
-    group_cols <- intersect(c("id", "outcome"), names(data))
+    group_cols <- intersect(c("id"), names(data))
     if (length(group_cols) > 0) {
       group_rows <- data[, .(rows = list(.I)), by = group_cols]$rows
     } else {
