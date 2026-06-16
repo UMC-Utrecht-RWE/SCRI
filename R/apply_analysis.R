@@ -18,7 +18,7 @@
 #' results <- apply_analysis(SCRI_data)
 #' }
 apply_analysis <- function(SCRI_analytical_dataset,
-                           reference_dose,
+                           reference_date_name,
                            reference_window,
                            strata_column_name = NULL) {
   # Input validation ----
@@ -31,12 +31,12 @@ apply_analysis <- function(SCRI_analytical_dataset,
   if (length(missing_cols) > 0) {
     stop("Missing required column(s) in `SCRI_analytical_dataset`: ", paste(missing_cols, collapse = ", "))
   }
-  if (!is.character(reference_dose) || length(reference_dose) != 1) {
-    stop("`reference_dose` must be a single character string.")
+  if (!is.character(reference_date_name) || length(reference_date_name) != 1) {
+    stop("`reference_date_name` must be a single character string.")
   }
   
-  if (!(reference_dose %in% unique(SCRI_analytical_dataset$T0))) {
-    stop(paste0("`reference_dose` (", reference_dose, ") not found in `window_name` column of the dataset."))
+  if (!(reference_date_name %in% unique(SCRI_analytical_dataset$reference_date_name))) {
+    stop(paste0("`reference_date_name` (", reference_date_name, ") not found in `reference_date_name` column of the dataset."))
   }
   
   if (!is.character(reference_window) || length(reference_window) != 1) {

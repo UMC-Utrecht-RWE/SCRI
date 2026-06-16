@@ -31,8 +31,8 @@ prepare_analytical_dataset <- function(SCRI_identified_records,
   # Create event indicator based on date availability
   SCRI_identified_records[, event := data.table::fifelse(is.na(date), 0, 1)]
 
-  sel_cols <- c("id", "outcome", "window_name", "window_length", "event", strata_column_name)
-  by_cols <- c("id", "outcome", "window_name", "window_length", strata_column_name)
+  sel_cols <- c("id","reference_date_name","outcome", "window_name", "window_length", "event", strata_column_name)
+  by_cols <- c("id","reference_date_name","outcome", "window_name", "window_length", strata_column_name)
   # Select relevant columns
   SCRI_identified_records <- SCRI_identified_records[, ..sel_cols, with = F]
 

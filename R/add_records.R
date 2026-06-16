@@ -45,7 +45,7 @@ add_records <- function(window_data,
 
   # Build query to find events within time windows
   query <- paste0(
-    "SELECT id, outcome, window_name, window_length, date, start_date, end_date
+    "SELECT id, reference_date_name, outcome, window_name, window_length, date, start_date, end_date
     FROM (
       SELECT *", rank_clause, "
       FROM (
@@ -53,6 +53,7 @@ add_records <- function(window_data,
           t1.id,
           t2.date,
           t1.outcome,
+          t1.reference_date_name,
           t1.window_name,
           (t1.", end_column_prefix, " - t1.", start_column_prefix, ") AS window_length,
           t1.", start_column_prefix, " AS start_date,
@@ -77,7 +78,7 @@ add_records <- function(window_data,
     }
   }
 
-  results <- data.table::merge.data.table(window_data, results, by.x = c("id", "outcome", "window_name", start_column_prefix, end_column_prefix), by.y = c("id", "outcome", "window_name", "start_date", "end_date"), all = TRUE)
+  results <- data.table::merge.data.table(window_data, results, by.x = c("id","reference_date_name","outcome", "window_name", start_column_prefix, end_column_prefix), by.y = c("id", "reference_date_name","outcome", "window_name", "start_date", "end_date"), all = TRUE)
   results[is.na(date), window_length := get(end_column_prefix) - get(start_column_prefix)]
   return(results)
 }

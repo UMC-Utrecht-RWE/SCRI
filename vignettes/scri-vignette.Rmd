@@ -133,7 +133,8 @@ Apply the statistical model (e.g., conditional logistic regression):
 ```{r}
 results <- apply_analysis(
     SCRI_analytical_dataset = analytical_dataset,
-    reference_window = "clean_lookback_pre_FIRST_TARGET",
+    reference_date_name = "FIRST_TARGET",
+    reference_window = "risk",
     strata_column_name = NULL # or specify for stratified analysis
 )
 DT::datatable(results, options = list(scrollX = TRUE))
