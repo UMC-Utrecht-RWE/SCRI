@@ -5,7 +5,7 @@
 \alias{WindowsMetadata}
 \title{WindowsMetadata}
 \format{
-## `StudyPopulation`
+## `WindowsMetadata`
 A data frame with 10 rows and 5 variables:
 \describe{
  \item{reference_date_name}{On which date column in the StudyPopulation should the start of this window be anchored? (chr)}
