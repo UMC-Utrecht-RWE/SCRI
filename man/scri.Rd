@@ -7,6 +7,7 @@
 scri(
   study_population,
   windows_metadata,
+  window_priority,
   records_table,
   time_varying_table = NULL,
   reference_date_name,
@@ -41,6 +42,8 @@ as to be a combination between window_name and reerence name e.g: clean_lookback
 \item{only_first_date}{A boolean indicating whether to only use the first date. Default is FALSE.}
 
 \item{save_intermediate}{A path to a folder where the different intermediat file are saved}
+
+\item{windows_priority}{Optional long or MxM priority table. If NULL, the generic package configuration is used.}
 }
 \value{
 An object representing the cleaned set of windows for each individual (typically a `data.table`). The structure depends on downstream internal processing steps.
