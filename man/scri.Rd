@@ -31,7 +31,7 @@ scri(
 \item{reference_date_name}{A character vector indicating which column(s) in the study population to use as index date(s).}
 
 \item{reference_window}{A name of the window to which we want to compare this h
-as to be a combination between window_name and reerence name e.g: clean_lookback_pre_FIRST_TARGET}
+as to be a combination between window_name and reerence name e.g: clean_lookback_pre_first_target}
 
 \item{start_followup_criteria}{A character vector of column names defining when follow-up starts.}
 
@@ -72,7 +72,7 @@ result <- scri(
   study_population = StudyPopulation,
   windows_metadata = WindowsMetadata,
   records_table = RecordsTable,
-  reference_date_name = "FIRST_TARGET",
+  reference_date_name = "first_target",
   start_followup_criteria = "op_start_date",
   end_followup_criteria = c("death_date", "general_end_fup")
 )

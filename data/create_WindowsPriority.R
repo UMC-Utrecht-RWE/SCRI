@@ -1,6 +1,6 @@
 # # Load required library
 # library(data.table)
-# 
+#
 # # Create a matrix-like long table for Dose N x Dose N+1 window priority.
 # # In this structure, all combinations where Dose N+1 is the first window
 # # are marked as "B" to mirror the reference diagram.
@@ -12,12 +12,12 @@
 #     dose_n_plus_1_window = window_names,
 #     sorted = FALSE
 #   )
-# 
+#
 #   windows_data[, priority := "B"]
-# 
+#
 #   return(windows_data[])
 # }
-# 
+#
 # # Convert long format to an MxM two-way table.
 # create_windows_priority_mxm <- function(windows_priority_long) {
 #   mxm_table <- dcast(
@@ -25,17 +25,17 @@
 #     dose_n_window ~ dose_n_plus_1_window,
 #     value.var = "priority"
 #   )
-# 
-#   setnames(mxm_table, "dose_n_window", "dose_n_window/dose_n_plus_1_window")
-# 
+#
+#   setnames(mxm_table, "dose_n_window", "dose_n_window_vs_dose_n_plus_1_window")
+#
 #   return(mxm_table[])
 # }
-# 
+#
 # load("~/Documents/GitHub/SCRI/data/WindowsMetadata.rda")
-# 
+#
 # # Execute the function and assign the result to WindowsPriority
 # WindowsPriority <- create_windows_priority(window_names = unique(WindowsMetadata$window_name))
 # WindowsPriority <- create_windows_priority_mxm(WindowsPriority)
-# 
+#
 # # Save as RDS and CSV
 # usethis::use_data(WindowsPriority, overwrite = TRUE)

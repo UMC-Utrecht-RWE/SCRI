@@ -32,8 +32,8 @@ test_that("scri returns analysis table with expected core fields", {
 
   study_population <- data.table::data.table(
     id = as.character(c(1, 2, 3, 4, 5)),
-    FIRST_TARGET = as.Date(c("2021-01-05", "2023-04-05", "2022-01-05", "2021-09-05", "2022-09-05")),
-    SECOND_TARGET = as.Date(c("2022-01-05", "2024-04-05", NA, NA, NA)),
+    first_target = as.Date(c("2021-01-05", "2023-04-05", "2022-01-05", "2021-09-05", "2022-09-05")),
+    second_target = as.Date(c("2022-01-05", "2024-04-05", NA, NA, NA)),
     op_start_date = as.Date(c("2020-05-07", "2020-05-07", "2020-05-07", "2020-05-07", "2020-05-07")),
     death_date = as.Date(c(NA, "2025-05-23", NA, NA, "2022-09-25")),
     general_end_fup = as.Date(c("2021-05-07", "2021-04-14", "2023-01-01", "2023-01-01", "2022-09-25"))
@@ -50,7 +50,7 @@ test_that("scri returns analysis table with expected core fields", {
     windows_metadata = windows_metadata,
     window_priority = windows_priority,
     records_table = records_table,
-    reference_date_name = "FIRST_TARGET",
+    reference_date_name = "first_target",
     reference_window = "control",
     start_followup_criteria = "op_start_date",
     end_followup_criteria = c("death_date", "general_end_fup")
@@ -82,8 +82,8 @@ test_that("scri saves all intermediate outputs when save_intermediate is provide
 
   study_population <- data.table::data.table(
     id = as.character(c(1, 2)),
-    FIRST_TARGET = as.Date(c("2021-01-05", "2023-04-05")),
-    SECOND_TARGET = as.Date(c("2022-01-05", "2024-04-05")),
+    first_target = as.Date(c("2021-01-05", "2023-04-05")),
+    second_target = as.Date(c("2022-01-05", "2024-04-05")),
     op_start_date = as.Date(c("2020-05-07", "2020-05-07")),
     death_date = as.Date(c(NA, NA)),
     general_end_fup = as.Date(c("2022-12-31", "2024-12-31"))
@@ -102,7 +102,7 @@ test_that("scri saves all intermediate outputs when save_intermediate is provide
     windows_metadata = windows_metadata,
     window_priority = windows_priority,
     records_table = records_table,
-    reference_date_name = "FIRST_TARGET",
+    reference_date_name = "first_target",
     reference_window = "control",
     start_followup_criteria = "op_start_date",
     end_followup_criteria = c("death_date", "general_end_fup"),

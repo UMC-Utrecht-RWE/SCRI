@@ -7,7 +7,7 @@ test_that("wrangle_window requires windows_priority when generic config is incom
   sp_obj <- data.table(
     id = c("1", "1"),
     outcome = c("event1", "event1"),
-    t0 = c("FIRST_TARGET", "SECOND_TARGET"),
+    t0 = c("first_target", "second_target"),
     t0_date = c(as.Date("2021-01-01"), as.Date("2021-02-01")),
     start_risk = as.Date(c("2021-01-01", "2021-02-01")),
     end_risk = as.Date(c("2021-01-20", "2021-02-20")),
@@ -33,7 +33,7 @@ test_that("wrangle_window applies custom compatible windows_priority", {
   sp_obj <- data.table(
     id = c("1", "1"),
     outcome = c("event1", "event1"),
-    t0 = c("FIRST_TARGET", "SECOND_TARGET"),
+    t0 = c("first_target", "second_target"),
     t0_date = as.Date(c("2021-01-01", "2021-02-01")),
     start_risk = as.Date(c("2021-01-01", "2021-02-01")),
     end_risk = as.Date(c("2021-01-20", "2021-02-20")),
@@ -67,7 +67,7 @@ test_that("wrangle_window applies overlap rules for N and N+1 over 3 doses", {
   sp_obj <- data.table(
     id = c("1", "1", "1"),
     outcome = c("event1", "event1", "event1"),
-    t0 = c("FIRST_TARGET", "SECOND_TARGET", "THIRD_TARGET"),
+    t0 = c("first_target", "second_target", "third_target"),
     t0_date = as.Date(c("2021-01-01", "2021-02-01", "2021-03-01")),
     start_risk = as.Date(c("2021-01-01", "2021-02-01", "2021-03-01")),
     end_risk = as.Date(c("2021-01-20", "2021-02-20", "2021-03-20")),
@@ -95,7 +95,7 @@ test_that("wrangle_window applies overlap rules for N and N+1 over 3 doses", {
   # Second iteration (N=2 vs N+1=3)
   expect_equal(out$end_risk[2], as.Date("2021-02-09"))
   # Censoring by general_end_fup
-  expect_equal(out$end_risk[3], as.Date(NA)) #Should be NA because both start and end are after the general_end_fup
+  expect_equal(out$end_risk[3], as.Date(NA)) # Should be NA because both start and end are after the general_end_fup
   expect_equal(out$start_risk[3], as.Date(NA))
   expect_equal(out$end_control[3], as.Date("2021-02-25"))
 })

@@ -14,7 +14,7 @@
 #' @param only_first_date A boolean indicating whether to only use the first date. Default is FALSE.
 #' @param save_intermediate A path to a folder where the different intermediat file are saved
 #' @param reference_window A name of the window to which we want to compare this h
-#' as to be a combination between window_name and reerence name e.g: clean_lookback_pre_FIRST_TARGET
+#' as to be a combination between window_name and reerence name e.g: clean_lookback_pre_first_target
 #' @param strata_column_name A name of a strata column used to stratify the analysis
 #' @param time_varying_table TO_BE_DEFINED
 #' @export
@@ -40,7 +40,7 @@
 #'   study_population = StudyPopulation,
 #'   windows_metadata = WindowsMetadata,
 #'   records_table = RecordsTable,
-#'   reference_date_name = "FIRST_TARGET",
+#'   reference_date_name = "first_target",
 #'   start_followup_criteria = "op_start_date",
 #'   end_followup_criteria = c("death_date", "general_end_fup")
 #' )
@@ -103,9 +103,11 @@ scri <- function(study_population,
   # Validate computation of windows
   validate_construct_windows(scri_computed_windows, windows_metadata)
   # Trim windows with censoring criteria and overlapping windows
-  scri_computed_windows_cleaned <- wrangle_window(sp_windows_object = scri_computed_windows, 
-                                                  windows_priority = window_priority,
-                                                  censoring_dates = end_followup_criteria)
+  scri_computed_windows_cleaned <- wrangle_window(
+    sp_windows_object = scri_computed_windows,
+    windows_priority = window_priority,
+    censoring_dates = end_followup_criteria
+  )
   if (!is.null(save_intermediate)) {
     data.table::fwrite(scri_computed_windows_cleaned, file = file.path(save_intermediate, "scri_computed_windows_cleaned.csv"))
   }

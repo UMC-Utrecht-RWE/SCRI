@@ -7,7 +7,7 @@
 #' @param SCRI_analytical_dataset A `data.table` containing the analytical dataset,
 #' including variables: `length`, `outcome`, and others required for SCRI.
 #' @param reference_window A name of the window to which we want to compare this h
-#' as to be a combination between window_name and reerence name e.g: clean_lookback_pre_FIRST_TARGET
+#' as to be a combination between window_name and reerence name e.g: clean_lookback_pre_first_target
 #' @param strata_column_name A name of a strata column used to stratify the analysis
 #' @return A data frame with the combined SCRI results for all outcomes.
 #'
@@ -34,11 +34,11 @@ apply_analysis <- function(SCRI_analytical_dataset,
   if (!is.character(reference_date_name) || length(reference_date_name) != 1) {
     stop("`reference_date_name` must be a single character string.")
   }
-  
+
   if (!(reference_date_name %in% unique(SCRI_analytical_dataset$reference_date_name))) {
     stop(paste0("`reference_date_name` (", reference_date_name, ") not found in `reference_date_name` column of the dataset."))
   }
-  
+
   if (!is.character(reference_window) || length(reference_window) != 1) {
     stop("`reference_window` must be a single character string.")
   }
@@ -61,7 +61,7 @@ apply_analysis <- function(SCRI_analytical_dataset,
   df_res <- data.table::data.table(NULL)
   # create a log length variable to apply compute_SCRI_stats
   SCRI_analytical_dataset[, log_length := log(as.numeric(window_length))]
-  SCRI_analytical_dataset[, reference_window := paste0(reference_date_name,"_", reference_window)]
+  SCRI_analytical_dataset[, reference_window := paste0(reference_date_name, "_", reference_window)]
   outcome_list <- unique(SCRI_analytical_dataset$outcome)
 
   if (!is.null(strata_column_name) && length(strata_column_name) >= 1) {

@@ -45,7 +45,7 @@ construct_windows <- function(study_population,
 
   # calculate start and end date of each window
   studypop_long[, start := reference_date + as.numeric(start_window)]
-  studypop_long[, end := start + as.numeric(length_window) - 1]
+  studypop_long[, end := start + as.numeric(length_window)]
 
   # Keep one row per dose/reference date so downstream wrangling can compare
   # consecutive doses ordered by t0_date.

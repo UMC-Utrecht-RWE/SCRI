@@ -89,17 +89,17 @@ DT::datatable(WindowsPriority, options = list(scrollX = TRUE))
 Calculate the start and end dates for each analysis window. The output is one row per dose/reference date, with a `t0_date` column that is used later to order consecutive doses.
 
 **What happens:**
-- For each person (id) and each reference date (FIRST_TARGET, SECOND_TARGET), windows are computed relative to that date
+- For each person (id) and each reference date (first_target, second_target), windows are computed relative to that date
 - `t0_date` is set equal to the reference date and used downstream to order doses chronologically
 - Window definitions from `WindowsMetadata` (e.g., risk, control, washout) are applied
 - Each row contains start_ and end_ columns for every window type
 
 ```{r}
-# Construct windows for all subjects relative to their FIRST_TARGET and SECOND_TARGET dates
+# Construct windows for all subjects relative to their first_target and second_target dates
 constructed_windows <- construct_windows(
     study_population = StudyPopulation, # Input: subject characteristics and reference dates
     windows_metadata = WindowsMetadata, # Input: window definitions (duration, lag, etc.)
-    reference_date_name = c("FIRST_TARGET", "SECOND_TARGET"), # Dates to anchor windows around
+    reference_date_name = c("first_target", "second_target"), # Dates to anchor windows around
     id_column = "id" # Column identifying each subject
 )
 
@@ -107,7 +107,7 @@ constructed_windows <- construct_windows(
 DT::datatable(head(constructed_windows), options = list(scrollX = TRUE))
 ```
 
-**Output structure:** Each row represents one subject-dose combination. If a subject has 2 reference dates (FIRST_TARGET and SECOND_TARGET), there will be 2 rows per subject. Columns include `id`, `t0_date`, and start_/end_ pairs for each window (e.g., start_risk, end_risk, start_control, end_control).
+**Output structure:** Each row represents one subject-dose combination. If a subject has 2 reference dates (first_target and second_target), there will be 2 rows per subject. Columns include `id`, `t0_date`, and start_/end_ pairs for each window (e.g., start_risk, end_risk, start_control, end_control).
 
 # Step 2: Clean/Trim Windows
 
@@ -131,14 +131,14 @@ DT::datatable(WindowPriority, options = list(scrollX = TRUE))
 
 ```{r}
 # Apply censoring and overlap-priority rules to clean the windows
-cleaned_windows <- wrangle_window(
+wrangled_windows <- wrangle_window(
     constructed_windows, # Input: windows from Step 1
     censoring_dates = c("death_date", "general_end_fup"), # Trim windows at these dates
     windows_priority = WindowPriority # Apply priority rules for N vs N+1 overlaps
 )
 
 # Display cleaned windows (dates may be trimmed or shifted compared to constructed_windows)
-DT::datatable(cleaned_windows, options = list(scrollX = TRUE))
+DT::datatable(wrangled_windows, options = list(scrollX = TRUE))
 ```
 
 **Output changes:** 
@@ -151,7 +151,7 @@ DT::datatable(cleaned_windows, options = list(scrollX = TRUE))
 Identify which outcomes/events occurred within each window.
 
 **What happens:**
-- Each record (outcome event) in `RecordsTable` is matched to the windows in `cleaned_windows`
+- Each record (outcome event) in `RecordsTable` is matched to the windows in `wrangled_windows`
 - If a record's date falls within a window's start and end dates, it is flagged as occurring in that window
 - The `add_records()` function creates indicators for each window showing whether the outcome occurred there
 - Option: Keep only the first event per person, or retain all events
@@ -159,7 +159,7 @@ Identify which outcomes/events occurred within each window.
 ```{r}
 # Match each outcome event to the appropriate window(s)
 identified_records <- add_records(
-    window_data = cleaned_windows, # Input: cleaned windows with adjusted dates
+    window_data = wrangled_windows, # Input: cleaned windows with adjusted dates
     records = RecordsTable, # Input: outcome events with dates
     only_first_record = TRUE # TRUE: keep only first event per subject; FALSE: keep all
 )
@@ -217,7 +217,7 @@ Apply the statistical model to estimate exposure effects.
 # Fit conditional logistic regression comparing windows within persons
 results <- apply_analysis(
     SCRI_analytical_dataset = analytical_dataset, # Input: aggregated analytical dataset
-    reference_date_name = "FIRST_TARGET", # Which reference date to use
+    reference_date_name = "first_target", # Which reference date to use
     reference_window = "risk", # Which window serves as the baseline (usually "control")
     strata_column_name = NULL # Optional: column for stratified analysis
 )
@@ -248,7 +248,7 @@ final_results <- SCRI::scri(
     windows_metadata = WindowsMetadata, # Window definitions
     window_priority = WindowPriority, # Priority rules for dose overlaps
     records_table = RecordsTable, # Outcome events
-    reference_date_name = "FIRST_TARGET", # Which reference date to use
+    reference_date_name = "first_target", # Which reference date to use
     reference_window = "control", # Baseline window for comparison
     start_followup_criteria = "op_start_date", # Window construction start point
     end_followup_criteria = c("death_date", "general_end_fup"), # Censoring dates
