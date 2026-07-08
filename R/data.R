@@ -10,7 +10,7 @@
 #' }
 #'
 #' @details
-#' This dataset is used by \code{\link{get_valid_models}} to retrieve available models.
+#' This dataset is used by \code{\link{get_ValidModels}} to retrieve available models.
 #' When adding new models to SCRI, add a corresponding row to this dataset.
 #'
 #' The current valid models are:
@@ -20,11 +20,11 @@
 #' }
 #'
 #' @examples
-#' data("valid_models")
-#' print(valid_models)
+#' data("ValidModels")
+#' print(ValidModels)
 #'
 #' @keywords datasets
-"valid_models"
+"ValidModels"
 
 #' Default Model Configuration for Study Designs
 #'
@@ -34,11 +34,11 @@
 #' @format A data frame with 4 rows and 2 columns:
 #' \describe{
 #'   \item{design_name}{Character. Study design identifier (e.g., "scri", "sccs", "scad", "ccs").}
-#'   \item{model_name}{Character. The default model for this design. Must exist in \code{\link{valid_models}}.}
+#'   \item{model_name}{Character. The default model for this design. Must exist in \code{\link{ValidModels}}.}
 #' }
 #'
 #' @details
-#' This dataset is accessed by \code{\link{get_default_models}} when model_name is NULL in \code{\link{validate_model_name}}.
+#' This dataset is accessed by \code{\link{get_DefaultModels}} when model_name is NULL in \code{\link{validate_model_name}}.
 #'
 #' Current defaults by design:
 #' \itemize{
@@ -50,12 +50,12 @@
 #'
 #' To change the default model for a design, update the corresponding row in data/create_models.R
 #' and regenerate the data files with:
-#' \code{usethis::use_data(valid_models, overwrite = TRUE)}
-#' \code{usethis::use_data(default_models, overwrite = TRUE)}
+#' \code{usethis::use_data(ValidModels, overwrite = TRUE)}
+#' \code{usethis::use_data(DefaultModels, overwrite = TRUE)}
 #'
 #' @examples
-#' data("default_models")
-#' print(default_models)
+#' data("DefaultModels")
+#' print(DefaultModels)
 #'
 #' @keywords datasets
-"default_models"
+"DefaultModels"

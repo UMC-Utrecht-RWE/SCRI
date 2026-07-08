@@ -7,11 +7,11 @@
 validate_windows_metadata(data, error_on_overlap = FALSE)
 }
 \arguments{
-\item{data}{A WindowsMetadata}
+\item{data}{A WindowMetadata}
 
 \item{error_on_overlap}{TRUE when we want to stop executing if there is an overlap between windows}
 }
 \description{
-This function checks if the WindowsMetadata inputed in the function is correctly
+This function checks if the WindowMetadata inputed in the function is correctly
 }
 \keyword{internal}

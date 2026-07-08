@@ -4,7 +4,7 @@ library(testthat)
 
 test_that("rename_anchor renames a single column correctly", {
   # Setup test data
-  test_data <- data.table(
+  test_data <- data.table::data.table(
     id = 1:3,
     index_date = as.Date(c("2023-01-01", "2023-02-15", "2023-03-10"))
   )
@@ -28,7 +28,7 @@ test_that("rename_anchor renames a single column correctly", {
 
 test_that("rename_anchor renames multiple columns correctly", {
   # Setup test data with multiple date columns
-  test_data <- data.table(
+  test_data <- data.table::data.table(
     id = 1:3,
     index_date = as.Date(c("2023-01-01", "2023-02-15", "2023-03-10")),
     cohort_entry = as.Date(c("2022-12-01", "2023-01-01", "2023-02-01")),
@@ -45,7 +45,7 @@ test_that("rename_anchor renames multiple columns correctly", {
 })
 
 test_that("rename_anchor renames multiple columns correctly", {
-  test_data <- data.table(
+  test_data <- data.table::data.table(
     id = 1:3,
     index_date = as.Date(c("2023-01-01", "2023-02-15", "2023-03-10")),
     cohort_entry = as.Date(c("2022-12-01", "2023-01-01", "2023-02-01")),
@@ -63,12 +63,12 @@ test_that("rename_anchor renames multiple columns correctly", {
 
 test_that("rename_anchor handles edge cases", {
   # Empty dataframe
-  test_empty <- data.table(id = integer(0), ref_date = as.Date(character(0)))
+  test_empty <- data.table::data.table(id = integer(0), ref_date = as.Date(character(0)))
   result_empty <- rename_anchor(test_empty, "ref_date")
   expect_equal(names(result_empty$data), c("id", "anch_1"))
   
   # Empty prefix
-  test_data <- data.table(id = 1:3, index_date = as.Date(c("2023-01-01", "2023-02-15", "2023-03-10")))
+  test_data <- data.table::data.table(id = 1:3, index_date = as.Date(c("2023-01-01", "2023-02-15", "2023-03-10")))
   result_empty_prefix <- rename_anchor(test_data, "index_date", prefix_name = "")
   expect_equal(names(result_empty_prefix$data), c("id", "1"))
 })

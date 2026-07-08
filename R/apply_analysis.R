@@ -6,8 +6,9 @@
 #'
 #' @param SCRI_analytical_dataset A `data.table` containing the analytical dataset,
 #' including variables: `length`, `outcome`, and others required for SCRI.
-#' @param reference_window A name of the window to which we want to compare this h
-#' as to be a combination between window_name and reerence name e.g: clean_lookback_pre_first_target
+#' @param reference_date_name A name of the reference date e.g.: covid_vaccine_1
+#' @param reference_window A name of the window to which we want to compare this 
+#' has to be a combination between window_name and reerence name e.g: clean_lookback_pre_covid_vaccine_1
 #' @param strata_column_name A name of a strata column used to stratify the analysis
 #' @return A data frame with the combined SCRI results for all outcomes.
 #'

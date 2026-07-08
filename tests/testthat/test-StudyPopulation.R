@@ -5,7 +5,7 @@ test_that("StudyPopulation has correct structure", {
   expect_s3_class(StudyPopulation, "data.table")
 
   # Expected column names
-  reference_date_names <- c("first_target", "second_target")
+  reference_date_names <- c("covid_vaccine_1", "covid_vaccine_2")
   start_followup_criteria <- "op_start_date"
   end_followup_criteria <- c("death_date", "general_end_fup")
   expected_columns <- c("id", reference_date_names, start_followup_criteria, end_followup_criteria)

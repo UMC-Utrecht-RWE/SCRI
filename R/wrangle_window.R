@@ -1,6 +1,6 @@
-#' Clean the start and end dates of windows created by construct_windows() based on censoring dates
+#' Clean the start and end dates of windows created by construct_window() based on censoring dates
 #'
-#' @param sp_windows_object data.table object containing named start and end date columns, typically output of construct_windows()
+#' @param sp_windows_object data.table object containing named start and end date columns, typically output of construct_window()
 #' @param censoring_dates column name(s) of censoring dates
 #' @param windows_priority Optional long or MxM priority table. If NULL, the generic package configuration is used.
 #'
@@ -110,14 +110,10 @@ wrangle_window <- function(sp_windows_object,
       return(normalize_windows_priority(priority_obj))
     }
 
-    candidate_files <- c("data/WindowsPriority.rds", "../data/WindowsPriority.rds", "../../data/WindowsPriority.rds")
-    existing_file <- candidate_files[file.exists(candidate_files)][1]
-    if (is.na(existing_file)) {
-      stop("Could not find package priority file: data/WindowsPriority.rds")
-    }
+    data("WindowPriority")
 
     print("Generic configuration file was loaded")
-    return(normalize_windows_priority(readRDS(existing_file)))
+    return(normalize_windows_priority(WindowPriority))
   }
 
   check_priority_compatibility <- function(priority_long, parsed_cols, using_generic_config) {
@@ -154,7 +150,7 @@ wrangle_window <- function(sp_windows_object,
     if (using_generic_config) {
       stop(
         paste0(
-          "Generic WindowsPriority configuration is not compatible with windows in sp_windows_object.",
+          "Generic WindowPriority configuration is not compatible with windows in sp_windows_object.",
           details,
           " Please provide a compatible windows_priority input."
         )

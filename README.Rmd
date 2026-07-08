@@ -29,17 +29,17 @@ The package implements a processing pipeline, which takes a study population and
 
 ![image](https://github.com/UMC-Utrecht-RWE/SCRI/assets/138911044/8cbb1033-3e7b-4a05-9c0f-904e55f9fea3)
 
-The package comes with sample input files for the `StudyPopulation` and `WindowsMetadata` files respectively.
+The package comes with sample input files for the `StudyPopulation` and `WindowMetadata` files respectively.
 
 ### Step 1: Computing Windows
 
-In this step, we use the `construct_windows()` function to calculate the start and end dates of different analysis windows. Let's start by grabbing the relevant windows from our example metadata file
+In this step, we use the `construct_window()` function to calculate the start and end dates of different analysis windows. Let's start by grabbing the relevant windows from our example metadata file
 
 ```{r}
 # library(SCRI)
 data("StudyPopulation")
-data("WindowsMetadata")
-windowmet <- WindowsMetadata[grepl("post",WindowsMetadata$window_name),]
+data("WindowMetadata")
+windowmet <- WindowMetadata[grepl("post",WindowMetadata$window_name),]
 print(windowmet)
 ```
 
@@ -50,10 +50,10 @@ We are going to use this object in combination with our `StudyPopulation`, which
 head(StudyPopulation)
 ```
 
-The `construct_windows()` returns start and end dates for each of the windows under consideration, anchored to the relevant reference date. The output by default is wide format. The output object also inherits all columns from the input `studypopulation`
+The `construct_window()` returns start and end dates for each of the windows under consideration, anchored to the relevant reference date. The output by default is wide format. The output object also inherits all columns from the input `studypopulation`
 
 ```{r}
-sp_windows <- SCRI::construct_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
+sp_windows <- SCRI::construct_window(studypopulation = StudyPopulation, windowmeta= windowmet, 
                 id_column = "id")
 
 sp_windows[1,c("person_id", "start_risk_post","end_risk_post","start_control_post","end_control_post")]
@@ -67,7 +67,7 @@ Now that we have the start and end dates of each window, we can proceed to the s
 
 (2) If a censoring event occurs *between* windows, all future start and end dates are set to NA.
 
-The function `wrangle_window()` takes as input a wide-format dataset following the same format as that created by `construct_windows(..., output_format = "wide")`. In addition, the function takes the names of different date columns in the input dataset which are used for censoring. 
+The function `wrangle_window()` takes as input a wide-format dataset following the same format as that created by `construct_window(..., output_format = "wide")`. In addition, the function takes the names of different date columns in the input dataset which are used for censoring. 
 
 To illustrate, consider this part of the example data with a single censoring date, general end of follow-up.
 

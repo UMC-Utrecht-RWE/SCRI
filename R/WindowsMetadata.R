@@ -1,14 +1,13 @@
-#' WindowsMetadata
+#' WindowMetadata
 #'
 #' A metadata file, describing different window types (control, exposed, lookback, induction, washout) for SCRI analysis and how they are anchored
 #'
-#' @format ## `WindowsMetadata`
-#' A data frame with 10 rows and 5 variables:
+#' @format ## `WindowMetadata`
+#' A data frame with 8 rows and 4 variables:
 #' \describe{
-#'  \item{reference_date_name}{On which date column in the StudyPopulation should the start of this window be anchored? (chr)}
-#'   \item{event}{Optional event identifier (chr)}
+#'   \item{outcome}{Outcome identifier (e.g., myocarditis, pericarditis).}
 #'   \item{window_name}{window identifier (chr)}
 #'   \item{start_window}{How many days before reference_date does the window start? start_date = reference_date + start_window}
 #'   \item{length_window}{How many days after start_date does the window end? end_date = reference_date + start_window + length_window -1}
 #' }
-"WindowsMetadata"
+"WindowMetadata"

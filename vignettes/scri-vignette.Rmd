@@ -28,6 +28,13 @@ library(SCRI)
 
 The **Self-Control-Risk-Interval (SCRI)** R package provides a pipeline apply the Self-Controlled Risk Interval (SCRI) analysis in a modular and reproducible format. 
 
+This vignette focuses on a vaccine safety setting aligned with the package manuscript introduction. The study question is whether the risk of acute events of special interest increases after COVID-19 vaccination compared with control periods within the same person.
+
+For this worked example:
+- Exposure anchors are `covid_vaccine_1` and `covid_vaccine_2`
+- Outcomes of interest are `myocarditis` and `pericarditis`
+- Censoring is applied using `death_date` and `general_end_fup`
+
 # Installation
 
 You can install the development version of the package from GitHub:
@@ -63,11 +70,11 @@ data("StudyPopulation")
 DT::datatable(StudyPopulation, options = list(scrollX = TRUE))
 ```
 
-**2. WindowsMetadata:** Definitions of analysis windows (risk, control, washout, etc.) with their durations and timing relative to reference dates
+**2. WindowMetadata:** Definitions of analysis windows (risk, control, washout, etc.) with their durations and timing relative to reference dates
 
 ```{r}
-data("WindowsMetadata")
-DT::datatable(WindowsMetadata, options = list(scrollX = TRUE))
+data("WindowMetadata")
+DT::datatable(WindowMetadata, options = list(scrollX = TRUE))
 ```
 
 **3. RecordsTable:** Outcome events (e.g., adverse events, hospitalizations) with dates for each subject
@@ -77,11 +84,11 @@ data("RecordsTable")
 DT::datatable(RecordsTable, options = list(scrollX = TRUE))
 ```
 
-**4. WindowsPriority:** Priority rules defining which window takes precedence when windows from consecutive doses overlap
+**4. WindowPriority:** Priority rules defining which window takes precedence when windows from consecutive doses overlap
 
 ```{r}
-data("WindowsPriority")
-DT::datatable(WindowsPriority, options = list(scrollX = TRUE))
+data("WindowPriority")
+DT::datatable(WindowPriority, options = list(scrollX = TRUE))
 ```
 
 # Step 1: Construct Windows
@@ -89,17 +96,17 @@ DT::datatable(WindowsPriority, options = list(scrollX = TRUE))
 Calculate the start and end dates for each analysis window. The output is one row per dose/reference date, with a `t0_date` column that is used later to order consecutive doses.
 
 **What happens:**
-- For each person (id) and each reference date (first_target, second_target), windows are computed relative to that date
+- For each person (id) and each reference date (covid_vaccine_1, covid_vaccine_2), windows are computed relative to that date
 - `t0_date` is set equal to the reference date and used downstream to order doses chronologically
-- Window definitions from `WindowsMetadata` (e.g., risk, control, washout) are applied
+- Window definitions from `WindowMetadata` (e.g., risk, control, washout) are applied
 - Each row contains start_ and end_ columns for every window type
 
 ```{r}
-# Construct windows for all subjects relative to their first_target and second_target dates
-constructed_windows <- construct_windows(
+# Construct windows for all subjects relative to their covid_vaccine_1 and covid_vaccine_2 dates
+constructed_windows <- construct_window(
     study_population = StudyPopulation, # Input: subject characteristics and reference dates
-    windows_metadata = WindowsMetadata, # Input: window definitions (duration, lag, etc.)
-    reference_date_name = c("first_target", "second_target"), # Dates to anchor windows around
+    windows_metadata = WindowMetadata, # Input: window definitions (duration, lag, etc.)
+    reference_date_name = c("covid_vaccine_1", "covid_vaccine_2"), # Dates to anchor windows around
     id_column = "id" # Column identifying each subject
 )
 
@@ -107,7 +114,7 @@ constructed_windows <- construct_windows(
 DT::datatable(head(constructed_windows), options = list(scrollX = TRUE))
 ```
 
-**Output structure:** Each row represents one subject-dose combination. If a subject has 2 reference dates (first_target and second_target), there will be 2 rows per subject. Columns include `id`, `t0_date`, and start_/end_ pairs for each window (e.g., start_risk, end_risk, start_control, end_control).
+**Output structure:** Each row represents one subject-dose combination. If a subject has 2 reference dates (covid_vaccine_1 and covid_vaccine_2), there will be 2 rows per subject. Columns include `id`, `t0_date`, and start_/end_ pairs for each window (e.g., start_risk, end_risk, start_control, end_control).
 
 # Step 2: Clean/Trim Windows
 
@@ -122,9 +129,6 @@ Apply censoring rules (e.g., end of follow-up or death) and overlap-priority rul
 The priority rules define all possible combinations between window types. Within each cell, "A" represents priority of dose_n over dose_n_plus_1 and "B" represents the opposite.
 
 ```{r}
-# Load the priority configuration (pre-computed for this analysis)
-WindowPriority <- readRDS("../data/WindowsPriority.rds")
-
 # Display priority rules: which window takes precedence in overlaps
 DT::datatable(WindowPriority, options = list(scrollX = TRUE))
 ```
@@ -217,7 +221,7 @@ Apply the statistical model to estimate exposure effects.
 # Fit conditional logistic regression comparing windows within persons
 results <- apply_analysis(
     SCRI_analytical_dataset = analytical_dataset, # Input: aggregated analytical dataset
-    reference_date_name = "first_target", # Which reference date to use
+    reference_date_name = "covid_vaccine_1", # Which reference date to use
     reference_window = "risk", # Which window serves as the baseline (usually "control")
     strata_column_name = NULL # Optional: column for stratified analysis
 )
@@ -245,10 +249,10 @@ You can use the main `scri()` function to run the entire pipeline end-to-end in 
 # Run complete SCRI analysis in one function call
 final_results <- SCRI::scri(
     study_population = StudyPopulation, # Subject data with reference dates
-    windows_metadata = WindowsMetadata, # Window definitions
+    window_metadata = WindowMetadata, # Window definitions
     window_priority = WindowPriority, # Priority rules for dose overlaps
     records_table = RecordsTable, # Outcome events
-    reference_date_name = "first_target", # Which reference date to use
+    reference_date_name = "covid_vaccine_1", # Which reference date to use
     reference_window = "control", # Baseline window for comparison
     start_followup_criteria = "op_start_date", # Window construction start point
     end_followup_criteria = c("death_date", "general_end_fup"), # Censoring dates
@@ -273,7 +277,7 @@ DT::datatable(final_results, options = list(scrollX = TRUE))
 You can query available self-controlled designs and valid models:
 
 ```{r}
-get_valid_models()
+get_ValidModels()
 ```
 
 # Customization
@@ -281,11 +285,11 @@ get_valid_models()
 The SCRI pipeline is highly customizable at multiple levels:
 
 -   **Window definitions:** 
-    - Edit `WindowsMetadata` to change risk/control period durations, lags, and structure
+    - Edit `WindowMetadata` to change risk/control period durations, lags, and structure
     - Example: Extend washout period from 7 to 14 days by modifying the `duration` or `lag` columns
     
 -   **Priority rules:** 
-    - Modify `WindowsPriority` to define how overlaps between consecutive doses are resolved
+    - Modify `WindowPriority` to define how overlaps between consecutive doses are resolved
     - Example: Switch priority "A" ↔ "B" to give dose N+1 precedence instead of dose N
     
 -   **Stratification:** 
@@ -318,5 +322,4 @@ For more information, advanced usage, and troubleshooting, please see:
 - GitHub repository: UMC-Utrecht-RWE/SCRI
 - Published methods paper: [Reference as applicable]
 
-\`\`\`
 </div>

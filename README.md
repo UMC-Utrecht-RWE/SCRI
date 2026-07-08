@@ -37,28 +37,28 @@ alt="image" />
 </figure>
 
 The package comes with sample input files for the `StudyPopulation` and
-`WindowsMetadata` files respectively.
+`WindowMetadata` files respectively.
 
 ### Step 1: Computing Windows
 
-In this step, we use the `construct_windows()` function to calculate the
+In this step, we use the `construct_window()` function to calculate the
 start and end dates of different analysis windows. Let’s start by
 grabbing the relevant windows from our example metadata file
 
 ``` r
 # library(SCRI)
 data("StudyPopulation")
-data("WindowsMetadata")
-windowmet <- WindowsMetadata[grepl("post",WindowsMetadata$window_name),]
+data("WindowMetadata")
+windowmet <- WindowMetadata[grepl("post",WindowMetadata$window_name),]
 print(windowmet)
 ```
 
     ##     event         window_name reference_date start_window length_window
-    ## 5  AESI_1 clean_lookback_post   FIRST_TARGET         -365           365
-    ## 6  AESI_1           risk_post   FIRST_TARGET            1            42
-    ## 7  AESI_1        washout_post   FIRST_TARGET           43            30
-    ## 8  AESI_1        control_post   FIRST_TARGET           73            60
-    ## 10 AESI_1      induction_post   FIRST_TARGET            0             1
+    ## 5  AESI_1 clean_lookback_post   covid_vaccine_1         -365           365
+    ## 6  AESI_1           risk_post   covid_vaccine_1            1            42
+    ## 7  AESI_1        washout_post   covid_vaccine_1           43            30
+    ## 8  AESI_1        control_post   covid_vaccine_1           73            60
+    ## 10 AESI_1      induction_post   covid_vaccine_1            0             1
 
 We are going to use this object in combination with our
 `StudyPopulation`, which contains one row per unit of analysis, with
@@ -69,7 +69,7 @@ relevant in future steps.
 head(StudyPopulation)
 ```
 
-    ##   person_id op_start_date FIRST_TARGET SECOND_TARGET death_date general_end_fup
+    ##   person_id op_start_date covid_vaccine_1 covid_vaccine_2 death_date general_end_fup
     ## 1         1    2013-04-26   2021-02-11          <NA>       <NA>      2021-05-07
     ## 2         2    2012-10-31   2021-08-17          <NA>       <NA>      2021-11-10
     ## 3         3    2018-07-08   2021-01-28    2021-03-20       <NA>      2021-06-13
@@ -77,13 +77,13 @@ head(StudyPopulation)
     ## 5         5    2017-10-05   2021-04-12          <NA>       <NA>      2021-07-06
     ## 6         6    2013-04-01   2021-02-25          <NA> 2021-09-03      2021-05-21
 
-The `construct_windows()` returns start and end dates for each of the
+The `construct_window()` returns start and end dates for each of the
 windows under consideration, anchored to the relevant reference date.
 The output by default is wide format. The output object also inherits
 all columns from the input `studypopulation`
 
 ``` r
-sp_windows <- SCRI::construct_windows(studypopulation = StudyPopulation, windowmeta= windowmet, 
+sp_windows <- SCRI::construct_window(studypopulation = StudyPopulation, windowmeta= windowmet, 
                 id_column = "person_id")
 
 sp_windows[1,c("person_id", "start_risk_post","end_risk_post","start_control_post","end_control_post")]
@@ -111,7 +111,7 @@ functionality according to two rules:
 
 The function `wrangle_window()` takes as input a wide-format dataset
 following the same format as that created by
-`construct_windows(..., output_format = "wide")`. In addition, the
+`construct_window(..., output_format = "wide")`. In addition, the
 function takes the names of different date columns in the input dataset
 which are used for censoring.
 

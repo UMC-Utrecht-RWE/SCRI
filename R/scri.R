@@ -5,8 +5,8 @@
 #' preparation, and model fitting.
 #'
 #' @param study_population A `data.table` with one row per individual and relevant date columns. Must include the reference date(s) and follow-up criteria.
-#' @param windows_metadata A `data.table` describing exposure and control windows, their types, and how they are anchored to the study population.
-#' @param windows_priority Optional long or MxM priority table. If NULL, the generic package configuration is used.
+#' @param window_metadata A `data.table` describing exposure and control windows, their types, and how they are anchored to the study population.
+#' @param window_priority Optional long or MxM priority table. If NULL, the generic package configuration is used.
 #' @param records_table A `data.table` with the records related to the outcomes. This is composed by id, date and value of the record.
 #' @param reference_date_name A character vector indicating which column(s) in the study population to use as index date(s).
 #' @param start_followup_criteria A character vector of column names defining when follow-up starts.
@@ -14,7 +14,7 @@
 #' @param only_first_date A boolean indicating whether to only use the first date. Default is FALSE.
 #' @param save_intermediate A path to a folder where the different intermediat file are saved
 #' @param reference_window A name of the window to which we want to compare this h
-#' as to be a combination between window_name and reerence name e.g: clean_lookback_pre_first_target
+#' as to be a combination between window_name and reerence name e.g: clean_lookback_pre_covid_vaccine_1
 #' @param strata_column_name A name of a strata column used to stratify the analysis
 #' @param time_varying_table TO_BE_DEFINED
 #' @export
@@ -22,13 +22,13 @@
 #' @details
 #' The function performs several internal steps:
 #' \itemize{
-#'   \item Validates that the structure and content of `study_population` and `windows_metadata` are correctly defined
+#'   \item Validates that the structure and content of `study_population` and `window_metadata` are correctly defined
 #'   \item Computes exposure and control windows based on the provided metadata
 #'   \item Trims windows using censoring criteria from `end_followup_criteria`
 #' }
 #'
 #' If needed, users can also run the validation helpers independently:
-#' `validate_study_population()` and `validate_windows_metadata()`.
+#' `validate_study_population()` and `validate_window_metadata()`.
 #'
 #' Note: The column name `int_censdate` is reserved for internal use. The function will stop if it is included in `end_followup_criteria`.
 #'
@@ -38,16 +38,16 @@
 #' \dontrun{
 #' result <- scri(
 #'   study_population = StudyPopulation,
-#'   windows_metadata = WindowsMetadata,
+#'   window_metadata = WindowMetadata,
 #'   records_table = RecordsTable,
-#'   reference_date_name = "first_target",
+#'   reference_date_name = "covid_vaccine_1",
 #'   start_followup_criteria = "op_start_date",
 #'   end_followup_criteria = c("death_date", "general_end_fup")
 #' )
 #' }
 #'
 scri <- function(study_population,
-                 windows_metadata,
+                 window_metadata,
                  window_priority,
                  records_table,
                  time_varying_table = NULL,
@@ -84,24 +84,24 @@ scri <- function(study_population,
     strata_column_name = strata_column_name,
     extra_date_columns = c(start_followup_criteria, end_followup_criteria)
   )
-  # Check WindowsMetadataDataset
-  validate_windows_metadata(windows_metadata)
+  # Check WindowMetadataDataset
+  validate_window_metadata(window_metadata)
   # Rename anchor names
   result_rename <- rename_anchor(study_population, reference_date_name)
   study_population <- result_rename$data
   reference_date_name <- result_rename$new_names
 
   # Compute windows for each person
-  scri_computed_windows <- construct_windows(
+  scri_computed_windows <- construct_window(
     study_population = study_population,
-    windows_metadata = windows_metadata,
+    window_metadata = window_metadata,
     reference_date_name = reference_date_name
   )
   if (!is.null(save_intermediate)) {
     data.table::fwrite(scri_computed_windows, file = file.path(save_intermediate, "scri_computed_windows.csv"))
   }
   # Validate computation of windows
-  validate_construct_windows(scri_computed_windows, windows_metadata)
+  validate_construct_window(scri_computed_windows, window_metadata)
   # Trim windows with censoring criteria and overlapping windows
   scri_computed_windows_cleaned <- wrangle_window(
     sp_windows_object = scri_computed_windows,

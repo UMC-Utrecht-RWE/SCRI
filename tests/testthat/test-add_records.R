@@ -7,12 +7,12 @@ test_that("add_records returns records within specified windows (long format)", 
       "2023-02-01", "2023-02-10", "2023-02-25", "2023-03-01"
     )),
     value = c(10, 20, 30, 40, 50, 60, 70, 80),
-    outcome = c("event1", "event1", "event1", "event1", "event1", "event1", "event1", "event1")
+    outcome = c("myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis")
   )
 
   window_data <- data.table::data.table(
     id = c(1, 1, 2, 2),
-    outcome = c("event1", "event1", "event1", "event1"),
+    outcome = c("myocarditis", "myocarditis", "myocarditis", "myocarditis"),
     reference_date_name = c("TARGET1","TARGET1","TARGET1","TARGET1"),
     window_name = c("control", "risk", "control", "risk"),
     start_date = as.Date(c("2023-01-01", "2023-01-11", "2023-02-01", "2023-02-21")),
@@ -49,12 +49,12 @@ test_that("add_records with only_first_record = TRUE returns only first record p
     id = c(1, 1, 1, 1),
     date = as.Date(c("2023-01-01", "2023-01-05", "2023-01-15", "2023-01-25")),
     value = c(10, 20, 30, 40),
-    outcome = c("event1", "event1", "event1", "event1")
+    outcome = c("myocarditis", "myocarditis", "myocarditis", "myocarditis")
   )
 
   window_data <- data.table::data.table(
     id = 1,
-    outcome = "event1",
+    outcome = "myocarditis",
     reference_date_name = c("TARGET1"),
     window_name = "control",
     start_date = as.Date("2023-01-01"),
@@ -82,12 +82,12 @@ test_that("add_records matches records based on outcome", {
     id = c(1, 1, 1, 1),
     date = as.Date(c("2023-01-01", "2023-01-05", "2023-01-15", "2023-01-25")),
     value = c(10, 20, 30, 40),
-    outcome = c("event1", "event1", "event2", "event2")
+    outcome = c("myocarditis", "myocarditis", "event2", "event2")
   )
 
   window_data <- data.table::data.table(
     id = c(1, 1),
-    outcome = c("event1", "event2"),
+    outcome = c("myocarditis", "event2"),
     reference_date_name = c("TARGET1","TARGET1"),
     window_name = c("window1", "window2"),
     start_date = as.Date(c("2023-01-01", "2023-01-15")),
@@ -103,9 +103,9 @@ test_that("add_records matches records based on outcome", {
     is_wide_format = FALSE
   )
 
-  # event1 window should have event1 records
-  event1_records <- result[outcome == "event1" & !is.na(date)]
-  expect_true(all(event1_records$outcome == "event1"))
+  # myocarditis window should have myocarditis records
+  myocarditis_records <- result[outcome == "myocarditis" & !is.na(date)]
+  expect_true(all(myocarditis_records$outcome == "myocarditis"))
 
   # event2 window should have event2 records
   event2_records <- result[outcome == "event2" & !is.na(date)]
@@ -118,12 +118,12 @@ test_that("add_records handles case where no records fall within windows", {
     id = 1,
     date = as.Date("2023-06-01"),
     value = 100,
-    outcome = "event1"
+    outcome = "myocarditis"
   )
 
   window_data <- data.table::data.table(
     id = 1,
-    outcome = "event1",
+    outcome = "myocarditis",
     reference_date_name = c("TARGET1"),
     window_name = "control",
     start_date = as.Date("2023-01-01"),
@@ -150,12 +150,12 @@ test_that("add_records returns correct data types", {
     id = c(1, 1),
     date = as.Date(c("2023-01-01", "2023-01-05")),
     value = c(10, 20),
-    outcome = c("event1", "event1")
+    outcome = c("myocarditis", "myocarditis")
   )
 
   window_data <- data.table::data.table(
     id = 1,
-    outcome = "event1",
+    outcome = "myocarditis",
     window_name = "control",
     reference_date_name = c("TARGET1"),
     start_date = as.Date("2023-01-01"),
@@ -186,12 +186,12 @@ test_that("add_records calculates window length correctly", {
     id = 1,
     date = as.Date("2023-01-05"),
     value = 100,
-    outcome = "event1"
+    outcome = "myocarditis"
   )
 
   window_data <- data.table::data.table(
     id = 1,
-    outcome = "event1",
+    outcome = "myocarditis",
     reference_date_name = c("TARGET1"),
     window_name = "control",
     start_date = as.Date("2023-01-01"),
@@ -220,12 +220,12 @@ test_that("add_records includes records on boundary dates", {
     id = c(1, 1, 1),
     date = as.Date(c("2023-01-01", "2023-01-15", "2023-01-31")),
     value = c(10, 20, 30),
-    outcome = c("event1", "event1", "event1")
+    outcome = c("myocarditis", "myocarditis", "myocarditis")
   )
 
   window_data <- data.table::data.table(
     id = 1,
-    outcome = "event1",
+    outcome = "myocarditis",
     reference_date_name = c("TARGET1"),
     window_name = "control",
     start_date = as.Date("2023-01-01"),
@@ -252,7 +252,7 @@ test_that("add_records includes records on boundary dates", {
 test_that("melt_window_data converts wide format to long format", {
   window_data_wide <- data.table::data.table(
     id = c(1, 2),
-    outcome = c("event1", "event1"),
+    outcome = c("myocarditis", "myocarditis"),
     reference_date_name = c("TARGET1","TARGET1"),
     start_control = as.Date(c("2023-01-01", "2023-02-01")),
     end_control = as.Date(c("2023-01-31", "2023-02-28")),

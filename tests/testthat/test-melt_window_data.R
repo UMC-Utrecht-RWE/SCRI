@@ -3,7 +3,7 @@
 test_that("melt_window_data returns a data table, correct number of rows and correct column names", {
   wide_file_windows_trimmed <- data.table::data.table(
     id = 1:3,
-    outcome = c('event1','event2','event1'),
+    outcome = c('myocarditis','event2','myocarditis'),
     start_window1 = c("2021-01-01", "2021-02-01", "2021-03-01"),
     end_window1 = c("2021-01-31", "2021-02-28", "2021-03-31"),
     start_window2 = c("2021-04-01", "2021-05-01", "2021-06-01"),
@@ -24,7 +24,7 @@ test_that("melt_window_data handles NA values correctly", {
   # Create a mock wide_file_windows_trimmed data frame with NA values
   wide_file_windows_trimmed <- data.table::data.table(
     id = 1:3,
-    outcome = c('event1','event2','event1'),
+    outcome = c('myocarditis','event2','myocarditis'),
     start_window1 = c("2021-01-01", NA, "2021-03-01"),
     end_window1 = c("2021-01-31", "2021-02-28", "2021-03-31"),
     start_window2 = c("2021-04-01", "2021-05-01", "2021-06-01"),
@@ -41,7 +41,7 @@ test_that("melt_window_data handles non-default prefixes correctly", {
   # Create a mock wide_file_windows_trimmed data frame with non-default prefixes
   wide_file_windows_trimmed <- data.table::data.table(
     id = 1:3,
-    outcome = c('event1','event2','event1'),
+    outcome = c('myocarditis','event2','myocarditis'),
     begin_window1 = c("2021-01-01", "2021-02-01", "2021-03-01"),
     finish_window1 = c("2021-01-31", "2021-02-28", "2021-03-31"),
     begin_window2 = c("2021-04-01", "2021-05-01", "2021-06-01"),

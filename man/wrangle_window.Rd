@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrangle_window.R
 \name{wrangle_window}
 \alias{wrangle_window}
-\title{Clean the start and end dates of windows created by construct_windows() based on censoring dates}
+\title{Clean the start and end dates of windows created by construct_window() based on censoring dates}
 \usage{
 wrangle_window(
   sp_windows_object,
@@ -11,7 +11,7 @@ wrangle_window(
 )
 }
 \arguments{
-\item{sp_windows_object}{data.table object containing named start and end date columns, typically output of construct_windows()}
+\item{sp_windows_object}{data.table object containing named start and end date columns, typically output of construct_window()}
 
 \item{censoring_dates}{column name(s) of censoring dates}
 
@@ -21,5 +21,5 @@ wrangle_window(
 object of the same dimensions and type as the input, with end dates possibly censored
 }
 \description{
-Clean the start and end dates of windows created by construct_windows() based on censoring dates
+Clean the start and end dates of windows created by construct_window() based on censoring dates
 }

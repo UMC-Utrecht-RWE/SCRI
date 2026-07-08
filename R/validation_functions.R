@@ -56,14 +56,14 @@ validate_study_population <- function(data, reference_date_name, strata_column_n
 
 #' Validate Windows Metadata information
 #'
-#' This function checks if the WindowsMetadata inputed in the function is correctly
-#' @param data A WindowsMetadata
+#' This function checks if the WindowMetadata inputed in the function is correctly
+#' @param data A WindowMetadata
 #' @param error_on_overlap TRUE when we want to stop executing if there is an overlap between windows
 #' @keywords internal
 
 validate_windows_metadata <- function(data, error_on_overlap = FALSE) {
   assertthat::assert_that(data.table::is.data.table(data),
-    msg = "WindowsMetadata must be a data.table"
+    msg = "WindowMetadata must be a data.table"
   )
 
   if (!data.table::is.data.table(data)) data <- as.data.table(data) # convert if necessary
@@ -71,14 +71,14 @@ validate_windows_metadata <- function(data, error_on_overlap = FALSE) {
   required_cols <- c("outcome", "window_name", "start_window", "length_window")
   missing_cols <- required_cols[!required_cols %in% colnames(data)]
   assertthat::assert_that(length(missing_cols) == 0,
-    msg = paste0("WindowsMetadata is missing required columns: ", paste(missing_cols, collapse = ", "))
+    msg = paste0("WindowMetadata is missing required columns: ", paste(missing_cols, collapse = ", "))
   )
 
   # Column type checks
-  assertthat::assert_that(is.character(data$outcome), msg = "WindowsMetadata: Column 'outcome' must be character")
-  assertthat::assert_that(is.character(data$window_name), msg = "WindowsMetadata: Column 'window_name' must be character")
-  assertthat::assert_that(is.numeric(data$start_window), msg = "WindowsMetadata: Column 'start_window' must be numeric")
-  assertthat::assert_that(is.numeric(data$length_window), msg = "WindowsMetadata: Column 'length_window' must be numeric")
+  assertthat::assert_that(is.character(data$outcome), msg = "WindowMetadata: Column 'outcome' must be character")
+  assertthat::assert_that(is.character(data$window_name), msg = "WindowMetadata: Column 'window_name' must be character")
+  assertthat::assert_that(is.numeric(data$start_window), msg = "WindowMetadata: Column 'start_window' must be numeric")
+  assertthat::assert_that(is.numeric(data$length_window), msg = "WindowMetadata: Column 'length_window' must be numeric")
 
   # Compute absolute start and end of windows (assuming start_date = reference_date_name + start_window, and end_date = start_date + length_window - 1)
   data[, start := start_window]
@@ -125,11 +125,11 @@ validate_windows_metadata <- function(data, error_on_overlap = FALSE) {
 #' Validate Windows Metadata information
 #'
 #' This function checks if the sp_windows_object has been computed accordingly
-#' @param sp_windows_object Result from the construct_windows step
-#' @param windows_metadata A WindowsMetadata
+#' @param sp_windows_object Result from the construct_window step
+#' @param windows_metadata A WindowMetadata
 #' @keywords internal
 #'
-validate_construct_windows <- function(sp_windows_object, windows_metadata) {
+validate_construct_window <- function(sp_windows_object, windows_metadata) {
   window_names <- unique(windows_metadata$window_name)
 
   start_end_names <- identify_start_end_cols(sp_windows_object)
@@ -145,15 +145,15 @@ validate_construct_windows <- function(sp_windows_object, windows_metadata) {
 #' This function validates model_name against the valid models for SCRI.
 #' @keywords internal
 validate_model_name <- function(model_name) {
-  valid_models <- get_valid_models()
+  ValidModels <- get_ValidModels()
   if (is.null(model_name)) {
-    model_name <- get_default_models()
+    model_name <- get_DefaultModels()
     message(paste0("Model name empty. Selected as default model: ", model_name))
   }
   assertthat::assert_that(is.character(model_name),
     msg = "Input 'model_name' must be character"
   )
-  assertthat::assert_that(any(model_name %in% valid_models$model_name),
-    msg = "Invalid 'model_name' inputted. Use get_valid_models() for more details"
+  assertthat::assert_that(any(model_name %in% ValidModels$model_name),
+    msg = "Invalid 'model_name' inputted. Use get_ValidModels() for more details"
   )
 }

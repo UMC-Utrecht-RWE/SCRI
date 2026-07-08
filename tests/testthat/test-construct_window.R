@@ -1,6 +1,4 @@
-source("../../R/construct_windows.R")
-
-test_that("construct_windows returns expected object type and dose-row shape", {
+test_that("construct_window returns expected object type and dose-row shape", {
   library(data.table)
   studypop <- data.table(
     id = as.character(c(1, 2)),
@@ -10,14 +8,14 @@ test_that("construct_windows returns expected object type and dose-row shape", {
   )
   # meta data with only one vaccine/window type
   meta <- data.table(
-    outcome = c("outcome1", "outcome1", "outcome2", "outcome2"),
+    outcome = c("outcome1", "outcome1", "pericarditis", "pericarditis"),
     window_name = c("control", "risk", "control", "risk"),
     start_window = c(0, 15, 0, 15),
     length_window = c(10, 20, 10, 20)
   )
   # apply function with different combinations of output options and input metadata
-  testout_wide <- construct_windows(studypop, meta, id_column = "id", reference_date_name = "FIRST_VAC")
-  testout_wide2 <- construct_windows(studypop, meta, id_column = "id", reference_date_name = c("FIRST_VAC", "SECOND_VAC"))
+  testout_wide <- construct_window(studypop, meta, id_column = "id", reference_date_name = "FIRST_VAC")
+  testout_wide2 <- construct_window(studypop, meta, id_column = "id", reference_date_name = c("FIRST_VAC", "SECOND_VAC"))
 
 
   # retain all input rows

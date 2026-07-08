@@ -6,7 +6,7 @@
 \usage{
 scri(
   study_population,
-  windows_metadata,
+  window_metadata,
   window_priority,
   records_table,
   time_varying_table = NULL,
@@ -22,7 +22,9 @@ scri(
 \arguments{
 \item{study_population}{A `data.table` with one row per individual and relevant date columns. Must include the reference date(s) and follow-up criteria.}
 
-\item{windows_metadata}{A `data.table` describing exposure and control windows, their types, and how they are anchored to the study population.}
+\item{window_metadata}{A `data.table` describing exposure and control windows, their types, and how they are anchored to the study population.}
+
+\item{window_priority}{Optional long or MxM priority table. If NULL, the generic package configuration is used.}
 
 \item{records_table}{A `data.table` with the records related to the outcomes. This is composed by id, date and value of the record.}
 
@@ -31,7 +33,7 @@ scri(
 \item{reference_date_name}{A character vector indicating which column(s) in the study population to use as index date(s).}
 
 \item{reference_window}{A name of the window to which we want to compare this h
-as to be a combination between window_name and reerence name e.g: clean_lookback_pre_first_target}
+as to be a combination between window_name and reerence name e.g: clean_lookback_pre_covid_vaccine_1}
 
 \item{start_followup_criteria}{A character vector of column names defining when follow-up starts.}
 
@@ -42,8 +44,6 @@ as to be a combination between window_name and reerence name e.g: clean_lookback
 \item{only_first_date}{A boolean indicating whether to only use the first date. Default is FALSE.}
 
 \item{save_intermediate}{A path to a folder where the different intermediat file are saved}
-
-\item{windows_priority}{Optional long or MxM priority table. If NULL, the generic package configuration is used.}
 }
 \value{
 An object representing the cleaned set of windows for each individual (typically a `data.table`). The structure depends on downstream internal processing steps.
@@ -56,13 +56,13 @@ preparation, and model fitting.
 \details{
 The function performs several internal steps:
 \itemize{
-  \item Validates that the structure and content of `study_population` and `windows_metadata` are correctly defined
+  \item Validates that the structure and content of `study_population` and `window_metadata` are correctly defined
   \item Computes exposure and control windows based on the provided metadata
   \item Trims windows using censoring criteria from `end_followup_criteria`
 }
 
 If needed, users can also run the validation helpers independently:
-`validate_study_population()` and `validate_windows_metadata()`.
+`validate_study_population()` and `validate_window_metadata()`.
 
 Note: The column name `int_censdate` is reserved for internal use. The function will stop if it is included in `end_followup_criteria`.
 }
@@ -70,9 +70,9 @@ Note: The column name `int_censdate` is reserved for internal use. The function 
 \dontrun{
 result <- scri(
   study_population = StudyPopulation,
-  windows_metadata = WindowsMetadata,
+  window_metadata = WindowMetadata,
   records_table = RecordsTable,
-  reference_date_name = "first_target",
+  reference_date_name = "covid_vaccine_1",
   start_followup_criteria = "op_start_date",
   end_followup_criteria = c("death_date", "general_end_fup")
 )

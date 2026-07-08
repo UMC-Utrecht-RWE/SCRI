@@ -15,8 +15,10 @@ apply_analysis(
 \item{SCRI_analytical_dataset}{A `data.table` containing the analytical dataset,
 including variables: `length`, `outcome`, and others required for SCRI.}
 
-\item{reference_window}{A name of the window to which we want to compare this h
-as to be a combination between window_name and reerence name e.g: clean_lookback_pre_first_target}
+\item{reference_date_name}{A name of the reference date e.g.: covid_vaccine_1}
+
+\item{reference_window}{A name of the window to which we want to compare this 
+has to be a combination between window_name and reerence name e.g: clean_lookback_pre_covid_vaccine_1}
 
 \item{strata_column_name}{A name of a strata column used to stratify the analysis}
 }

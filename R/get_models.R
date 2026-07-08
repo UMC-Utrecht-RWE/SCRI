@@ -4,11 +4,11 @@
 #'
 #' @return A data frame of available models
 #' @export
-get_valid_models <- function() {
+get_ValidModels <- function() {
   # Get the loaded data from the package namespace
-  valid_models <- get("valid_models", envir = asNamespace("SCRI"))
+  ValidModels <- get("ValidModels", envir = asNamespace("SCRI"))
 
-  return(valid_models)
+  return(ValidModels)
 }
 
 #' Get Default SCRI Model
@@ -18,16 +18,16 @@ get_valid_models <- function() {
 #' @return A character string with the default model name.
 #' @keywords internal
 #'
-get_default_models <- function() {
+get_DefaultModels <- function() {
   # Get the loaded data from the package namespace
-  default_models <- get("default_models", envir = asNamespace("SCRI"))
+  DefaultModels <- get("DefaultModels", envir = asNamespace("SCRI"))
 
   # Extract the default model for SCRI design
-  if ("design_name" %in% names(default_models)) {
-    default_model <- default_models[default_models$design_name == "scri", "model_name"]
+  if ("design_name" %in% names(DefaultModels)) {
+    default_model <- DefaultModels[DefaultModels$design_name == "scri", "model_name"]
   } else {
     # Fallback: assume first row is the default if design_name column doesn't exist
-    default_model <- default_models$model_name[1]
+    default_model <- DefaultModels$model_name[1]
   }
 
   if (length(default_model) == 0) {

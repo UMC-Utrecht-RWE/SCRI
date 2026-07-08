@@ -4,7 +4,7 @@ library(testthat)
 
 test_that("prepare_analytical_dataset correctly identifies events", {
   # Test data
-  test_data <- data.table(
+  test_data <- data.table::data.table(
     id = c(1, 1, 2, 3),
     outcome = c("SCRI", "SCRI", "SCRI", "SCRI"),
     reference_date_name = rep("TARGET1",4),
@@ -26,7 +26,7 @@ test_that("prepare_analytical_dataset correctly identifies events", {
 
 test_that("prepare_analytical_dataset correctly handles only_first_date parameter", {
   # Test data with multiple events for same id-window
-  test_data <- data.table(
+  test_data <- data.table::data.table(
     id = c(1, 1, 1, 2),
     reference_date_name = rep("TARGET1",4),
     outcome = c("SCRI", "SCRI", "SCRI", "SCRI"),
@@ -48,7 +48,7 @@ test_that("prepare_analytical_dataset correctly handles only_first_date paramete
 
 test_that("prepare_analytical_dataset correctly applies stratification", {
   # Test data
-  test_data <- data.table(
+  test_data <- data.table::data.table(
     id = 1:3,
     reference_date_name = rep("TARGET1",3),
     outcome = rep("SCRI", 3),

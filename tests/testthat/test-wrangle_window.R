@@ -1,13 +1,11 @@
-source("../../R/identify_start_end_cols.R")
-source("../../R/wrangle_window.R")
 
 test_that("wrangle_window requires windows_priority when generic config is incompatible", {
   library(data.table)
 
   sp_obj <- data.table(
     id = c("1", "1"),
-    outcome = c("event1", "event1"),
-    t0 = c("first_target", "second_target"),
+    outcome = c("myocarditis", "myocarditis"),
+    t0 = c("covid_vaccine_1", "covid_vaccine_2"),
     t0_date = c(as.Date("2021-01-01"), as.Date("2021-02-01")),
     start_risk = as.Date(c("2021-01-01", "2021-02-01")),
     end_risk = as.Date(c("2021-01-20", "2021-02-20")),
@@ -32,8 +30,8 @@ test_that("wrangle_window applies custom compatible windows_priority", {
 
   sp_obj <- data.table(
     id = c("1", "1"),
-    outcome = c("event1", "event1"),
-    t0 = c("first_target", "second_target"),
+    outcome = c("myocarditis", "myocarditis"),
+    t0 = c("covid_vaccine_1", "covid_vaccine_2"),
     t0_date = as.Date(c("2021-01-01", "2021-02-01")),
     start_risk = as.Date(c("2021-01-01", "2021-02-01")),
     end_risk = as.Date(c("2021-01-20", "2021-02-20")),
@@ -44,7 +42,7 @@ test_that("wrangle_window applies custom compatible windows_priority", {
   )
 
   priority_long <- data.table(
-    outcome = "event1",
+    outcome = "myocarditis",
     dose_n_window = c("risk", "control", "risk", "control"),
     dose_n_plus_1_window = c("risk", "control", "control", "risk"),
     priority = c("B", "B", "B", "B")
@@ -66,8 +64,8 @@ test_that("wrangle_window applies overlap rules for N and N+1 over 3 doses", {
 
   sp_obj <- data.table(
     id = c("1", "1", "1"),
-    outcome = c("event1", "event1", "event1"),
-    t0 = c("first_target", "second_target", "third_target"),
+    outcome = c("myocarditis", "myocarditis", "myocarditis"),
+    t0 = c("covid_vaccine_1", "covid_vaccine_2", "covid_vaccine_3"),
     t0_date = as.Date(c("2021-01-01", "2021-02-01", "2021-03-01")),
     start_risk = as.Date(c("2021-01-01", "2021-02-01", "2021-03-01")),
     end_risk = as.Date(c("2021-01-20", "2021-02-20", "2021-03-20")),
@@ -78,7 +76,7 @@ test_that("wrangle_window applies overlap rules for N and N+1 over 3 doses", {
   )
 
   priority_long <- data.table(
-    outcome = "event1",
+    outcome = "myocarditis",
     dose_n_window = c("risk", "control", "risk", "control"),
     dose_n_plus_1_window = c("risk", "control", "control", "risk"),
     priority = c("B", "B", "B", "B")
