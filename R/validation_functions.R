@@ -61,7 +61,7 @@ validate_study_population <- function(data, reference_date_name, strata_column_n
 #' @param error_on_overlap TRUE when we want to stop executing if there is an overlap between windows
 #' @keywords internal
 
-validate_windows_metadata <- function(data, error_on_overlap = FALSE) {
+validate_window_metadata <- function(data, error_on_overlap = FALSE) {
   assertthat::assert_that(data.table::is.data.table(data),
     msg = "WindowMetadata must be a data.table"
   )
@@ -126,11 +126,11 @@ validate_windows_metadata <- function(data, error_on_overlap = FALSE) {
 #'
 #' This function checks if the sp_windows_object has been computed accordingly
 #' @param sp_windows_object Result from the construct_window step
-#' @param windows_metadata A WindowMetadata
+#' @param window_metadata A WindowMetadata
 #' @keywords internal
 #'
-validate_construct_window <- function(sp_windows_object, windows_metadata) {
-  window_names <- unique(windows_metadata$window_name)
+validate_construct_window <- function(sp_windows_object, window_metadata) {
+  window_names <- unique(window_metadata$window_name)
 
   start_end_names <- identify_start_end_cols(sp_windows_object)
   # check that all window names have a start and end, if not throw an error

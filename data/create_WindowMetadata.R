@@ -7,7 +7,7 @@
 #'
 #' @return A `data.table` with columns `outcome`, `window_name`, `start_window`,
 #'   and `length_window`.
-create_windows_metadata <- function(outcomes = c("myocarditis", "pericarditis")) {
+create_window_metadata <- function(outcomes = c("myocarditis", "pericarditis")) {
   base_windows <- data.table::data.table(
     window_name = c("control", "induction", "risk", "washout"),
     start_window = c(-365, 1, 43, 74),
@@ -22,7 +22,7 @@ create_windows_metadata <- function(outcomes = c("myocarditis", "pericarditis"))
   return(windows_data[])
 }
 
-# WindowMetadata <- create_windows_metadata()
+# WindowMetadata <- create_window_metadata()
 
 # Uncomment to regenerate package data
 # usethis::use_data(WindowMetadata, overwrite = TRUE)

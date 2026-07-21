@@ -151,9 +151,3 @@ scri <- function(study_population,
   # print_scri_results(res)
   return(results_analysis)
 }
-
-# TODO
-# - Create list of features of the package
-# - Pick some papers and filal up the metadata input
-# Find empyrical papers with SCRI SCCS and
-# sofie bots pericaridtis and myorcaridits

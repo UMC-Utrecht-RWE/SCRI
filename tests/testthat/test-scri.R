@@ -12,7 +12,7 @@ test_that("scri returns analysis table with expected core fields", {
     outcome = c("myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "event2", "myocarditis", "myocarditis", "event2", "event2", "myocarditis", "myocarditis", "event2", "event2")
   )
 
-  windows_metadata <- data.table::data.table(
+  window_metadata <- data.table::data.table(
     outcome = c("myocarditis", "myocarditis", "event2", "event2"),
     window_name = c("control", "risk", "control", "risk"),
     start_window = c(0, 15, 0, 15),
@@ -36,7 +36,7 @@ test_that("scri returns analysis table with expected core fields", {
 
   result <- scri(
     study_population = study_population,
-    windows_metadata = windows_metadata,
+    window_metadata = window_metadata,
     window_priority = windows_priority,
     records_table = records_table,
     reference_date_name = "covid_vaccine_1",
@@ -48,7 +48,7 @@ test_that("scri returns analysis table with expected core fields", {
   expect_s3_class(result, "data.table")
   expect_gt(nrow(result), 0)
   expect_true("outcome" %in% names(result))
-  expect_equal(sort(unique(result$outcome)), sort(unique(windows_metadata$outcome)))
+  expect_equal(sort(unique(result$outcome)), sort(unique(window_metadata$outcome)))
   expect_true(any(grepl("^n_event_", names(result))))
   expect_true(any(grepl("^time_", names(result))))
   expect_true(any(grepl("^irr_", names(result))))
@@ -62,7 +62,7 @@ test_that("scri saves all intermediate outputs when save_intermediate is provide
     outcome = c("myocarditis", "myocarditis", "myocarditis", "myocarditis")
   )
 
-  windows_metadata <- data.table::data.table(
+  window_metadata <- data.table::data.table(
     outcome = c("myocarditis", "myocarditis"),
     window_name = c("control", "risk"),
     start_window = c(0, 15),
@@ -88,7 +88,7 @@ test_that("scri saves all intermediate outputs when save_intermediate is provide
 
   result <- scri(
     study_population = study_population,
-    windows_metadata = windows_metadata,
+    window_metadata = window_metadata,
     window_priority = windows_priority,
     records_table = records_table,
     reference_date_name = "covid_vaccine_1",

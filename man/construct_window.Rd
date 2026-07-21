@@ -6,22 +6,22 @@
 \usage{
 construct_window(
   study_population,
-  windows_metadata,
+  window_metadata,
   reference_date_name,
   id_column = "id"
 )
 }
 \arguments{
-\item{study_population}{data frame containing one row per unit of observation, reference date column specified in windows_metadata, any other information}
+\item{study_population}{data frame containing one row per unit of observation, reference date column specified in window_metadata, any other information}
 
-\item{windows_metadata}{metadatat file specifying window names/types, reference date columns, start and length of windows (see details)}
+\item{window_metadata}{metadatat file specifying window names/types, reference date columns, start and length of windows (see details)}
 
 \item{reference_date_name}{A character vector indicating which column(s) in the study population to use as index date(s).}
 
 \item{id_column}{column name identifying the unique unit of observation in the study population}
 }
 \value{
-a data.table object with the same columns as study_population, plus start_ and end_ window dates for each window type supplied in windows_metadata
+a data.table object with the same columns as study_population, plus start_ and end_ window dates for each window type supplied in window_metadata
 }
 \description{
 Compute start and end window dates for each individual in a study population based on metadata info. First step of the SCRI pipeline

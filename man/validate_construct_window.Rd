@@ -4,12 +4,12 @@
 \alias{validate_construct_window}
 \title{Validate Windows Metadata information}
 \usage{
-validate_construct_window(sp_windows_object, windows_metadata)
+validate_construct_window(sp_windows_object, window_metadata)
 }
 \arguments{
 \item{sp_windows_object}{Result from the construct_window step}
 
-\item{windows_metadata}{A WindowMetadata}
+\item{window_metadata}{A WindowMetadata}
 }
 \description{
 This function checks if the sp_windows_object has been computed accordingly

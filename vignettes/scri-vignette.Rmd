@@ -105,7 +105,7 @@ Calculate the start and end dates for each analysis window. The output is one ro
 # Construct windows for all subjects relative to their covid_vaccine_1 and covid_vaccine_2 dates
 constructed_windows <- construct_window(
     study_population = StudyPopulation, # Input: subject characteristics and reference dates
-    windows_metadata = WindowMetadata, # Input: window definitions (duration, lag, etc.)
+    window_metadata = WindowMetadata, # Input: window definitions (duration, lag, etc.)
     reference_date_name = c("covid_vaccine_1", "covid_vaccine_2"), # Dates to anchor windows around
     id_column = "id" # Column identifying each subject
 )
