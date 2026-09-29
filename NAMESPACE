@@ -9,12 +9,16 @@ export(melt_window_data)
 export(prepare_analytical_dataset)
 export(scri)
 export(wrangle_window)
-importFrom(data.table,":=")
-importFrom(data.table,.SD)
-importFrom(data.table,as.data.table)
-importFrom(data.table,fifelse)
-importFrom(data.table,setnames)
-importFrom(stats,as.formula)
-importFrom(stats,end)
-importFrom(stats,na.omit)
-importFrom(stats,start)
+importFrom(data.table,
+  ":=",
+  .SD,
+  as.data.table,
+  fifelse,
+  setnames
+)
+importFrom(stats,
+  as.formula,
+  end,
+  na.omit,
+  start
+)
