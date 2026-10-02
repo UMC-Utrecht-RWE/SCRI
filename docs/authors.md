@@ -7,7 +7,7 @@
 
 - **Oisín Ryan**. Author. [](https://orcid.org/0000-0003-3698-6396)
 
-- **Jungyeon Choi**. Author.
+- **Jungyeon Choi**. Author. [](https://orcid.org/0000-0002-1914-3488)
 
 ## Citation
 
