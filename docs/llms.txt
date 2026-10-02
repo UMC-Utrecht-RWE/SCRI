@@ -1,0 +1,83 @@
+# SCRI
+
+## SCRI: Self-Controlled Risk Interval analysis for repeated exposures
+
+SCRI is an R package for performing Self-Controlled Risk Interval (SCRI)
+analyses. It supports flexible study designs with multiple reference
+dates, repeated exposures or doses, and configurable risk-window
+priorities.
+
+The package provides an end-to-end workflow for: - validating study
+inputs and window definitions, - constructing analysis windows from
+exposure and reference dates, - resolving overlapping or censored
+windows, - matching outcome records to analysis windows, - preparing
+analytical datasets, - and estimating event counts, person-time,
+incidence rate ratios, and confidence intervals using conditional
+logistic regression.
+
+### Core workflow
+
+The main workflow is built around [`scri()`](reference/scri.md), which
+combines the individual steps into a single analysis pipeline. For more
+fine-grained control, the workflow can be run step by step with:
+
+- [`construct_window()`](reference/construct_window.md) — generate
+  analysis windows from reference dates
+- [`wrangle_window()`](reference/wrangle_window.md) — censor and resolve
+  overlapping windows
+- [`add_records()`](reference/add_records.md) — link outcome records to
+  analysis windows
+- [`scri()`](reference/scri.md) — run the full validated SCRI pipeline
+
+### Design highlights
+
+- Supports repeated exposures and multiple reference dates
+- Allows configurable window-priority rules for overlapping exposure
+  windows
+- Includes validation helpers for study populations, window metadata,
+  and model names
+- Uses explicit identifiers and outcome fields for clearer data handling
+- Designed for reproducible, transparent SCRI analyses
+
+### Getting started
+
+See the package vignette and function documentation for a complete
+worked example and details on data requirements, window construction,
+and model configuration.
+
+# Package index
+
+## All functions
+
+- [`DefaultModels`](DefaultModels.md) : Default Model Configuration for
+  Study Designs
+- [`RecordsTable`](RecordsTable.md) : Records Table
+- [`StudyPopulation`](StudyPopulation.md) : Synthetic Study Population
+- [`ValidModels`](ValidModels.md) : Valid Models Registry for SCRI
+  Analysis
+- [`WindowMetadata`](WindowMetadata.md) : WindowMetadata
+- [`WindowPriority`](WindowPriority.md) : Window Priority Configuration
+- [`add_records()`](add_records.md) : Select Dates Window
+- [`apply_analysis()`](apply_analysis.md) : Apply SCRI Analysis Across
+  Outcomes
+- [`compute_scri_stats()`](compute_scri_stats.md) : Compute Summary
+  Statistics for SCRI Model
+- [`construct_window()`](construct_window.md) : Compute start and end
+  window dates for each individual in a study population based on
+  metadata info. First step of the SCRI pipeline
+- [`get_ValidModels()`](get_ValidModels.md) : List Available SCRI Models
+- [`melt_window_data()`](melt_window_data.md) : melt_window_data
+- [`prepare_analytical_dataset()`](prepare_analytical_dataset.md) :
+  Prepare Analytical Dataset from SCRI Identified Records
+- [`scri()`](scri.md) : Execute Self Controlled Risk Interval Analysis
+  (SCRI) Pipeline
+- [`wrangle_window()`](wrangle_window.md) : Clean the start and end
+  dates of windows created by construct_window() based on censoring
+  dates
+
+# Articles
+
+### All vignettes
+
+- [Getting Started with the Self-Control-Risk-Interval (SCRI) Analysis
+  Package](scri-vignette.md):
