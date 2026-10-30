@@ -7,6 +7,7 @@
 #' 
 #' @importFrom data.table as.data.table
 #' @importFrom stats as.formula end na.omit start
+#' @importFrom survival strata coxph Surv
 
 utils::globalVariables(c(
   # data.table's non-standard evaluation
