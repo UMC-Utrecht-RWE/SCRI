@@ -50,6 +50,11 @@ compute_scri_stats <- function(SCRI_analytical_dataset,
   # compute crude/unadjusted model
   clean_data <- na.omit(SCRI_analytical_dataset[, c("id", "window_name", "event", "log_length")])
 
+  # Reference window must be the baseline level for IRRs to be relative to it
+  if (reference_window %in% clean_data$window_name) {
+    clean_data[, window_name := stats::relevel(factor(window_name), ref = reference_window)]
+  }
+
   crmod <- log_reg(crudemodel_chr, "crude", i_outcome, clean_data)
 
   # Let's say we're comparing each window against a reference window
@@ -81,13 +86,15 @@ compute_scri_stats <- function(SCRI_analytical_dataset,
       window_res[[paste0("irr_", comp_window, "_vs_", reference_window, "_lowci")]] <- -88
       window_res[[paste0("irr_", comp_window, "_vs_", reference_window, "_upci")]] <- -88
     } else { # Otherwise, compute summary statistics
-      unadj <- summary(crmod[[comp_window]])
-      if (any(unadj$conf.int %in% c("Inf", "-Inf") == TRUE)) unadj$conf.int[, ] <- -88
+      ci <- summary(crmod)$conf.int
+      row_name <- paste0("window_name", comp_window)
+      ci <- if (row_name %in% rownames(ci)) ci[row_name, , drop = TRUE] else rep(-88, 4)
+      if (any(!is.finite(ci))) ci[] <- -88
 
       window_res <- list()
-      window_res[[paste0("irr_", comp_window, "_vs_", reference_window)]] <- unadj$conf.int[1]
-      window_res[[paste0("irr_", comp_window, "_vs_", reference_window, "_lowci")]] <- unadj$conf.int[3]
-      window_res[[paste0("irr_", comp_window, "_vs_", reference_window, "_upci")]] <- unadj$conf.int[4]
+      window_res[[paste0("irr_", comp_window, "_vs_", reference_window)]] <- unname(ci[1])
+      window_res[[paste0("irr_", comp_window, "_vs_", reference_window, "_lowci")]] <- unname(ci[3])
+      window_res[[paste0("irr_", comp_window, "_vs_", reference_window, "_upci")]] <- unname(ci[4])
     }
 
     # Add results to the main results list
