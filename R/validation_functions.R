@@ -134,7 +134,9 @@ validate_construct_window <- function(sp_windows_object, window_metadata) {
 
   start_end_names <- identify_start_end_cols(sp_windows_object)
   # check that all window names have a start and end, if not throw an error
-  if (!all(sub("start_", "", start_end_names$start_names) %in% window_names) && all(window_names %in% sub("end_", "", start_end_names$end_names))) {
+  has_start <- all(window_names %in% sub("^start_", "", start_end_names$start_names))
+  has_end <- all(window_names %in% sub("^end_", "", start_end_names$end_names))
+  if (!(has_start && has_end)) {
     stop("not all windows have a start and end, or start/end is used for a different column name. Check input object details")
   }
 }
