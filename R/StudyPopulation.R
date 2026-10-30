@@ -5,8 +5,10 @@
 #' @format ## `StudyPopulation`
 #' A data frame with 100 rows and 6 variables:
 #' \describe{
-#'   \item{person_id}{identifier for unique iindividuals}
-#'   \item{op_start_date, death_date, general_end_fup}{Date variables relating to follow up (start and end follow up dates, death as censoring event)}
-#'   \item{FIRST_TARGET, SECOND_TARGET}{Date variables relating to dates of exposures, anchor/reference dates}
+#'   \item{id}{identifier for unique individuals}
+#'   \item{covid_vaccine_1}{Date of first COVID-19 vaccine dose (primary anchor date).}
+#'   \item{covid_vaccine_2}{Date of second COVID-19 vaccine dose (optional anchor date).}
+#'   \item{start_followup_criteria}{Date variables relating to the start of the follow up )}
+#'   \item{end_followup_criteria}{Date variables relating to the end of the follow up (end follow up dates, death as censoring event dates)}
 #' }
 "StudyPopulation"
