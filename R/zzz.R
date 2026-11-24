@@ -20,7 +20,8 @@ utils::globalVariables(c(
   ":=",
   "..sel_cols", "..start_names", "end", "event", "int_censdate", "key",
   "length_window", "log_length", "outcome", "overlapping_windows",
-  "previous_end", "previous_window", "reference_date", "scri_identified_records",
+  "previous_end", "previous_window", "reference_date",
+  "scri_identified_records",
   "start", "start_window", "strata", "variable", "window_length", "window_name"
 
   # Add unquoted column names here if needed:

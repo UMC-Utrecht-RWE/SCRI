@@ -6,3 +6,4 @@
 ^\.covrignore$
 ^codecov\.yml$
 ^data-raw$
+^\.lintr$

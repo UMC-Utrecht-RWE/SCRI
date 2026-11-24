@@ -1,5 +1,5 @@
 # Test 1: Basic functionality with long format and multiple records
-test_that("add_records returns records within specified windows (long format)", {
+test_that("add_records returns records within windows (long format)", {
   records_table <- data.table::data.table(
     id = c(1, 1, 1, 1, 2, 2, 2, 2),
     date = as.Date(c(
@@ -7,7 +7,16 @@ test_that("add_records returns records within specified windows (long format)", 
       "2023-02-01", "2023-02-10", "2023-02-25", "2023-03-01"
     )),
     value = c(10, 20, 30, 40, 50, 60, 70, 80),
-    outcome = c("myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis", "myocarditis")
+    outcome = c(
+      "myocarditis",
+      "myocarditis",
+      "myocarditis",
+      "myocarditis",
+      "myocarditis",
+      "myocarditis",
+      "myocarditis",
+      "myocarditis"
+    )
   )
 
   window_data <- data.table::data.table(
@@ -15,8 +24,12 @@ test_that("add_records returns records within specified windows (long format)", 
     outcome = c("myocarditis", "myocarditis", "myocarditis", "myocarditis"),
     reference_date_name = c("TARGET1", "TARGET1", "TARGET1", "TARGET1"),
     window_name = c("control", "risk", "control", "risk"),
-    start_date = as.Date(c("2023-01-01", "2023-01-11", "2023-02-01", "2023-02-21")),
-    end_date = as.Date(c("2023-01-10", "2023-01-21", "2023-02-20", "2023-03-01"))
+    start_date = as.Date(
+      c("2023-01-01", "2023-01-11", "2023-02-01", "2023-02-21")
+    ),
+    end_date = as.Date(
+      c("2023-01-10", "2023-01-21", "2023-02-20", "2023-03-01")
+    )
   )
 
   result <- add_records(
@@ -38,13 +51,14 @@ test_that("add_records returns records within specified windows (long format)", 
   expect_true("date" %in% names(result))
 
   # Check that records within windows are returned
-  # ID 1, control window (2023-01-01 to 2023-01-10): should match 2023-01-01, 2023-01-05
+  # ID 1, control window (2023-01-01 to 2023-01-10): should match 2023-01-01,
+  # 2023-01-05
   control_records_id1 <- result[id == 1 & window_name == "control"]
   expect_equal(nrow(control_records_id1[!is.na(date)]), 2)
 })
 
 # Test 2: Only first record functionality
-test_that("add_records with only_first_record = TRUE returns only first record per window", {
+test_that("add_records only_first_record = TRUE keeps first record", {
   records_table <- data.table::data.table(
     id = c(1, 1, 1, 1),
     date = as.Date(c("2023-01-01", "2023-01-05", "2023-01-15", "2023-01-25")),

@@ -4,25 +4,39 @@
 #' all core SCRI steps, including validation, window computation, data
 #' preparation, and model fitting.
 #'
-#' @param study_population A `data.table` with one row per individual and relevant date columns. Must include the reference date(s) and follow-up criteria.
-#' @param window_metadata A `data.table` describing exposure and control windows, their types, and how they are anchored to the study population.
-#' @param window_priority Optional long or MxM priority table. If NULL, the generic package configuration is used.
-#' @param records_table A `data.table` with the records related to the outcomes. This is composed by id, date and value of the record.
-#' @param reference_date_name A character vector indicating which column(s) in the study population to use as index date(s).
-#' @param start_followup_criteria A character vector of column names defining when follow-up starts.
-#' @param end_followup_criteria A character vector of column names defining when follow-up ends. These will be used for censoring and trimming windows.
-#' @param only_first_date A boolean indicating whether to only use the first date. Default is FALSE.
-#' @param save_intermediate A path to a folder where the different intermediat file are saved
-#' @param reference_window A name of the window to which we want to compare this h
-#' as to be a combination between window_name and reerence name e.g: clean_lookback_pre_covid_vaccine_1
-#' @param strata_column_name A name of a strata column used to stratify the analysis
+#' @param study_population A `data.table` with one row per individual and
+#'   relevant date columns. Must include the reference date(s) and follow-up
+#'   criteria.
+#' @param window_metadata A `data.table` describing exposure and control
+#'   windows, their types, and how they are anchored to the study population.
+#' @param window_priority Optional long or MxM priority table. If NULL, the
+#'   generic package configuration is used.
+#' @param records_table A `data.table` with the records related to the outcomes.
+#'   This is composed by id, date and value of the record.
+#' @param reference_date_name A character vector indicating which column(s) in
+#'   the study population to use as index date(s).
+#' @param start_followup_criteria A character vector of column names defining
+#'   when follow-up starts.
+#' @param end_followup_criteria A character vector of column names defining when
+#'   follow-up ends. These will be used for censoring and trimming windows.
+#' @param only_first_date A boolean indicating whether to only use the first
+#'   date. Default is FALSE.
+#' @param save_intermediate A path to a folder where the different intermediat
+#'   file are saved
+#' @param reference_window A name of the window to which we want to compare this
+#'   h
+#' as to be a combination between window_name and reerence name e.g:
+#' clean_lookback_pre_covid_vaccine_1
+#' @param strata_column_name A name of a strata column used to stratify the
+#'   analysis
 #' @param time_varying_table TO_BE_DEFINED
 #' @export
 #'
 #' @details
 #' The function performs several internal steps:
 #' \itemize{
-#'   \item Validates that the structure and content of `study_population` and `window_metadata` are correctly defined
+#' \item Validates that the structure and content of `study_population` and
+#'   `window_metadata` are correctly defined
 #'   \item Computes exposure and control windows based on the provided metadata
 #'   \item Trims windows using censoring criteria from `end_followup_criteria`
 #' }
@@ -30,9 +44,12 @@
 #' If needed, users can also run the validation helpers independently:
 #' `validate_study_population()` and `validate_window_metadata()`.
 #'
-#' Note: The column name `int_censdate` is reserved for internal use. The function will stop if it is included in `end_followup_criteria`.
+#' Note: The column name `int_censdate` is reserved for internal use. The
+#' function will stop if it is included in `end_followup_criteria`.
 #'
-#' @return An object representing the cleaned set of windows for each individual (typically a `data.table`). The structure depends on downstream internal processing steps.
+#' @return An object representing the cleaned set of windows for each individual
+#'   (typically a `data.table`). The structure depends on downstream internal
+#'   processing steps.
 #'
 #' @examples
 #' \dontrun{
@@ -63,10 +80,14 @@ scri <- function(study_population,
     stop("`only_first_date` must be a single logical (TRUE or FALSE).")
   }
 
-  # Check that save_intermediate is either NULL or a valid existing directory path
+  # Check that save_intermediate is either NULL or a valid existing directory
+  # path
   if (!is.null(save_intermediate)) {
     if (!is.character(save_intermediate) || length(save_intermediate) != 1) {
-      stop("`save_intermediate` must be a single string (path to a directory) or NULL.")
+      stop(paste0(
+        "`save_intermediate` must be a single string ",
+        "(path to a directory) or NULL."
+      ))
     }
     if (!dir.exists(save_intermediate)) {
       stop(paste("Directory does not exist:", save_intermediate))
@@ -98,7 +119,10 @@ scri <- function(study_population,
     reference_date_name = reference_date_name
   )
   if (!is.null(save_intermediate)) {
-    data.table::fwrite(scri_computed_windows, file = file.path(save_intermediate, "scri_computed_windows.csv"))
+    data.table::fwrite(
+      scri_computed_windows,
+      file = file.path(save_intermediate, "scri_computed_windows.csv")
+    )
   }
   # Validate computation of windows
   validate_construct_window(scri_computed_windows, window_metadata)
@@ -109,21 +133,38 @@ scri <- function(study_population,
     censoring_dates = end_followup_criteria
   )
   if (!is.null(save_intermediate)) {
-    data.table::fwrite(scri_computed_windows_cleaned, file = file.path(save_intermediate, "scri_computed_windows_cleaned.csv"))
+    data.table::fwrite(
+      scri_computed_windows_cleaned,
+      file = file.path(save_intermediate, "scri_computed_windows_cleaned.csv")
+    )
   }
 
-  # Identify the outcomes that occurred within each window after they have been altered or cleaned.
-  scri_indentified_records <- add_records(scri_computed_windows_cleaned, records_table, only_first_date)
+  # Identify the outcomes that occurred within each window after they have
+  # been altered or cleaned.
+  scri_indentified_records <- add_records(
+    scri_computed_windows_cleaned, records_table, only_first_date
+  )
   if (!is.null(save_intermediate)) {
-    data.table::fwrite(scri_indentified_records, file = file.path(save_intermediate, "scri_indentified_records.csv"))
+    data.table::fwrite(
+      scri_indentified_records,
+      file = file.path(save_intermediate, "scri_indentified_records.csv")
+    )
   }
   # TODO Add time-varying variables
 
-  # QUESTIONS: WHEN SHALL THIS BE APPLIED? Before or after identitifying the records that fall within the windows?
+  # QUESTIONS: WHEN SHALL THIS BE APPLIED? Before or after identitifying the
+  # records that fall within the windows?
   if (!is.null(time_varying_table)) {
-    scri_indentified_records <- apply_timevarying(scri_indentified_records, time_varying_table)
+    scri_indentified_records <- apply_timevarying(
+      scri_indentified_records, time_varying_table
+    )
     if (!is.null(save_intermediate)) {
-      data.table::fwrite(scri_indentified_records, file = file.path(save_intermediate, "scri_indentified_records_timevar.csv"))
+      data.table::fwrite(
+        scri_indentified_records,
+        file = file.path(
+          save_intermediate, "scri_indentified_records_timevar.csv"
+        )
+      )
     }
   }
 
@@ -134,7 +175,10 @@ scri <- function(study_population,
     only_first_date
   )
   if (!is.null(save_intermediate)) {
-    data.table::fwrite(SCRI_analytical_dataset, file = file.path(save_intermediate, "SCRI_analytical_dataset.csv"))
+    data.table::fwrite(
+      SCRI_analytical_dataset,
+      file = file.path(save_intermediate, "SCRI_analytical_dataset.csv")
+    )
   }
 
   # Apply analysis
@@ -145,9 +189,11 @@ scri <- function(study_population,
     strata_column_name = strata_column_name
   )
   if (!is.null(save_intermediate)) {
-    data.table::fwrite(results_analysis, file = file.path(save_intermediate, "results_analysis.csv"))
+    data.table::fwrite(
+      results_analysis,
+      file = file.path(save_intermediate, "results_analysis.csv")
+    )
   }
 
-  # print_scri_results(res)
   return(results_analysis)
 }

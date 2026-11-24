@@ -1,17 +1,22 @@
-#' Clean the start and end dates of windows created by construct_window() based on censoring dates
+#' Clean the start and end dates of windows created by construct_window()
+#' based on censoring dates
 #'
-#' @param sp_windows_object data.table object containing named start and end date columns, typically output of construct_window()
+#' @param sp_windows_object data.table object containing named start and end
+#'   date columns, typically output of construct_window()
 #' @param censoring_dates column name(s) of censoring dates
-#' @param windows_priority Optional long or MxM priority table. If NULL, the generic package configuration is used.
+#' @param windows_priority Optional long or MxM priority table. If NULL, the
+#'   generic package configuration is used.
 #'
-#' @return object of the same dimensions and type as the input, with end dates possibly censored
+#' @return object of the same dimensions and type as the input, with end dates
+#'   possibly censored
 #' @importFrom data.table :=
 #' @export
 #'
 wrangle_window <- function(sp_windows_object,
                            censoring_dates = NULL,
                            windows_priority = NULL) {
-  # obtain window names (assumes input is data.table, has this naming convention for columns)
+  # obtain window names (assumes input is data.table, has this naming
+  # convention for columns)
   start_end_names <- identify_start_end_cols(sp_windows_object)
   start_names <- start_end_names$start_names
   end_names <- start_end_names$end_names
@@ -27,15 +32,26 @@ wrangle_window <- function(sp_windows_object,
   missing_start <- setdiff(end_suffix, start_suffix)
   if (length(missing_end) > 0 || length(missing_start) > 0) {
     msg <- paste0(
-      "sp_windows_object must contain complete start/end pairs for each window.",
-      if (length(missing_end) > 0) paste0(" Missing end_ for: ", paste(missing_end, collapse = ", ")) else "",
-      if (length(missing_start) > 0) paste0(" Missing start_ for: ", paste(missing_start, collapse = ", ")) else ""
+      "sp_windows_object must contain complete start/end pairs for each ",
+      "window.",
+      if (length(missing_end) > 0) {
+        paste0(" Missing end_ for: ", paste(missing_end, collapse = ", "))
+      } else {
+        ""
+      },
+      if (length(missing_start) > 0) {
+        paste0(" Missing start_ for: ", paste(missing_start, collapse = ", "))
+      } else {
+        ""
+      }
     )
     stop(msg)
   }
 
   if (!is.null(censoring_dates)) {
-    missing_censoring <- censoring_dates[!censoring_dates %in% names(sp_windows_object)]
+    missing_censoring <- censoring_dates[
+      !censoring_dates %in% names(sp_windows_object)
+    ]
     if (length(missing_censoring) > 0) {
       stop(
         paste0(
@@ -46,16 +62,23 @@ wrangle_window <- function(sp_windows_object,
     }
   }
 
-  # create a matrix which is an ordered set of window start-end pairs form earliest to latest
+  # create a matrix which is an ordered set of window start-end pairs form
+  # earliest to latest
   # first, check that all columns are the same rank
 
   col_ranks <- apply(sp_windows_object[, ..start_names], 1, rank)
   if (!all(col_ranks == col_ranks[, 1])) {
-    stop("current functionality assumes the same ordering of windows within each individual")
+    stop(paste0(
+      "current functionality assumes the same ordering of windows within ",
+      "each individual"
+    ))
   }
   # then create the matrix of window start-end-pairs
   start_names_ordered <- names(col_ranks[, 1])
-  window_pairs <- cbind(start_names_ordered, paste0("end_", sub("start_", "", start_names_ordered)))
+  window_pairs <- cbind(
+    start_names_ordered,
+    paste0("end_", sub("start_", "", start_names_ordered))
+  )
   colnames(window_pairs) <- c("start", "end")
 
   # Parse start/end columns to identify window names.
@@ -88,7 +111,10 @@ wrangle_window <- function(sp_windows_object,
     # MxM input case: one row-axis column + many dose_n_plus_1 window columns.
     id_col <- names(x)[grep("dose_n_window", names(x), fixed = TRUE)][1]
     if (is.na(id_col)) {
-      stop("Could not identify Dose N window axis in windows_priority metadata.")
+      stop(paste0(
+        "Could not identify Dose N window axis in windows_priority ",
+        "metadata."
+      ))
     }
 
     long_x <- data.table::melt(
@@ -102,7 +128,8 @@ wrangle_window <- function(sp_windows_object,
     long_x[, dose_n_plus_1_window := as.character(dose_n_plus_1_window)]
     long_x[, priority := toupper(trimws(priority))]
     long_x <- long_x[long_x[["priority"]] %in% c("A", "B")]
-    return(long_x[, c("dose_n_window", "dose_n_plus_1_window", "priority"), with = FALSE])
+    keep_cols <- c("dose_n_window", "dose_n_plus_1_window", "priority")
+    return(long_x[, keep_cols, with = FALSE])
   }
 
   read_windows_priority <- function(priority_obj) {
@@ -116,13 +143,18 @@ wrangle_window <- function(sp_windows_object,
     return(normalize_windows_priority(WindowPriority))
   }
 
-  check_priority_compatibility <- function(priority_long, parsed_cols, using_generic_config) {
+  check_priority_compatibility <- function(priority_long,
+                                           parsed_cols,
+                                           using_generic_config) {
     if (is.null(priority_long) || nrow(priority_long) == 0) {
       return(invisible(NULL))
     }
 
     object_windows <- sort(unique(parsed_cols$window_name))
-    priority_windows <- sort(unique(c(priority_long$dose_n_window, priority_long$dose_n_plus_1_window)))
+    priority_windows <- sort(unique(c(
+      priority_long$dose_n_window,
+      priority_long$dose_n_plus_1_window
+    )))
 
     same_windows <- length(object_windows) == length(priority_windows) &&
       all(object_windows == priority_windows)
@@ -136,12 +168,18 @@ wrangle_window <- function(sp_windows_object,
 
     details <- paste0(
       if (length(missing_in_priority) > 0) {
-        paste0(" Missing in windows_priority: ", paste(missing_in_priority, collapse = ", "))
+        paste0(
+          " Missing in windows_priority: ",
+          paste(missing_in_priority, collapse = ", ")
+        )
       } else {
         ""
       },
       if (length(extra_in_priority) > 0) {
-        paste0(" Extra in windows_priority: ", paste(extra_in_priority, collapse = ", "))
+        paste0(
+          " Extra in windows_priority: ",
+          paste(extra_in_priority, collapse = ", ")
+        )
       } else {
         ""
       }
@@ -150,7 +188,8 @@ wrangle_window <- function(sp_windows_object,
     if (using_generic_config) {
       stop(
         paste0(
-          "Generic WindowPriority configuration is not compatible with windows in sp_windows_object.",
+          "Generic WindowPriority configuration is not compatible with ",
+          "windows in sp_windows_object.",
           details,
           " Please provide a compatible windows_priority input."
         )
@@ -170,11 +209,15 @@ wrangle_window <- function(sp_windows_object,
       return(invisible(NULL))
     }
 
-    # Apply overlap rules between consecutive doses (N and N+1), ordered by t0_date.
+    # Apply overlap rules between consecutive doses (N and N+1), ordered by
+    # t0_date.
     dose_order_col <- names(data)[tolower(names(data)) == "t0_date"][1]
     if (is.na(dose_order_col)) {
       if (nrow(data) > 1) {
-        stop("sp_windows_object must contain t0_date to apply overlap priority rules across doses")
+        stop(paste0(
+          "sp_windows_object must contain t0_date to apply overlap ",
+          "priority rules across doses"
+        ))
       }
       return(invisible(NULL))
     }
@@ -221,7 +264,7 @@ wrangle_window <- function(sp_windows_object,
             start_np1 <- data[[col2_start]][idx_np1]
             end_np1 <- data[[col2_end]][idx_np1]
 
-            if (is.na(start_n) || is.na(end_n) || is.na(start_np1) || is.na(end_np1)) {
+            if (anyNA(c(start_n, end_n, start_np1, end_np1))) {
               next
             }
 
@@ -250,7 +293,11 @@ wrangle_window <- function(sp_windows_object,
   using_generic_config <- is.null(windows_priority)
   priority_long <- read_windows_priority(windows_priority)
   check_priority_compatibility(priority_long, parsed_cols, using_generic_config)
-  apply_overlap_priority_rules(data = sp_windows_object, priority_long = priority_long, parsed_cols = parsed_cols)
+  apply_overlap_priority_rules(
+    data = sp_windows_object,
+    priority_long = priority_long,
+    parsed_cols = parsed_cols
+  )
 
 
   if (length(censoring_dates) == 1) {
@@ -268,23 +315,30 @@ wrangle_window <- function(sp_windows_object,
     }
 
     # create internal censoring date
-    sp_windows_object[, int_censdate := as.Date(apply(.SD, 1, min_date_ignore_na)), .SDcols = censoring_dates]
+    sp_windows_object[,
+      int_censdate := as.Date(apply(.SD, 1, min_date_ignore_na)),
+      .SDcols = censoring_dates
+    ]
   }
 
-  #   2.2) censor windows as follows:
-  #         if an event happens between a start and end pair, the end date is reset to the censoring date, all future window dates are NA
-  #         if an event happens not between a start and end pair, then set all windows afterwards to NA
-  for (i in 1:nrow(window_pairs)) {
+  # 2.2) censor windows as follows:
+  # if an event happens between a start and end pair, the end date is reset
+  # to the censoring date, all future window dates are NA
+  # if an event happens not between a start and end pair, then set all
+  # windows afterwards to NA
+  for (i in seq_len(nrow(window_pairs))) {
     start_col <- window_pairs[i, "start"]
     end_col <- window_pairs[i, "end"]
 
-    # Update 'end' column value if event between start and end to date of censoring event
+    # Update 'end' column value if event between start and end to date of
+    # censoring event
     sp_windows_object[
       int_censdate >= get(start_col) & int_censdate < get(end_col),
       (end_col) := int_censdate
     ]
 
-    # set start and end to NA if the censoring event happens before the start window (by necessity then also before the end)
+    # set start and end to NA if the censoring event happens before the start
+    # window (by necessity then also before the end)
     sp_windows_object[
       int_censdate < get(start_col),
       c(start_col, end_col) := NA
@@ -297,7 +351,8 @@ wrangle_window <- function(sp_windows_object,
   sp_windows_object[, int_censdate := NULL]
 
 
-  # 3. Chek if end_{window}_{n} < start_{window}_{n}; if so, set both both dates to NA.
+  # 3. Chek if end_{window}_{n} < start_{window}_{n}; if so, set both both
+  # dates to NA.
 
 
   return(sp_windows_object)

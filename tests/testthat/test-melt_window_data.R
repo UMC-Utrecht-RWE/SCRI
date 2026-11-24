@@ -1,4 +1,4 @@
-test_that("melt_window_data returns a data table, correct number of rows and correct column names", {
+test_that("melt_window_data returns a data table, rows and column names", {
   wide_file_windows_trimmed <- data.table::data.table(
     id = 1:3,
     outcome = c("myocarditis", "event2", "myocarditis"),
@@ -46,8 +46,15 @@ test_that("melt_window_data handles non-default prefixes correctly", {
     finish_window2 = c("2021-04-30", "2021-05-31", "2021-06-30")
   )
 
-  result <- melt_window_data(wide_file_windows_trimmed, start_column_prefix = "begin", end_column_prefix = "finish")
+  result <- melt_window_data(
+    wide_file_windows_trimmed,
+    start_column_prefix = "begin",
+    end_column_prefix = "finish"
+  )
 
   # Check that the result handles non-default prefixes correctly
-  expect_equal(names(result), c("id", "outcome", "window_name", "begin", "finish"))
+  expect_equal(
+    names(result),
+    c("id", "outcome", "window_name", "begin", "finish")
+  )
 })

@@ -58,19 +58,31 @@ test_that("rename_anchor renames multiple columns correctly", {
   )
 
   # Verify all columns were renamed with custom prefix
-  expect_false(any(c("index_date", "cohort_entry", "end_date") %in% names(result2$data)))
+  expect_false(
+    any(c("index_date", "cohort_entry", "end_date") %in% names(result2$data))
+  )
   expect_true(all(c("ref_1", "ref_2", "ref_3") %in% names(result2$data)))
 })
 
 test_that("rename_anchor handles edge cases", {
   # Empty dataframe
-  test_empty <- data.table::data.table(id = integer(0), ref_date = as.Date(character(0)))
+  test_empty <- data.table::data.table(
+    id = integer(0),
+    ref_date = as.Date(character(0))
+  )
   result_empty <- rename_anchor(test_empty, "ref_date")
   expect_equal(names(result_empty$data), c("id", "anch_1"))
 
   # Empty prefix
-  test_data <- data.table::data.table(id = 1:3, index_date = as.Date(c("2023-01-01", "2023-02-15", "2023-03-10")))
-  result_empty_prefix <- rename_anchor(test_data, "index_date", prefix_name = "")
+  test_data <- data.table::data.table(
+    id = 1:3,
+    index_date = as.Date(c("2023-01-01", "2023-02-15", "2023-03-10"))
+  )
+  result_empty_prefix <- rename_anchor(
+    test_data,
+    "index_date",
+    prefix_name = ""
+  )
   expect_equal(names(result_empty_prefix$data), c("id", "1"))
 })
 

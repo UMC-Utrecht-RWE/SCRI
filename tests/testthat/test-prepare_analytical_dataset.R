@@ -15,7 +15,11 @@ test_that("prepare_analytical_dataset correctly identifies events", {
   )
 
   # Test without stratification, summing events
-  result <- prepare_analytical_dataset(test_data, strata_column_name = NULL, only_first_date = FALSE)
+  result <- prepare_analytical_dataset(
+    test_data,
+    strata_column_name = NULL,
+    only_first_date = FALSE
+  )
 
   expect_equal(nrow(result), 4) # One row per id-window combination
   expect_equal(result[id == 1 & window_name == "W1", event], 1)
@@ -24,7 +28,7 @@ test_that("prepare_analytical_dataset correctly identifies events", {
   expect_equal(result[id == 3, event], 1)
 })
 
-test_that("prepare_analytical_dataset correctly handles only_first_date parameter", {
+test_that("prepare_analytical_dataset handles only_first_date", {
   # Test data with multiple events for same id-window
   test_data <- data.table::data.table(
     id = c(1, 1, 1, 2),

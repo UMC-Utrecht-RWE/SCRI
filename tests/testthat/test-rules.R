@@ -12,9 +12,14 @@ test_that("check_no_overlap returns TRUE for disjoint windows", {
 })
 
 test_that("check_no_overlap handles empty and single-window lists", {
-  expect_true(suppressMessages(capture.output(r <- check_no_overlap(list()))) |> length() >= 0)
+  expect_true(
+    length(suppressMessages(capture.output(r <- check_no_overlap(list())))) >=
+      0
+  )
   expect_true(r)
-  expect_output(expect_true(check_no_overlap(list(make_window("2021-01-01", "2021-01-10")))))
+  expect_output(
+    expect_true(check_no_overlap(list(make_window("2021-01-01", "2021-01-10"))))
+  )
 })
 
 test_that("check_no_overlap errors on overlapping windows", {
@@ -49,7 +54,10 @@ test_that("check_start_before_end returns TRUE for valid windows", {
     make_window("2021-01-01", "2021-01-10"),
     make_window("2021-01-11", "2021-01-11")
   )
-  expect_output(res <- check_start_before_end(windows), "All start dates are valid")
+  expect_output(
+    res <- check_start_before_end(windows),
+    "All start dates are valid"
+  )
   expect_true(res)
 })
 
@@ -59,7 +67,10 @@ test_that("check_start_before_end errors when a start is after its end", {
     make_window("2021-02-01", "2021-01-11")
   )
   expect_output(
-    expect_error(check_start_before_end(windows), "start dates must be before or equal"),
+    expect_error(
+      check_start_before_end(windows),
+      "start dates must be before or equal"
+    ),
     "Start date after end date"
   )
 })
@@ -69,7 +80,14 @@ test_that("add_rule returns the appended rule list", {
   old <- if (had_registry) get("rule_registry", envir = globalenv())
   assign("rule_registry", list(), envir = globalenv())
   on.exit(
-    if (had_registry) assign("rule_registry", old, envir = globalenv()) else rm("rule_registry", envir = globalenv()),
+    if (had_registry) {
+      assign("rule_registry", old, envir = globalenv())
+    } else {
+      rm(
+        "rule_registry",
+        envir = globalenv()
+      )
+    },
     add = TRUE
   )
 

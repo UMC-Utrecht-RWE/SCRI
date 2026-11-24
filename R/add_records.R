@@ -1,20 +1,30 @@
 #' Select Dates Window
 #'
-#' This function identifies all records within the records that fall within a window specified in the window_data table in the start and end columns.
+#' This function identifies all records within the records that fall within a
+#' window specified in the window_data table in the start and end columns.
 #'
-#' @param window_data The input data object recording start/end dates of each window per person, after trimming and cleaning. May be a wide or long format, output of wrangle_window
-#' @param records A data table containing records with at minimum: id, date, value columns.
-#' @param only_first_record Logical. If TRUE, only keeps the first record per person. Default is FALSE.
-#' @param is_wide_format Logical. If TRUE, input window_data is in wide format and needs conversion. Default is TRUE.
-#' @param start_column_prefix A string for the prefix of start date columns in wide format. Default is "start".
-#' @param end_column_prefix A string for the prefix of end date columns in wide format. Default is "end".
+#' @param window_data The input data object recording start/end dates of each
+#'   window per person, after trimming and cleaning. May be a wide or long
+#'   format, output of wrangle_window
+#' @param records A data table containing records with at minimum: id, date,
+#'   value columns.
+#' @param only_first_record Logical. If TRUE, only keeps the first record per
+#'   person. Default is FALSE.
+#' @param is_wide_format Logical. If TRUE, input window_data is in wide format
+#'   and needs conversion. Default is TRUE.
+#' @param start_column_prefix A string for the prefix of start date columns in
+#'   wide format. Default is "start".
+#' @param end_column_prefix A string for the prefix of end date columns in wide
+#'   format. Default is "end".
 #' @return A data table with the result of the query.
 #'
 #' @export
 #'
 
 add_records <- function(window_data,
-                        records, # record table of interest, minimum expected columns are: id, date, value
+                        # record table of interest, minimum expected columns
+                        # are: id, date, value
+                        records,
                         only_first_record = TRUE,
                         is_wide_format = TRUE,
                         start_column_prefix = "start",
@@ -62,13 +72,15 @@ add_records <- function(window_data,
           t1.outcome,
           t1.reference_date_name,
           t1.window_name,
-          (t1.", end_column_prefix, " - t1.", start_column_prefix, ") AS window_length,
+          (t1.", end_column_prefix, " - t1.", start_column_prefix,
+    ") AS window_length,
           t1.", start_column_prefix, " AS ", start_column_prefix, ",
           t1.", end_column_prefix, " AS ", end_column_prefix, "
         FROM window_data t1
         INNER JOIN records t2
         ON t1.id = t2.id
-           AND t2.date BETWEEN t1.", start_column_prefix, " AND t1.", end_column_prefix, "
+           AND t2.date BETWEEN t1.", start_column_prefix, " AND t1.",
+    end_column_prefix, "
            AND t1.outcome = t2.outcome
       )
     )", filter_clause
@@ -87,44 +99,69 @@ add_records <- function(window_data,
 
   results <- data.table::merge.data.table(window_data,
     results,
-    by.x = c("id", "reference_date_name", "outcome", "window_name", start_column_prefix, end_column_prefix),
-    by.y = c("id", "reference_date_name", "outcome", "window_name", start_column_prefix, end_column_prefix),
+    by.x = c(
+      "id", "reference_date_name", "outcome", "window_name",
+      start_column_prefix, end_column_prefix
+    ),
+    by.y = c(
+      "id", "reference_date_name", "outcome", "window_name",
+      start_column_prefix, end_column_prefix
+    ),
     all = TRUE
   )
-  results[, window_length := as.integer(get(end_column_prefix) - get(start_column_prefix))]
+  results[, window_length := as.integer(
+    get(end_column_prefix) - get(start_column_prefix)
+  )]
   results[is.na(window_length) | window_length < 1L, window_length := 0L]
-  # results[, date := as.Date(NA)]
 
   return(results)
 }
 
 #' melt_window_data
 #'
-#' This function takes windows_trimmed in a wide format and transforms it in a long format.
+#' This function takes windows_trimmed in a wide format and transforms it in a
+#' long format.
 #'
 #' @param window_data A data table in wide format.
-#' @param start_column_prefix A string that defines the prefix for the start of a window. Default is "start".
-#' @param end_column_prefix A string that defines the prefix for the end of a window. Default is "end".
+#' @param start_column_prefix A string that defines the prefix for the start of
+#'   a window. Default is "start".
+#' @param end_column_prefix A string that defines the prefix for the end of a
+#'   window. Default is "end".
 #'
 #' @return A data table in long format.
 #'
 #' @importFrom data.table .SD
 #' @export
-melt_window_data <- function(window_data, start_column_prefix = "start", end_column_prefix = "end") {
+melt_window_data <- function(window_data,
+                             start_column_prefix = "start",
+                             end_column_prefix = "end") {
   # Identification of the date columns defining the start and end of a window
-  windows_start <- names(window_data)[stringr::str_detect(names(window_data), paste0("^", start_column_prefix))]
-  windows_end <- names(window_data)[stringr::str_detect(names(window_data), paste0("^", end_column_prefix))]
-  if (length(windows_start) == 0 | length(windows_end) == 0) {
+  windows_start <- names(window_data)[
+    stringr::str_detect(names(window_data), paste0("^", start_column_prefix))
+  ]
+  windows_end <- names(window_data)[
+    stringr::str_detect(names(window_data), paste0("^", end_column_prefix))
+  ]
+  if (length(windows_start) == 0 || length(windows_end) == 0) {
     stop("start_prefix and/or end_prefix not found in the wide formatted input")
   }
   # Identification of the variables that are not dates
-  id_vars <- names(window_data)[!names(window_data) %in% c(windows_start, windows_end)]
+  id_vars <- names(window_data)[
+    !names(window_data) %in% c(windows_start, windows_end)
+  ]
 
   # Transformation from wide to long format
-  long_window_data <- data.table::melt(window_data, id.vars = id_vars, measures.vars = c(windows_start, windows_end))
+  long_window_data <- data.table::melt(
+    window_data,
+    id.vars = id_vars,
+    measures.vars = c(windows_start, windows_end)
+  )
 
-  # Splitting the variable column to identify whether the row has a start or end value of a window
-  long_window_data[, c("type", "window_name") := data.table::tstrsplit(sub("_", " ", variable), " ")][, variable := NULL]
+  # Splitting the variable column to identify whether the row has a start or
+  # end value of a window
+  long_window_data[, c("type", "window_name") := data.table::tstrsplit(
+    sub("_", " ", variable), " "
+  )][, variable := NULL]
 
   # Casting to long format but only the date values
   long_window_data <- data.table::dcast(long_window_data,

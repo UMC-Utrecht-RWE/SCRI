@@ -9,9 +9,9 @@
 check_no_overlap <- function(windows) {
   for (i in seq_along(windows)) {
     for (j in seq_along(windows)) {
-      if (i != j &&
-        windows[[i]]$start_date <= windows[[j]]$end_date &&
-        windows[[i]]$end_date >= windows[[j]]$start_date) {
+      overlaps <- windows[[i]]$start_date <= windows[[j]]$end_date &&
+        windows[[i]]$end_date >= windows[[j]]$start_date
+      if (i != j && overlaps) {
         print("Overlap detected.")
         stop("Windows cannot overlap.")
       }

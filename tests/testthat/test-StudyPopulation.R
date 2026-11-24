@@ -8,7 +8,12 @@ test_that("StudyPopulation has correct structure", {
   reference_date_names <- c("covid_vaccine_1", "covid_vaccine_2")
   start_followup_criteria <- "op_start_date"
   end_followup_criteria <- c("death_date", "general_end_fup")
-  expected_columns <- c("id", reference_date_names, start_followup_criteria, end_followup_criteria)
+  expected_columns <- c(
+    "id",
+    reference_date_names,
+    start_followup_criteria,
+    end_followup_criteria
+  )
 
   # Check that all expected columns are present
   expect_true(all(expected_columns %in% colnames(StudyPopulation)))

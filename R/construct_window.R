@@ -1,12 +1,20 @@
-#' Compute start and end window dates for each individual in a study population based on metadata info. First step of the SCRI pipeline
+#' Compute start and end window dates for each individual in a study population
+#' based on metadata info. First step of the SCRI pipeline
 #'
-#' @param study_population data frame containing one row per unit of observation, reference date column specified in window_metadata, any other information
-#' @param window_metadata metadatat file specifying window names/types, reference date columns, start and length of windows (see details)
-#' @param reference_date_name A character vector indicating which column(s) in the study population to use as index date(s).
-#' @param id_column column name identifying the unique unit of observation in the study population
+#' @param study_population data frame containing one row per unit of
+#'   observation, reference date column specified in window_metadata, any other
+#'   information
+#' @param window_metadata metadatat file specifying window names/types,
+#'   reference date columns, start and length of windows (see details)
+#' @param reference_date_name A character vector indicating which column(s) in
+#'   the study population to use as index date(s).
+#' @param id_column column name identifying the unique unit of observation in
+#'   the study population
 #'
 #' @export
-#' @return a data.table object with the same columns as study_population, plus start_ and end_ window dates for each window type supplied in window_metadata
+#' @return a data.table object with the same columns as study_population, plus
+#'   start_ and end_ window dates for each window type supplied in
+#'   window_metadata
 #' @importFrom data.table :=
 
 construct_window <- function(study_population,
@@ -21,7 +29,10 @@ construct_window <- function(study_population,
     unique = TRUE
   )
   # add back columns
-  studypop_long <- data.table::merge.data.table(studypop_long, study_population, by = id_column)
+  studypop_long <- data.table::merge.data.table(
+    studypop_long, study_population,
+    by = id_column
+  )
 
   # Convert to data.table
   reference_date_table <- data.table::data.table(reference_date_name)
@@ -53,14 +64,25 @@ construct_window <- function(study_population,
 
   studypop_wide <- data.table::dcast(
     studypop_long,
-    formula = as.formula(paste(id_column, "+ outcome + reference_date_name + t0_date ~ window_name")),
+    formula = as.formula(paste(
+      id_column,
+      "+ outcome + reference_date_name + t0_date ~ window_name"
+    )),
     value.var = c("start", "end")
   )
 
   # then merge with the input object
-  reference_cols_to_drop <- intersect(reference_date_name, names(study_population))
-  study_population_no_ref <- study_population[, setdiff(names(study_population), reference_cols_to_drop), with = FALSE]
-  studypop_wide_output <- data.table::merge.data.table(study_population_no_ref, studypop_wide, by = id_column, all.x = TRUE)
+  reference_cols_to_drop <- intersect(
+    reference_date_name, names(study_population)
+  )
+  study_population_no_ref <- study_population[
+    , setdiff(names(study_population), reference_cols_to_drop),
+    with = FALSE
+  ]
+  studypop_wide_output <- data.table::merge.data.table(
+    study_population_no_ref, studypop_wide,
+    by = id_column, all.x = TRUE
+  )
 
   # return output
   return(studypop_wide_output)

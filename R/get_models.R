@@ -1,6 +1,7 @@
 #' List Available SCRI Models
 #'
-#' This function returns a data frame of valid SCRI models along with their descriptions.
+#' This function returns a data frame of valid SCRI models along with their
+#' descriptions.
 #'
 #' @return A data frame of available models
 #' @export
@@ -24,9 +25,12 @@ get_DefaultModels <- function() {
 
   # Extract the default model for SCRI design
   if ("design_name" %in% names(DefaultModels)) {
-    default_model <- DefaultModels[DefaultModels$design_name == "scri", "model_name"]
+    default_model <- DefaultModels[
+      DefaultModels$design_name == "scri", "model_name"
+    ]
   } else {
-    # Fallback: assume first row is the default if design_name column doesn't exist
+    # Fallback: assume first row is the default if design_name column
+    # doesn't exist
     default_model <- DefaultModels$model_name[1]
   }
 

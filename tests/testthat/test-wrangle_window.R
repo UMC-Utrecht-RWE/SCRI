@@ -1,4 +1,4 @@
-test_that("wrangle_window requires windows_priority when generic config is incompatible", {
+test_that("wrangle_window requires windows_priority if config incompatible", {
   library(data.table)
 
   sp_obj <- data.table(
@@ -92,7 +92,8 @@ test_that("wrangle_window applies overlap rules for N and N+1 over 3 doses", {
   # Second iteration (N=2 vs N+1=3)
   expect_equal(out$end_risk[2], as.Date("2021-02-09"))
   # Censoring by general_end_fup
-  expect_equal(out$end_risk[3], as.Date(NA)) # Should be NA because both start and end are after the general_end_fup
+  # Should be NA: both start and end are after the general_end_fup
+  expect_equal(out$end_risk[3], as.Date(NA))
   expect_equal(out$start_risk[3], as.Date(NA))
   expect_equal(out$end_control[3], as.Date("2021-02-25"))
 })

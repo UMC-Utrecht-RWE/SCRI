@@ -40,7 +40,7 @@ For this worked example:
 You can install the development version of the package from GitHub:
 
 ```{r eval=FALSE}
-# install.packages("devtools")
+# Install devtools first if needed
 library(devtools)
 devtools::install_github("UMC-Utrecht-RWE/SCRI")
 ```
@@ -102,11 +102,15 @@ Calculate the start and end dates for each analysis window. The output is one ro
 - Each row contains start_ and end_ columns for every window type
 
 ```{r}
-# Construct windows for all subjects relative to their covid_vaccine_1 and covid_vaccine_2 dates
+# Construct windows for all subjects relative to their
+# covid_vaccine_1 and covid_vaccine_2 dates
 constructed_windows <- construct_window(
-  study_population = StudyPopulation, # Input: subject characteristics and reference dates
-  window_metadata = WindowMetadata, # Input: window definitions (duration, lag, etc.)
-  reference_date_name = c("covid_vaccine_1", "covid_vaccine_2"), # Dates to anchor windows around
+  # Input: subject characteristics and reference dates
+  study_population = StudyPopulation,
+  # Input: window definitions (duration, lag, etc.)
+  window_metadata = WindowMetadata,
+  # Dates to anchor windows around
+  reference_date_name = c("covid_vaccine_1", "covid_vaccine_2"),
   id_column = "id" # Column identifying each subject
 )
 
@@ -137,11 +141,13 @@ DT::datatable(WindowPriority, options = list(scrollX = TRUE))
 # Apply censoring and overlap-priority rules to clean the windows
 wrangled_windows <- wrangle_window(
   constructed_windows, # Input: windows from Step 1
-  censoring_dates = c("death_date", "general_end_fup"), # Trim windows at these dates
+  # Trim windows at these dates
+  censoring_dates = c("death_date", "general_end_fup"),
   windows_priority = WindowPriority # Apply priority rules for N vs N+1 overlaps
 )
 
-# Display cleaned windows (dates may be trimmed or shifted compared to constructed_windows)
+# Display cleaned windows (dates may be trimmed or shifted compared to
+# constructed_windows)
 DT::datatable(wrangled_windows, options = list(scrollX = TRUE))
 ```
 
@@ -165,10 +171,12 @@ Identify which outcomes/events occurred within each window.
 identified_records <- add_records(
   window_data = wrangled_windows, # Input: cleaned windows with adjusted dates
   records = RecordsTable, # Input: outcome events with dates
-  only_first_record = TRUE # TRUE: keep only first event per subject; FALSE: keep all
+  # TRUE: keep only first event per subject; FALSE: keep all
+  only_first_record = TRUE
 )
 
-# Display records with window assignments (new columns indicate which window each event occurred in)
+# Display records with window assignments (new columns indicate which
+# window each event occurred in)
 DT::datatable(identified_records, options = list(scrollX = TRUE))
 ```
 
@@ -191,9 +199,12 @@ Summarize events and person-time per window for analysis.
 ```{r}
 # Aggregate to create analytical dataset with events and person-time
 analytical_dataset <- prepare_analytical_dataset(
-  SCRI_identified_records = identified_records, # Input: records matched to windows
-  strata_column_name = NULL, # Optional: column for stratification (or NULL for no stratification)
-  only_first_date = TRUE # TRUE: use only first occurrence per person; FALSE: use all
+  # Input: records matched to windows
+  SCRI_identified_records = identified_records,
+  # Optional: column for stratification (or NULL for none)
+  strata_column_name = NULL,
+  # TRUE: use only first occurrence per person; FALSE: use all
+  only_first_date = TRUE
 )
 
 # Display analytical dataset (one row per person-window combination)
@@ -220,9 +231,11 @@ Apply the statistical model to estimate exposure effects.
 ```{r}
 # Fit conditional logistic regression comparing windows within persons
 results <- apply_analysis(
-  SCRI_analytical_dataset = analytical_dataset, # Input: aggregated analytical dataset
+  # Input: aggregated analytical dataset
+  SCRI_analytical_dataset = analytical_dataset,
   reference_date_name = "covid_vaccine_1", # Which reference date to use
-  reference_window = "risk", # Which window serves as the baseline (usually "control")
+  # Which window serves as the baseline (usually "control")
+  reference_window = "risk",
   strata_column_name = NULL # Optional: column for stratified analysis
 )
 

@@ -19,20 +19,49 @@ make_analytical <- function() {
 test_that("apply_analysis validates inputs", {
   dt <- make_analytical()
 
-  expect_error(apply_analysis(as.data.frame(dt), "covid_vaccine_1", "control"), "must be a data.table")
+  expect_error(
+    apply_analysis(as.data.frame(dt), "covid_vaccine_1", "control"),
+    "must be a data.table"
+  )
   expect_error(
     apply_analysis(dt[, !"outcome"], "covid_vaccine_1", "control"),
     "Missing required column.*outcome"
   )
-  expect_error(apply_analysis(dt, 1, "control"), "reference_date_name.*single character")
-  expect_error(apply_analysis(dt, c("a", "b"), "control"), "reference_date_name.*single character")
-  expect_error(apply_analysis(dt, "other", "control"), "not found in `reference_date_name`")
-  expect_error(apply_analysis(dt, "covid_vaccine_1", 1), "reference_window.*single character")
-  expect_error(apply_analysis(dt, "covid_vaccine_1", c("a", "b")), "reference_window.*single character")
-  expect_error(apply_analysis(dt, "covid_vaccine_1", "nope"), "not found in `window_name`")
-  expect_error(apply_analysis(dt, "covid_vaccine_1", "control", strata_column_name = 1), "must be a character")
   expect_error(
-    apply_analysis(dt, "covid_vaccine_1", "control", strata_column_name = "zzz"),
+    apply_analysis(dt, 1, "control"),
+    "reference_date_name.*single character"
+  )
+  expect_error(
+    apply_analysis(dt, c("a", "b"), "control"),
+    "reference_date_name.*single character"
+  )
+  expect_error(
+    apply_analysis(dt, "other", "control"),
+    "not found in `reference_date_name`"
+  )
+  expect_error(
+    apply_analysis(dt, "covid_vaccine_1", 1),
+    "reference_window.*single character"
+  )
+  expect_error(
+    apply_analysis(dt, "covid_vaccine_1", c("a", "b")),
+    "reference_window.*single character"
+  )
+  expect_error(
+    apply_analysis(dt, "covid_vaccine_1", "nope"),
+    "not found in `window_name`"
+  )
+  expect_error(
+    apply_analysis(dt, "covid_vaccine_1", "control", strata_column_name = 1),
+    "must be a character"
+  )
+  expect_error(
+    apply_analysis(
+      dt,
+      "covid_vaccine_1",
+      "control",
+      strata_column_name = "zzz"
+    ),
     "Invalid strata column name.*zzz"
   )
 })
@@ -48,11 +77,16 @@ test_that("apply_analysis returns counts, person-time and IRR per outcome", {
   expect_equal(res$n_event_risk, 18)
   expect_equal(res$time_control, 300)
   expect_equal(res$time_risk, 600)
-  # 12 control-only vs 12 risk-only discordant pairs, risk window twice as long: IRR = 1
+  # 12 control-only vs 12 risk-only discordant pairs, risk window twice as long:
+  # so the ratio is one
   expect_equal(res$irr_risk_vs_control, 1, tolerance = 1e-6)
   expect_lt(res$irr_risk_vs_control_lowci, res$irr_risk_vs_control)
   expect_gt(res$irr_risk_vs_control_upci, res$irr_risk_vs_control)
-  expect_true(all(c("irr_risk_vs_control_lowci", "irr_risk_vs_control_upci") %in% names(res)))
+  expect_true(
+    all(
+      c("irr_risk_vs_control_lowci", "irr_risk_vs_control_upci") %in% names(res)
+    )
+  )
 })
 
 test_that("apply_analysis returns one row per outcome", {
@@ -67,7 +101,9 @@ test_that("apply_analysis returns one row per outcome", {
 
 test_that("apply_analysis runs with a strata column", {
   dt <- make_analytical()
-  res <- suppressWarnings(apply_analysis(dt, "covid_vaccine_1", "control", strata_column_name = "sex"))
+  res <- suppressWarnings(
+    apply_analysis(dt, "covid_vaccine_1", "control", strata_column_name = "sex")
+  )
   expect_s3_class(res, "data.table")
   expect_equal(nrow(res), 1)
   expect_true("irr_risk_vs_control" %in% names(res))
@@ -76,11 +112,18 @@ test_that("apply_analysis runs with a strata column", {
 test_that("apply_analysis runs once per strata column", {
   dt <- make_analytical()
   dt[, grp := rep(c("a", "b", "c"), length.out = .N)]
-  res <- suppressWarnings(apply_analysis(dt, "covid_vaccine_1", "control", strata_column_name = c("sex", "grp")))
+  res <- suppressWarnings(
+    apply_analysis(
+      dt,
+      "covid_vaccine_1",
+      "control",
+      strata_column_name = c("sex", "grp")
+    )
+  )
   expect_equal(nrow(res), 2)
 })
 
-test_that("apply_analysis returns -88 when the reference window has no events", {
+test_that("apply_analysis returns -88 if reference has no events", {
   dt <- make_analytical()
   dt[window_name == "control", event := 0L]
   expect_output(
@@ -92,8 +135,9 @@ test_that("apply_analysis returns -88 when the reference window has no events", 
   expect_equal(res$irr_risk_vs_control_upci, -88)
 })
 
-test_that("apply_analysis computes IRRs relative to a non-alphabetically-first reference", {
-  # 12 individuals with control-only events, 6 with risk-only; equal window lengths
+test_that("apply_analysis computes IRRs vs a non-alphabetical reference", {
+  # 12 individuals with control-only events, 6 with risk-only; equal window
+  # lengths
   dt <- data.table::rbindlist(lapply(1:30, function(i) {
     data.table::data.table(
       id = as.character(i),
@@ -106,8 +150,12 @@ test_that("apply_analysis computes IRRs relative to a non-alphabetically-first r
     )
   }))
 
-  vs_control <- suppressWarnings(apply_analysis(data.table::copy(dt), "covid_vaccine_1", "control"))
-  vs_risk <- suppressWarnings(apply_analysis(data.table::copy(dt), "covid_vaccine_1", "risk"))
+  vs_control <- suppressWarnings(
+    apply_analysis(data.table::copy(dt), "covid_vaccine_1", "control")
+  )
+  vs_risk <- suppressWarnings(
+    apply_analysis(data.table::copy(dt), "covid_vaccine_1", "risk")
+  )
 
   expect_equal(vs_control$irr_risk_vs_control, 0.5, tolerance = 1e-6)
   expect_equal(vs_risk$irr_control_vs_risk, 2, tolerance = 1e-6)
