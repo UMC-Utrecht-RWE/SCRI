@@ -5,3 +5,4 @@
 ^README\.Rmd$
 ^\.covrignore$
 ^codecov\.yml$
+^data-raw$
