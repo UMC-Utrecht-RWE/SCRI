@@ -1,0 +1,79 @@
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+name: test-coverage
+
+permissions:
+  contents: read
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::covr, any::DT
+          needs: coverage
+
+      - name: Test coverage
+        run: |
+          # Exclusions
+          excl <- list("R/zzz.R" = 1:1e6)
+
+          # Calculate coverage
+          cat("Calculating package coverage...\n\n")
+          cov <- covr::package_coverage(
+            quiet = FALSE,
+            clean = FALSE,
+            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package"),
+            line_exclusions = excl
+          )
+
+          # Print overall coverage
+          cat("\n")
+          cat("========================================\n")
+          cat("OVERALL PACKAGE COVERAGE\n")
+          cat("========================================\n")
+          print(cov)
+          cat("\n")
+
+          # Get overall percentage
+          pct <- covr::percent_coverage(cov)
+          cat("========================================\n")
+          cat(sprintf("Total Coverage: %.2f%%\n", pct))
+          cat("========================================\n\n")
+
+          # Check threshold
+          threshold <- 93
+          if (pct < threshold) {
+            cat(sprintf("Coverage (%.2f%%) is below threshold (%.0f%%)\n", pct, threshold))
+          } else {
+            cat(sprintf("Coverage (%.2f%%) meets threshold (%.0f%%)\n", pct, threshold))
+          }
+        shell: Rscript {0}
+
+      - name: Show testthat output
+        if: always()
+        run: |
+          ## --------------------------------------------------------------------
+          find '${{ runner.temp }}/package' -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-test-failures
+          path: ${{ runner.temp }}/package
