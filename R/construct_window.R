@@ -10,9 +10,9 @@
 #' @importFrom data.table :=
 
 construct_window <- function(study_population,
-                              window_metadata,
-                              reference_date_name,
-                              id_column = "id") {
+                             window_metadata,
+                             reference_date_name,
+                             id_column = "id") {
   studypop_long <- data.table::melt(study_population,
     id.vars = id_column,
     measure.vars = unique(reference_date_name),

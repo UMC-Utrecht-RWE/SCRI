@@ -1,4 +1,3 @@
-
 test_that("wrangle_window requires windows_priority when generic config is incompatible", {
   library(data.table)
 

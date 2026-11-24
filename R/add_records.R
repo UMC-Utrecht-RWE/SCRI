@@ -45,14 +45,14 @@ add_records <- function(window_data,
 
   # Build query to find events within time windows
   query <- paste0(
-    "SELECT id, 
-            reference_date_name, 
-            outcome, 
-            window_name, 
-            window_length, 
-            date, 
-            ",start_column_prefix,",
-            ",end_column_prefix,"
+    "SELECT id,
+            reference_date_name,
+            outcome,
+            window_name,
+            window_length,
+            date,
+            ", start_column_prefix, ",
+            ", end_column_prefix, "
     FROM (
       SELECT *", rank_clause, "
       FROM (
@@ -63,8 +63,8 @@ add_records <- function(window_data,
           t1.reference_date_name,
           t1.window_name,
           (t1.", end_column_prefix, " - t1.", start_column_prefix, ") AS window_length,
-          t1.", start_column_prefix, " AS ",start_column_prefix,",
-          t1.", end_column_prefix, " AS ",end_column_prefix,"
+          t1.", start_column_prefix, " AS ", start_column_prefix, ",
+          t1.", end_column_prefix, " AS ", end_column_prefix, "
         FROM window_data t1
         INNER JOIN records t2
         ON t1.id = t2.id
@@ -85,15 +85,16 @@ add_records <- function(window_data,
     }
   }
 
-  results <- data.table::merge.data.table(window_data, 
-                                          results, 
-                                          by.x = c("id","reference_date_name","outcome", "window_name", start_column_prefix, end_column_prefix), 
-                                          by.y = c("id", "reference_date_name","outcome", "window_name", start_column_prefix, end_column_prefix),
-                                          all = TRUE)
+  results <- data.table::merge.data.table(window_data,
+    results,
+    by.x = c("id", "reference_date_name", "outcome", "window_name", start_column_prefix, end_column_prefix),
+    by.y = c("id", "reference_date_name", "outcome", "window_name", start_column_prefix, end_column_prefix),
+    all = TRUE
+  )
   results[, window_length := as.integer(get(end_column_prefix) - get(start_column_prefix))]
   results[is.na(window_length) | window_length < 1L, window_length := 0L]
-  #results[, date := as.Date(NA)]
-  
+  # results[, date := as.Date(NA)]
+
   return(results)
 }
 

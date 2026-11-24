@@ -10,9 +10,9 @@
 #'   \item{end_names}{Character vector of column names starting with "end_"}
 #'
 #' @keywords internal
-identify_start_end_cols <- function(data){
+identify_start_end_cols <- function(data) {
   # obtain window names (assumes input is data.table, has this naming convention for columns)
   start_names <- names(data)[grep("^start_", names(data))]
   end_names <- names(data)[grep("^end_", names(data))]
-  return(list('start_names' = start_names, 'end_names' = end_names))
+  return(list("start_names" = start_names, "end_names" = end_names))
 }

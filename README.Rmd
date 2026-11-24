@@ -39,7 +39,7 @@ In this step, we use the `construct_window()` function to calculate the start an
 # library(SCRI)
 data("StudyPopulation")
 data("WindowMetadata")
-windowmet <- WindowMetadata[grepl("post",WindowMetadata$window_name),]
+windowmet <- WindowMetadata[grepl("post", WindowMetadata$window_name), ]
 print(windowmet)
 ```
 
@@ -53,10 +53,12 @@ head(StudyPopulation)
 The `construct_window()` returns start and end dates for each of the windows under consideration, anchored to the relevant reference date. The output by default is wide format. The output object also inherits all columns from the input `studypopulation`
 
 ```{r}
-sp_windows <- SCRI::construct_window(studypopulation = StudyPopulation, windowmeta= windowmet, 
-                id_column = "id")
+sp_windows <- SCRI::construct_window(
+  studypopulation = StudyPopulation, windowmeta = windowmet,
+  id_column = "id"
+)
 
-sp_windows[1,c("person_id", "start_risk_post","end_risk_post","start_control_post","end_control_post")]
+sp_windows[1, c("person_id", "start_risk_post", "end_risk_post", "start_control_post", "end_control_post")]
 ```
 
 #### Step 2: Cleaning Windows
@@ -87,7 +89,8 @@ To censor the risk and control windows shown above, we run the `wrangle_window()
 ```{r}
 # run the core function
 sp_clean <- wrangle_window(sp_windows,
-                                censoring_dates = c("death_date", "general_end_fup"))
+  censoring_dates = c("death_date", "general_end_fup")
+)
 ```
 
 
@@ -140,10 +143,9 @@ window_records <- SCRI::get_records(
   records_table = RecordsTable,
   only_first_date = TRUE,
   wide_format_input = TRUE,
-  start_prefix = 'start',
-  end_prefix = 'end'
+  start_prefix = "start",
+  end_prefix = "end"
 )
-
 ```
 ```{r echo=FALSE, R.options = list(width = 200)}
 head(window_records)

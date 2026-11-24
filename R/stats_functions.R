@@ -18,7 +18,7 @@
 #'
 #' @export
 #'
-compute_scri_stats <- function(SCRI_analytical_dataset, 
+compute_scri_stats <- function(SCRI_analytical_dataset,
                                reference_window,
                                i_outcome) {
   # Get unique window names from the dataset

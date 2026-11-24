@@ -13,7 +13,7 @@ test_that("add_records returns records within specified windows (long format)", 
   window_data <- data.table::data.table(
     id = c(1, 1, 2, 2),
     outcome = c("myocarditis", "myocarditis", "myocarditis", "myocarditis"),
-    reference_date_name = c("TARGET1","TARGET1","TARGET1","TARGET1"),
+    reference_date_name = c("TARGET1", "TARGET1", "TARGET1", "TARGET1"),
     window_name = c("control", "risk", "control", "risk"),
     start_date = as.Date(c("2023-01-01", "2023-01-11", "2023-02-01", "2023-02-21")),
     end_date = as.Date(c("2023-01-10", "2023-01-21", "2023-02-20", "2023-03-01"))
@@ -88,7 +88,7 @@ test_that("add_records matches records based on outcome", {
   window_data <- data.table::data.table(
     id = c(1, 1),
     outcome = c("myocarditis", "event2"),
-    reference_date_name = c("TARGET1","TARGET1"),
+    reference_date_name = c("TARGET1", "TARGET1"),
     window_name = c("window1", "window2"),
     start_date = as.Date(c("2023-01-01", "2023-01-15")),
     end_date = as.Date(c("2023-01-10", "2023-01-25"))
@@ -253,7 +253,7 @@ test_that("melt_window_data converts wide format to long format", {
   window_data_wide <- data.table::data.table(
     id = c(1, 2),
     outcome = c("myocarditis", "myocarditis"),
-    reference_date_name = c("TARGET1","TARGET1"),
+    reference_date_name = c("TARGET1", "TARGET1"),
     start_control = as.Date(c("2023-01-01", "2023-02-01")),
     end_control = as.Date(c("2023-01-31", "2023-02-28")),
     start_risk = as.Date(c("2023-02-01", "2023-03-01")),
